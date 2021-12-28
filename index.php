@@ -68,7 +68,7 @@ $user_name = 'Никитина Виктория'; // укажите здесь �
                             </div>
                             <div class="header__profile-name">
                                 <span>
-                                   <?php print ($user_name); ?> 
+                                   <?= $user_name ?>
                                 </span>
                                 <svg class="header__link-arrow" width="10" height="6">
                                     <use xlink:href="#icon-arrow-right-ad"></use>
