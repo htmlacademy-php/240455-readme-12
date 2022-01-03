@@ -1,7 +1,7 @@
 <?php
-$is_auth = rand(0, 1);
+$isAuth = rand(0, 1);
 
-$user_name = 'Никитина Виктория'; // укажите здесь ваше имя
+$userName = 'Никитина Виктория'; // укажите здесь ваше имя
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -40,8 +40,8 @@ $user_name = 'Никитина Виктория'; // укажите здесь �
             </div>
         </form>
         <div class="header__nav-wrapper">
-            <?php if($is_auth == 1): ?>
-            <nav class="header__nav">
+            <?php if(1 === $isAuth) {
+            echo'<nav class="header__nav">
                 <ul class="header__my-nav">
                     <li class="header__my-page header__my-page--popular">
                         <a class="header__page-link header__page-link--active" title="Популярный контент">
@@ -67,9 +67,9 @@ $user_name = 'Никитина Виктория'; // укажите здесь �
                                 <img class="header__profile-avatar" src="img/userpic-medium.jpg" alt="Аватар профиля">
                             </div>
                             <div class="header__profile-name">
-                                <span>
-                                   <?= $user_name ?>
-                                </span>
+                                <span>'
+                                    . $userName .
+                                   '</span>
                                 <svg class="header__link-arrow" width="10" height="6">
                                     <use xlink:href="#icon-arrow-right-ad"></use>
                                 </svg>
@@ -109,8 +109,9 @@ $user_name = 'Никитина Виктория'; // укажите здесь �
                         <a class="header__post-button button button--transparent" href="adding-post.html">Пост</a>
                     </li>
                 </ul>
-            </nav>
-            <?php endif;?>
+            </nav>';
+            }
+			?>
         </div>
     </div>
 </header>
