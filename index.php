@@ -40,8 +40,8 @@ $userName = 'Никитина Виктория'; // укажите здесь в
             </div>
         </form>
         <div class="header__nav-wrapper">
-            <?php if(1 === $isAuth) {
-            echo'<nav class="header__nav">
+            <?php if (1 === $isAuth) { ?>
+            <nav class="header__nav">
                 <ul class="header__my-nav">
                     <li class="header__my-page header__my-page--popular">
                         <a class="header__page-link header__page-link--active" title="Популярный контент">
@@ -67,9 +67,7 @@ $userName = 'Никитина Виктория'; // укажите здесь в
                                 <img class="header__profile-avatar" src="img/userpic-medium.jpg" alt="Аватар профиля">
                             </div>
                             <div class="header__profile-name">
-                                <span>'
-                                    . $userName .
-                                   '</span>
+                                <span> <?php echo $userName ?></span>
                                 <svg class="header__link-arrow" width="10" height="6">
                                     <use xlink:href="#icon-arrow-right-ad"></use>
                                 </svg>
@@ -109,9 +107,8 @@ $userName = 'Никитина Виктория'; // укажите здесь в
                         <a class="header__post-button button button--transparent" href="adding-post.html">Пост</a>
                     </li>
                 </ul>
-            </nav>';
-            }
-			?>
+            </nav>
+            <?php } ?>
         </div>
     </div>
 </header>
