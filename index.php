@@ -2,6 +2,44 @@
 $isAuth = rand(0, 1);
 
 $userName = 'Никитина Виктория'; // укажите здесь ваше имя
+
+$posts = [
+    [
+        'title' => 'Цитата',
+        'type' => 'post-quote',
+        'content' => 'Мы в жизни любим только раз, а после ищем лишь похожих',
+        'author' => 'Лариса',
+        'avatar' => 'userpic-larisa-small.jpg'
+    ],
+    [
+        'title' => 'Игра престолов',
+        'type' => 'post-text',
+        'content' => 'Не могу дождаться начала финального сезона своего любимого сериала!',
+        'author' => 'Владик',
+        'avatar' => 'userpic.jpg'
+    ],
+    [
+        'title' => 'Наконец, обработал фотки!',
+        'type' => 'post-photo',
+        'content' => 'rock-medium.jpg',
+        'author' => 'Виктор',
+        'avatar' => 'userpic-mark.jpg'
+    ],
+    [
+        'title' => 'Моя мечта',
+        'type' => 'post-photo',
+        'content' => 'coast-medium.jpg',
+        'author' => 'Лариса',
+        'avatar' => 'userpic-larisa-small.jpg'
+    ],
+    [
+        'title' => 'Лучшие курсы',
+        'type' => 'post-link',
+        'content' => '<a href="http://www.htmlacademy.ru">www.htmlacademy.ru</a>',
+        'author' => 'Владик',
+        'avatar' => 'userpic.jpg'
+    ],
+];
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -249,7 +287,7 @@ $userName = 'Никитина Виктория'; // укажите здесь в
                 <!--содержимое для поста-текста-->
                 <p><!--здесь текст--></p>
             </div>
-
+			<?php foreach () {}?>
             <article class="popular__post post">
                 <header class="post__header">
                     <h2><!--здесь заголовок--></h2>
