@@ -1,4 +1,6 @@
 <?php
+mb_internal_encoding("UTF-8");
+
 $isAuth = rand(0, 1);
 
 $userName = 'Никитина Виктория'; // укажите здесь ваше имя
@@ -40,6 +42,25 @@ $posts = [
         'avatar' => 'userpic.jpg'
     ],
 ];
+
+function cutText ($text, $numLetters = 300) {
+    
+    $textNum = mb_strlen($text);
+
+    if($textNum > $numLetters) {
+        
+        $words = explode(" ", $text);
+        
+        $arrWords = array_slice($words, 0, $numLetters);  
+        
+        $text = implode(" ", $arrWords);
+        $text .= '... <a class="post-text__more-link" href="#">Читать далее</a>';
+        
+    } 
+    
+    return $text;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -251,7 +272,7 @@ $posts = [
                              </blockquote>
                     <?php }
                           elseif ('post-text' === $post['type']) { ?>
-                             <p><?php echo $post['content']?></p>
+                             <p><?php echo cutText($post['content']); ?></p> 
                     <?php }
                           elseif ('post-photo' === $post['type']) { ?>
                              <div class="post-photo__image-wrapper">
