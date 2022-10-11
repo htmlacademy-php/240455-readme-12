@@ -1,7 +1,7 @@
 # Личный проект «Readme»
 
 * Студент: [Виктория Никитина](https://up.htmlacademy.ru/php/12/user/240455).
-* Наставник: [Николай Черпинский](https://htmlacademy.ru/profile/id1903065).
+* Наставник: [Анвар Кабиров](https://htmlacademy.ru/profile/id1452397).
 
 ---
 
