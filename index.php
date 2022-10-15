@@ -243,7 +243,7 @@ $posts = [
             </div>
         </div>
         <div class="popular__posts">
-			<?php foreach ($posts as $post): ?>
+			  <?php foreach ($posts as $post): ?>
             <article class="popular__post post  <?= $post['type']; ?>">
                 <header class="post__header">
                     <h2><?= $post['title']; ?></h2>
@@ -280,7 +280,7 @@ $posts = [
                     <?php else: ?>
                              <div class="post-video__block">
                                 <div class="post-video__preview">
-                                    <?=embed_youtube_cover($post['content']); ?>
+                                    <?= embed_youtube_cover($post['content']); ?>
                                     <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
                                 </div>
                                 <a href="post-details.html" class="post-video__play-big button">

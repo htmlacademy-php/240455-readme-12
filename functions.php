@@ -7,6 +7,7 @@
  *
  * @return string
  */
+
 function cut_text ($text, $numLetters = 300) {
 
     $textNum = mb_strlen($text);
@@ -23,3 +24,4 @@ function cut_text ($text, $numLetters = 300) {
 
     return $text;
 }
+
