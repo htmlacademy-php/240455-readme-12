@@ -1,4 +1,5 @@
 <?php
+
 mb_internal_encoding("UTF-8");
 
 require('functions.php');
@@ -243,7 +244,9 @@ $posts = [
             </div>
         </div>
         <div class="popular__posts">
+
 			  <?php foreach ($posts as $post): ?>
+
             <article class="popular__post post  <?= $post['type']; ?>">
                 <header class="post__header">
                     <h2><?= $post['title']; ?></h2>
