@@ -1,7 +1,5 @@
 <?php
 
-mb_internal_encoding("UTF-8");
-
 require('functions.php');
 
 $is_auth = rand(0, 1);
