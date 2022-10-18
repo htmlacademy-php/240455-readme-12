@@ -11,8 +11,6 @@ mb_internal_encoding("UTF-8");
  * @return string
  */
 function cut_text ($text, $numLetters = 300) {
-    
-    
 
     $textNum = mb_strlen(trim($text));
 
