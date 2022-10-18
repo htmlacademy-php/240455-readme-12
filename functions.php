@@ -12,7 +12,7 @@ function cut_text ($text, $numLetters = 300) {
     $textNum = mb_strlen($text);
 
     if ($textNum > $numLetters) {
-        
+       
         $text = mb_substr($text, 0, $numLetters,'UTF-8'); // Обрезаем и работаем со всеми кодировками и указываем исходную кодировку
         $position = mb_strrpos($text, ' ', 'UTF-8'); // Определение позиции последнего пробела. Именно по нему и разделяем слова
         $text = mb_substr($text, 0, $position, 'UTF-8'); // Обрезаем переменную по позиции
