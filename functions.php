@@ -8,8 +8,10 @@
  * @return string
  */
 function cut_text ($text, $numLetters = 300) {
+    
+    
 
-    $textNum = mb_strlen($text);
+    $textNum = mb_strlen(trim($text));
 
     if ($textNum > $numLetters) {
        
