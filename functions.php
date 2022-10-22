@@ -5,18 +5,20 @@ mb_internal_encoding("UTF-8");
 /**
  * Обрезает текстовое содержимое если оно превышает заданное число символов. Также, если текст был обрезан, добавляет к нему ссылку «Читать далее»
  *
- * @param string $text Данные для обрезания
- * @param int $numLetters Количество символов, до которого нужно обрезать текст 
+ * @param string $text Текстовая строка
+ * @param int $maxLen Максимальная длина текста 
  *
  * @return string
  */
-function cut_text ($text, $numLetters = 300) {
+function cut_text ($text, $maxLen = 300) {
+    
+    $textTrimmed = trim($text);
 
-    $textNum = mb_strlen(trim($text));
+    $textNum = mb_strlen($textTrimmed);
 
-    if ($textNum > $numLetters) {
+    if ($textNum > $maxLen) {
        
-        $text = mb_substr($text, 0, $numLetters,'UTF-8'); // Обрезаем и работаем со всеми кодировками и указываем исходную кодировку
+        $text = mb_substr($text, 0, $maxLen,'UTF-8'); // Обрезаем и работаем со всеми кодировками и указываем исходную кодировку
         $position = mb_strrpos($text, ' ', 'UTF-8'); // Определение позиции последнего пробела. Именно по нему и разделяем слова
         $text = mb_substr($text, 0, $position, 'UTF-8'); // Обрезаем переменную по позиции
 
