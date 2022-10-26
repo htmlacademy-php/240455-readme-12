@@ -1,7 +1,5 @@
 <?php
 
-mb_internal_encoding("UTF-8");
-
 require('functions.php');
 
 $is_auth = rand(0, 1);
@@ -244,9 +242,7 @@ $posts = [
             </div>
         </div>
         <div class="popular__posts">
-
-			  <?php foreach ($posts as $post): ?>
-
+			<?php foreach ($posts as $post): ?>
             <article class="popular__post post  <?= $post['type']; ?>">
                 <header class="post__header">
                     <h2><?= $post['title']; ?></h2>
