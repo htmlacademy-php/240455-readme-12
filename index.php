@@ -3,6 +3,10 @@
 require_once 'helpers.php';
 require 'functions.php';
 
+$is_auth = rand(0, 1);
+
+$user_name = 'Никитина Виктория';
+
 $posts = [
     [
         'title' => 'Цитата',
@@ -41,10 +45,19 @@ $posts = [
     ],
 ];
 
-$page_content = include_template('main.php', ['posts' => $posts]);
+array_walk_recursive($posts, 'filter_xss');
 
-$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'readme: популярное', 'user_name' => 'Никитина Виктория', 'is_auth' => rand(0, 1)]);
+$main_content = include_template('main.php', 
+                                    [
+                                        'posts' => $posts                                       
+                                    ]);
+
+$layout_content = include_template('layout.php', 
+                                   [
+                                       'page_title' => 'популярное',
+                                       'is_auth' => $is_auth, 
+                                       'user_name' => $user_name,
+                                       'main_content' => $main_content
+                                   ]);
 
 print($layout_content);
-
-?>
