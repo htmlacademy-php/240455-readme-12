@@ -29,3 +29,14 @@ function cut_text ($text, $maxLen = 300) {
     return $text;
 }
 
+/**
+ * Функция-фильтр от XSS
+ *
+ * @param string $value значение массива
+ *
+ * @return string
+ */
+
+function filter_xss (&$value) {
+    $value = htmlspecialchars($value, ENT_QUOTES);
+}
