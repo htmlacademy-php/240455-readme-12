@@ -1,7 +1,7 @@
 <?php
 
 require_once 'helpers.php';
-require 'functions.php';
+require_once 'functions.php';
 
 $is_auth = rand(0, 1);
 
@@ -47,17 +47,15 @@ $posts = [
 
 array_walk_recursive($posts, 'filter_xss');
 
-$main_content = include_template('main.php', 
-                                    [
-                                        'posts' => $posts                                       
-                                    ]);
+$main_content = include_template('main.php', [
+    'posts' => $posts,                                       
+]);
 
-$layout_content = include_template('layout.php', 
-                                   [
-                                       'page_title' => 'популярное',
-                                       'is_auth' => $is_auth, 
-                                       'user_name' => $user_name,
-                                       'main_content' => $main_content
-                                   ]);
+$layout_content = include_template('layout.php', [
+   'page_title' => 'популярное',
+   'is_auth' => $is_auth, 
+   'user_name' => $user_name,
+   'main_content' => $main_content,
+]);
 
 print($layout_content);
