@@ -38,5 +38,5 @@ function cut_text ($text, $maxLen = 300) {
  */
 
 function filter_xss (&$value) {
-    $value = htmlspecialchars($value, ENT_QUOTES);
+    $value = htmlentities($value);
 }
