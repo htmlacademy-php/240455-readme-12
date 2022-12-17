@@ -47,6 +47,8 @@ $posts = [
 
 array_walk_recursive($posts, 'filter_xss');
 
+date_default_timezone_set('Europe/Moscow');
+
 $main_content = include_template('main.php', [
     'posts' => $posts,                                       
 ]);
