@@ -147,7 +147,7 @@
                             <div class="post__info">
                                 <b class="post__author-name"><?= $post['author']; ?></b>
                                 <?php $date = generate_random_date($index); ?>
-                                <time class="post__time" title="<?= date("d.m.Y H:i", strtotime($date)); ?>" datetime="<?= $date; ?>"><?= find_interval($date); ?></time>
+                                <time class="post__time" title="<?= date("d.m.Y H:i", strtotime($date)); ?>" datetime="<?= $date; ?>"><?= get_interval($date); ?></time>
                             </div>
                         </a>
                     </div>

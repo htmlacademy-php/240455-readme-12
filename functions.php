@@ -7,7 +7,6 @@ mb_internal_encoding("UTF-8");
  *
  * @param string $text Текстовая строка
  * @param int $maxLen Максимальная длина текста 
- *
  * @return string
  */
 function cut_text ($text, $maxLen = 300) {
@@ -33,7 +32,6 @@ function cut_text ($text, $maxLen = 300) {
  * Функция-фильтр от XSS
  *
  * @param string $value Значение массива
- *
  * @return string
  */
 
@@ -42,93 +40,43 @@ function filter_xss (&$value) {
 }
 
 /**
- * Рассчитывает интервал между экземплярами дат в относительном формате
+ * Получаем прошедший интервал времени в относительном формате
  *
  * @param string $date Дата
- *
- * @return integer $interval Возвращает интервал между экземплярами дат
+ * @return string $interval Возвращает интервал между экземплярами дат
  */
 
-function find_interval ($date) {
+function get_interval ($date) {
     
     $cur_date = date_create("now"); // создаёт экземпляр даты на основе формата
     
     $date = date_create($date);
     
-    $diff = date_diff($cur_date, $date);
+    $diff = date_diff($date, $cur_date);
     
-    $minuts_count = date_interval_format($diff, "%i");
-    $minuts_count = (int)$minuts_count;
+    $time_count = $diff->days;
     
-    $hours_count = date_interval_format($diff, "%h");
-    $hours_count = (int)$hours_count;
-    
-    $days_count = date_interval_format($diff, "%d");
-    $days_count = (int)$days_count;
-
-    $month_count = date_interval_format($diff, "%m");
-    $month_count = (int)$month_count;
-    
-    switch (true) {
-        case ($minuts_count !== 0):
-            
-        $interval = $minuts_count;
-           
-            return $interval . " " . 
-            get_noun_plural_form(
-                $interval,
-                'минута',
-                'минуты',
-                'минут'
-            ) . " назад";
-            
-        case ($hours_count !== 0):
-            
-        $interval = $hours_count;
-            
-            return $interval . " " . 
-            get_noun_plural_form(
-                $interval,
-                'час',
-                'часа',
-                'часов'
-            ) . " назад";
-            
-        case ($days_count < 7 && $days_count !== 0):
-            
-        $interval = $days_count;
-            
-            return $interval . " " . 
-            get_noun_plural_form(
-                $interval,
-                'день',
-                'дня',
-                'дней'
-            ) . " назад";
-            
-        case ($days_count > 6 && $days_count < 35):
-            
-        $interval = $days_count / 7;
-        $interval = floor($interval);
-            
-            return $interval . " " . 
-            get_noun_plural_form(
-                $interval,
-                'неделю',
-                'недели',
-                'недель'
-            ) . " назад";
-            
-        case ($month_count !== 0):
-            
-        $interval = $month_count;
-            
-            return $interval . " " . 
-            get_noun_plural_form(
-                $interval,
-                'месяц',
-                'месяца',
-                'месяцев'
-            ) . " назад";
+    if ($time_count < 1) {
+        $time_count = $diff->h; 
+        if ($time_count > 1) {
+            $time_count = $time_count . " час" . get_noun_plural_form($time_count, '', 'а', 'ов');
+        }
+        elseif ($time_count < 1) {
+            $time_count = $diff->i; 
+            $time_count = $time_count . " минут" . get_noun_plural_form($time_count, 'у', 'ы', '');
+        }
+    } else {
+        if ($time_count < 7) {
+            $time_count = $time_count . " " . get_noun_plural_form($time_count, 'день', 'дня', 'дней');
+        } elseif (6 < $time_count && $time_count < 35) {
+            $time_count = $time_count / 7;
+            $time_count = floor($time_count);
+            $time_count = $time_count . " недел" . get_noun_plural_form($time_count, 'ю', 'и', 'ь');
+        } elseif (35 < $time_count) {
+            $time_count = $diff->m;
+            $time_count = $time_count . " месяц" . get_noun_plural_form($time_count, '', 'а', 'ев');
+        }
     }
+    
+    return $time_count . " назад";
 }
