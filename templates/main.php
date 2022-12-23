@@ -85,7 +85,7 @@
             </div>
         </div>
         <div class="popular__posts">
-    		<?php foreach ($posts as $index => $post): ?>         
+    		<?php foreach ($posts as $post): ?>         
             <article class="popular__post post <?= $post['type']; ?>">
                 <header class="post__header">
                     <h2><?= $post['title']; ?></h2>
@@ -146,8 +146,7 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?= $post['author']; ?></b>
-                                <?php $date = generate_random_date($index); ?>
-                                <time class="post__time" title="<?= date("d.m.Y H:i", strtotime($date)); ?>" datetime="<?= $date; ?>"><?= get_interval($date); ?></time>
+                                <time class="post__time" title="<?= $post['date_title']; ?>" datetime="<?= $post['date']; ?>"><?= $post['date_interval']; ?></time>
                             </div>
                         </a>
                     </div>

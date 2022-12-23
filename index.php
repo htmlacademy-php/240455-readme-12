@@ -45,9 +45,18 @@ $posts = [
     ],
 ];
 
-array_walk_recursive($posts, 'filter_xss');
+foreach ($posts as $key => $post) {
+    $date = generate_random_date($key);
+    $posts[$key]['date'] = $date;
+    
+    $date_title =  date("d.m.Y H:i", strtotime($date));
+    $posts[$key]['date_title'] = $date_title;
+    
+    $date_interval =  get_interval($date);
+    $posts[$key]['date_interval'] = $date_interval;
+}
 
-date_default_timezone_set('Europe/Moscow');
+array_walk_recursive($posts, 'filter_xss');
 
 $main_content = include_template('main.php', [
     'posts' => $posts,                                       
