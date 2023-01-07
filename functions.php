@@ -35,7 +35,6 @@ function cut_text ($text, $max_len = 300) {
  * @param string $value Значение массива
  * @return string
  */
-
 function filter_xss (&$value) {
     $value = htmlentities($value);
 }
@@ -51,7 +50,6 @@ function filter_xss (&$value) {
  * @param string $date Дата
  * @return string $interval Возвращает интервал между экземплярами дат
  */
-
 function get_interval ($date) {
     
     $cur_date = date_create("now"); // создаёт экземпляр даты
@@ -86,11 +84,13 @@ function get_interval ($date) {
             }
         }
         
-        return $time_count . " назад";
+        $time_count = $time_count . " назад";
         
     } elseif ($cur_date_string == $date_string) {
-        return "только что";
+        $time_count = "только что";
     } else { 
-        return $date_string . " - дата в будущем";
+        $time_count = $date_string . " - дата в будущем";
     }
+    
+    return $time_count;
 }
