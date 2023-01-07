@@ -14,7 +14,6 @@ mb_internal_encoding("UTF-8");
 function cut_text ($text, $max_len = 300) {
     
     $text_trimmed = trim($text);
-
     $text_num = mb_strlen($text_trimmed);
 
     if ($text_num > $max_len) {
@@ -55,38 +54,30 @@ function filter_xss (&$value) {
 
 function get_interval ($date) {
     
-    $cur_date = date_create("now"); // создаёт экземпляр даты на основе формата
-    
-    $date = date_create($date);
-    
-    $date_string = $date->format('Y.m.d H:i');
-    
-    $diff = date_diff($date, $cur_date);
-    
-    $days = $diff->days;
-    
-    $one = 1; // один
-    
+    $cur_date = date_create("now"); // создаёт экземпляр даты
+    $date = date_create($date); // создаёт экземпляр даты
+    $date_string = $date->format('Y.m.d H:i'); // возвращает дату в указанном формате string
+    $cur_date_string = $cur_date->format('Y.m.d H:i'); // возвращает дату в указанном формате string
+    $diff = date_diff($date, $cur_date); // возвращает разницу между датами
+    $days = $diff->days; // возвращает разницу между датами в днях
     $hours_in_day = 24; // часов в сутках
-    
     $days_in_week = 7; // дней в неделе
-    
     $days_in_5weeks = 35; // дней в 5 неделях
     
-    if ($cur_date == $date || $cur_date > $date) {
-        if ($days < $one) {
+    if ($cur_date_string > $date_string) {
+        if ($days < 1) {
             $hours = $diff->h; 
-            if ($one <= $hours && $hours < $hours_in_day) {
+            if ($hours < $hours_in_day and 1 <= $hours) {
                 $time_count = $hours . " час" . get_noun_plural_form($hours, '', 'а', 'ов');
             }
-            elseif ($hours < $one) {
+            elseif ($hours < 1) {
                 $minuts = $diff->i; 
                 $time_count = $minuts . " минут" . get_noun_plural_form($minuts, 'у', 'ы', '');
             }
-        } elseif ($one <= $days) {
+        } elseif (1 <= $days) {
             if ($days < $days_in_week) {
                 $time_count = $days . " " . get_noun_plural_form($days, 'день', 'дня', 'дней');
-            } elseif ($days_in_week <= $days && $days < $days_in_5weeks) {
+            } elseif ($days_in_week <= $days and $days < $days_in_5weeks) {
                 $weeks = floor($days / $days_in_week);
                 $time_count = $weeks . " недел" . get_noun_plural_form($weeks, 'ю', 'и', 'ь');
             } elseif ($days_in_5weeks <= $days) {
@@ -97,9 +88,9 @@ function get_interval ($date) {
         
         return $time_count . " назад";
         
-    } else {
-        return $date_string;
+    } elseif ($cur_date_string == $date_string) {
+        return "только что";
+    } else { 
+        return $date_string . " - дата в будущем";
     }
-    
-
 }
