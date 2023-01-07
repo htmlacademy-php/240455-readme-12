@@ -45,18 +45,21 @@ $posts = [
     ],
 ];
 
+// Генерация псевдодат
+
 foreach ($posts as $key => $post) {
-    $date = generate_random_date($key);
-    $posts[$key]['date'] = $date;
+    $posts[$key]['date'] = generate_random_date($key);
     
-    $date_title =  date("d.m.Y H:i", strtotime($date));
-    $posts[$key]['date_title'] = $date_title;
+    $posts[$key]['date_title'] = date("d.m.Y H:i", strtotime(generate_random_date($key)));
     
-    $date_interval =  get_interval($date);
-    $posts[$key]['date_interval'] = $date_interval;
+    $posts[$key]['date_interval'] = get_interval(generate_random_date($key));
 }
 
+// Очистка от XSS
+
 array_walk_recursive($posts, 'filter_xss');
+
+// Подготовка и вывод страницы
 
 $main_content = include_template('main.php', [
     'posts' => $posts,                                       
