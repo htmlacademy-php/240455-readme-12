@@ -1,7 +1,7 @@
 <?php
 
 require_once 'helpers.php';
-require 'functions.php';
+require_once 'functions.php';
 
 $is_auth = rand(0, 1);
 
@@ -45,19 +45,31 @@ $posts = [
     ],
 ];
 
+// Генерация псевдодат
+
+foreach ($posts as $key => $post) {
+    $posts[$key]['date'] = generate_random_date($key);
+    
+    $posts[$key]['date_title'] = date("d.m.Y H:i", strtotime(generate_random_date($key)));
+    
+    $posts[$key]['date_interval'] = get_interval(generate_random_date($key));
+}
+
+// Очистка от XSS
+
 array_walk_recursive($posts, 'filter_xss');
 
-$main_content = include_template('main.php', 
-                                    [
-                                        'posts' => $posts                                       
-                                    ]);
+// Подготовка и вывод страницы
 
-$layout_content = include_template('layout.php', 
-                                   [
-                                       'page_title' => 'популярное',
-                                       'is_auth' => $is_auth, 
-                                       'user_name' => $user_name,
-                                       'main_content' => $main_content
-                                   ]);
+$main_content = include_template('main.php', [
+    'posts' => $posts,                                       
+]);
+
+$layout_content = include_template('layout.php', [
+   'page_title' => 'популярное',
+   'is_auth' => $is_auth, 
+   'user_name' => $user_name,
+   'main_content' => $main_content,
+]);
 
 print($layout_content);

@@ -85,54 +85,61 @@
             </div>
         </div>
         <div class="popular__posts">
-    		<?php foreach ($posts as $post): ?>
-            <article class="popular__post post  <?= $post['type']; ?>">
+    		<?php foreach ($posts as $post): ?>         
+            <article class="popular__post post <?= $post['type']; ?>"> 
                 <header class="post__header">
                     <h2><?= $post['title']; ?></h2>
                 </header>
-                <div class="post__main">
-                    <?php if ($post['type'] === 'post-quote'): ?>
-                            <blockquote>
-                                <p><?= $post['content']; ?></p>
-                                <cite>Неизвестный Автор</cite>
-                             </blockquote>
-                    <?php
-                    elseif ($post['type'] === 'post-text'): ?>
-                             <p><?php echo cut_text($post['content']); ?></p> 
-                    <?php 
-                    elseif ($post['type'] === 'post-photo'): ?>
-                             <div class="post-photo__image-wrapper">
-                                <img src="img/<?= $post['content']; ?>" alt="Фото от пользователя" width="360" height="240">
-                            </div>
-                    <?php 
-                    elseif ($post['type'] === 'post-link'): ?>
-                             <div class="post-link__wrapper">
-                                <a class="post-link__external" href="http://<?= $post['content']; ?>" title="Перейти по ссылке">
-                                    <div class="post-link__info-wrapper">
-                                        <div class="post-link__icon-wrapper">
-                                            <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
-                                        </div>
-                                        <div class="post-link__info">
-                                            <h3><?= $post['title']; ?></h3>
-                                        </div>
-                                    </div>
-                                    <span><?= $post['content']; ?></span>
-                                </a>
-                            </div>
-                    <?php else: ?>
-                             <div class="post-video__block">
-                                <div class="post-video__preview">
-                                    <?= embed_youtube_cover($post['content']); ?>
-                                    <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
+                <div class="post__main">  
+    	    	<?php switch ($post['type']):
+                          case 'post-quote': ?>
+                    <blockquote>
+                    	<p><?= $post['content']; ?></p>
+                    	<cite>Неизвестный Автор</cite>
+                    </blockquote>
+          	    		<?php break;
+          	    	
+                          case 'post-text': ?>
+                  	<p><?php echo cut_text($post['content']); ?></p> 
+                    	<?php break;
+                    
+                          case 'post-photo': ?>
+                    <div class="post-photo__image-wrapper">
+                        <img src="img/<?= $post['content']; ?>" alt="Фото от пользователя" width="360" height="240">
+                    </div>
+                    	<?php break;
+                    
+                          case 'post-link': ?>
+                    <div class="post-link__wrapper">
+                    	<a class="post-link__external" href="http://<?= $post['content']; ?>" title="Перейти по ссылке">
+                        	<div class="post-link__info-wrapper">
+                            	<div class="post-link__icon-wrapper">
+                                	<img src="https://www.google.com/s2/favicons?domain=<?= $post['content']; ?>" alt="Иконка">
                                 </div>
-                                <a href="post-details.html" class="post-video__play-big button">
-                                    <svg class="post-video__play-big-icon" width="14" height="14">
-                                        <use xlink:href="#icon-video-play-big"></use>
-                                    </svg>
-                                    <span class="visually-hidden">Запустить проигрыватель</span>
-                                </a>
+                                <div class="post-link__info">
+                                	<h3><?= $post['title']; ?></h3>
+                                </div>
                             </div>
-                    <?php endif; ?>
+                            <span><?= $post['content']; ?></span>
+                        </a>
+                    </div>
+                    	<?php break; 
+                    
+                          case 'post-video': ?>
+                    <div class="post-video__block">
+                      <div class="post-video__preview">
+                          <?= embed_youtube_cover($post['content']); ?>
+                          <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
+                      </div>
+                      <a href="post-details.html" class="post-video__play-big button">
+                          <svg class="post-video__play-big-icon" width="14" height="14">
+                              <use xlink:href="#icon-video-play-big"></use>
+                          </svg>
+                          <span class="visually-hidden">Запустить проигрыватель</span>
+                      </a>
+                    </div>
+                		<?php break;
+                endswitch; ?>
                 </div>
                 <footer class="post__footer">
                     <div class="post__author">
@@ -143,7 +150,7 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?= $post['author']; ?></b>
-                                <time class="post__time" datetime="">дата</time>
+                                <time class="post__time" title="<?= $post['date_title']; ?>" datetime="<?= $post['date']; ?>"><?= $post['date_interval']; ?></time>
                             </div>
                         </a>
                     </div>
