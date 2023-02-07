@@ -7,9 +7,9 @@ USE readme;
 -- 5.0 Пользователь
 
 CREATE TABLE IF NOT EXISTS user (
-   id INT AUTO_INCREMENT PRIMARY KEY,
- 	dt_add DATETIME DEFAULT CURRENT_TIMESTAMP,
-   email VARCHAR(128) NOT NULL UNIQUE,
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	dt_add DATETIME DEFAULT CURRENT_TIMESTAMP,
+	email VARCHAR(128) NOT NULL UNIQUE,
 	login VARCHAR(50) NOT NULL,
 	password VARCHAR(255) NOT NULL,
 	avatar VARCHAR(255)
@@ -40,9 +40,9 @@ CREATE TABLE IF NOT EXISTS post (
 	user_id INT NOT NULL COMMENT 'Автор поста. Поле связи с user.id',
 	category_id INT NOT NULL COMMENT 'Контент/категория поста. Поле связи с category.id',
 	INDEX (user_id),
-   INDEX (category_id),
-   FOREIGN KEY (user_id) REFERENCES user (id),
-   FOREIGN KEY (category_id) REFERENCES category (id),
+	INDEX (category_id),
+	FOREIGN KEY (user_id) REFERENCES user (id),
+	FOREIGN KEY (category_id) REFERENCES category (id),
 	view_count INT
 ) COMMENT 'Посты';
 
@@ -55,9 +55,9 @@ CREATE TABLE IF NOT EXISTS comment (
 	user_id INT NOT NULL COMMENT 'Автор комментария. Поле связи с user.id',
 	post_id INT NOT NULL COMMENT 'id поста с этим комментарием. Поле связи с post.id',
 	INDEX (user_id),
-   INDEX (post_id),
-   FOREIGN KEY (user_id) REFERENCES user (id),
-   FOREIGN KEY (post_id) REFERENCES post (id)
+	INDEX (post_id),
+	FOREIGN KEY (user_id) REFERENCES user (id),
+	FOREIGN KEY (post_id) REFERENCES post (id)
 ) COMMENT 'Комментарии к постам';
 
 -- 5.3 Лайки
@@ -67,9 +67,9 @@ CREATE TABLE IF NOT EXISTS likeit (
 	user_id INT NOT NULL COMMENT 'Автор лайка. Поле связи с user.id',
 	post_id INT NOT NULL COMMENT 'id поста с этим лайком. Поле связи с post.id',
 	INDEX (user_id),
-   INDEX (post_id),
-   FOREIGN KEY (user_id) REFERENCES user (id),
-   FOREIGN KEY (post_id) REFERENCES post (id)
+	INDEX (post_id),
+	FOREIGN KEY (user_id) REFERENCES user (id),
+	FOREIGN KEY (post_id) REFERENCES post (id)
 ) COMMENT 'Лайки к постам';
 
 -- 5.4 Подписка
@@ -79,9 +79,9 @@ CREATE TABLE IF NOT EXISTS subscription (
 	follower_id INT NOT NULL COMMENT 'Автор подписки. Поле связи с user.id',
 	user_id INT NOT NULL COMMENT 'Пользователь, на которого подписались. Поле связи с user.id',
 	INDEX (follower_id),
-   INDEX (user_id),
-   FOREIGN KEY (follower_id) REFERENCES user (id),
-   FOREIGN KEY (user_id) REFERENCES user (id)
+	INDEX (user_id),
+	FOREIGN KEY (follower_id) REFERENCES user (id),
+	FOREIGN KEY (user_id) REFERENCES user (id)
 ) COMMENT 'Подписка';
 
 -- 5.5 Сообщение
@@ -93,9 +93,9 @@ CREATE TABLE IF NOT EXISTS message (
 	recipient_id INT NOT NULL COMMENT 'Получатель сообщения. Поле связи с user.id',
 	sender_id INT NOT NULL COMMENT 'Отправитель сообщения. Поле связи с user.id',
 	INDEX (recipient_id),
-   INDEX (sender_id),
-   FOREIGN KEY (recipient_id) REFERENCES user (id),
-   FOREIGN KEY (sender_id) REFERENCES user (id)
+	INDEX (sender_id),
+	FOREIGN KEY (recipient_id) REFERENCES user (id),
+	FOREIGN KEY (sender_id) REFERENCES user (id)
 ) COMMENT 'Сообщения из внутренней переписки пользователей';
 
 -- 5.6 Хештег
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS post_hashtag_rel (
 	post_id INT NOT NULL COMMENT 'id поста с этим хештегом. Поле связи с post.id',
 	hashtag_id INT NOT NULL COMMENT 'Хештег. Поле связи с hashtag.id',
 	INDEX (post_id),
-   INDEX (hashtag_id),
-   FOREIGN KEY (post_id) REFERENCES post (id),
-   FOREIGN KEY (hashtag_id) REFERENCES hashtag (id)
+	INDEX (hashtag_id),
+	FOREIGN KEY (post_id) REFERENCES post (id),
+	FOREIGN KEY (hashtag_id) REFERENCES hashtag (id)
 ) COMMENT 'Таблица связей между постами и хештегами';
