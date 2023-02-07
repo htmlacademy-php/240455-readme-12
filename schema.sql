@@ -4,147 +4,113 @@ CREATE DATABASE IF NOT EXISTS readme
 	
 USE readme;
 
-CREATE TABLE IF NOT EXISTS users (
-    id_user INT AUTO_INCREMENT PRIMARY KEY,
- 	dt_add DATETIME,
-    	email VARCHAR(128) NOT NULL UNIQUE,
-	login VARCHAR(128) NOT NULL UNIQUE,
-	password VARCHAR(128) NOT NULL,
-	avatar TEXT
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
+-- 5.0 Пользователь
 
-ALTER TABLE `users` ADD INDEX ( `id_user` );
+CREATE TABLE IF NOT EXISTS user (
+   id INT AUTO_INCREMENT PRIMARY KEY,
+ 	dt_add DATETIME DEFAULT CURRENT_TIMESTAMP,
+   email VARCHAR(128) NOT NULL UNIQUE,
+	login VARCHAR(50) NOT NULL,
+	password VARCHAR(255) NOT NULL,
+	avatar VARCHAR(255)
+) COMMENT 'Зарегистрированные пользователи';
 
-CREATE TABLE IF NOT EXISTS posts (
-	id_post INT AUTO_INCREMENT PRIMARY KEY,
-	dt_add DATETIME,
-	title VARCHAR(128),
-	content TEXT,
-	author VARCHAR(128),
-	img VARCHAR(128),
-	video VARCHAR(128),
-	link VARCHAR(128),
-	views INT
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
+-- 5.7 Тип контента
 
-ALTER TABLE `posts` ADD INDEX ( `id_post` );
+CREATE TABLE IF NOT EXISTS category (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	category_name VARCHAR(128) COMMENT 'название',
+	category_class_name VARCHAR(128) COMMENT 'имя класса для иконки'
+) COMMENT 'Тип контента';
 
-CREATE TABLE IF NOT EXISTS post_user_rel (
-	id_post_user INT AUTO_INCREMENT PRIMARY KEY,
-	id_post INT NOT NULL,
-	id_user INT NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `post_user_rel` ADD INDEX ( `id_post` );
-ALTER TABLE `post_user_rel` ADD INDEX ( `id_user` );
-
-CREATE TABLE IF NOT EXISTS post_category_rel (
-	id_post_category INT AUTO_INCREMENT PRIMARY KEY,
-	id_post INT NOT NULL,
-	id_category INT NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `post_category_rel` ADD INDEX ( `id_post` );
-ALTER TABLE `post_category_rel` ADD INDEX ( `id_category` );
-
-CREATE TABLE IF NOT EXISTS post_hashtag_rel (
-	id_post_hashtags INT AUTO_INCREMENT PRIMARY KEY,
-	id_post INT NOT NULL,
-	id_hashtag INT NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `post_hashtag_rel` ADD INDEX ( `id_post` );
-ALTER TABLE `post_hashtag_rel` ADD INDEX ( `id_hashtag` );
-
-CREATE TABLE IF NOT EXISTS comments (
-	id_comment INT  AUTO_INCREMENT PRIMARY KEY,
-	dt_add DATETIME,
-	content TEXT NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `comments` ADD INDEX ( `id_comment` );
-
-CREATE TABLE IF NOT EXISTS comment_user_rel (
-	id_comment_user INT AUTO_INCREMENT PRIMARY KEY,
-	id_comment INT,
-	id_user INT
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `comment_user_rel` ADD INDEX ( `id_comment` );
-ALTER TABLE `comment_user_rel` ADD INDEX ( `id_user` );
-
-CREATE TABLE IF NOT EXISTS comment_post_rel (
-	id_comment_post INT AUTO_INCREMENT PRIMARY KEY,
-	id_comment INT NOT NULL,
-	id_post INT NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `comment_post_rel` ADD INDEX ( `id_comment` );
-ALTER TABLE `comment_post_rel` ADD INDEX ( `id_post` );
-
-CREATE TABLE IF NOT EXISTS likes (
-	id_like INT AUTO_INCREMENT PRIMARY KEY,
-	id_post INT NOT NULL,
-	id_user INT NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `likes` ADD INDEX ( `id_user` );
-ALTER TABLE `likes` ADD INDEX ( `id_post` );
-
-CREATE TABLE IF NOT EXISTS subscriptions_author (
-	id_subscription_author INT AUTO_INCREMENT PRIMARY KEY,
-	id_user INT NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `subscriptions_author` ADD INDEX ( `id_user` );
-
-CREATE TABLE IF NOT EXISTS subscriptions_follower (
-	id_subscription_follower INT AUTO_INCREMENT PRIMARY KEY,
-	id_user INT
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `subscriptions_follower` ADD INDEX ( `id_user` );
-
-CREATE TABLE IF NOT EXISTS messages (
-	id_message INT AUTO_INCREMENT PRIMARY KEY,
-	dt_add DATETIME,
-	content TEXT NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `messages` ADD INDEX ( `id_message` );
-
-CREATE TABLE IF NOT EXISTS message_recipient_rel (
-	id_message_recipient INT AUTO_INCREMENT PRIMARY KEY,
-	id_message INT,
-	id_user INT
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `message_recipient_rel` ADD INDEX ( `id_message` );
-ALTER TABLE `message_recipient_rel` ADD INDEX ( `id_user` );
-
-CREATE TABLE IF NOT EXISTS  message_sender_rel (
-	id_message_sender INT AUTO_INCREMENT PRIMARY KEY,
-	id_message INT NOT NULL,
-	id_user INT NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `message_sender_rel` ADD INDEX ( `id_message` );
-ALTER TABLE `message_sender_rel` ADD INDEX ( `id_user` );
-
-CREATE TABLE IF NOT EXISTS categories (
-	id_category INT AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(128),
-	class_name VARCHAR(128)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
-
-ALTER TABLE `categories` ADD INDEX ( `id_category` );
-
-INSERT INTO `categories` (`id_category`, `name`, `class_name`)
+INSERT INTO `category` (`id`, `category_name`, `category_class_name`)
 VALUES (NULL, 'Текст', 'text'),  (NULL, 'Цитата', 'quote'), (NULL, 'Картинка', 'photo'), (NULL, 'Видео', 'video'), (NULL, 'Ссылка', 'link');
 
-CREATE TABLE IF NOT EXISTS hashtags (
-	id_hashtag INT AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(128) NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
+-- 5.1 Пост
 
-ALTER TABLE `hashtags` ADD INDEX ( `id_hashtag` );
+CREATE TABLE IF NOT EXISTS post (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	dt_add DATETIME DEFAULT CURRENT_TIMESTAMP,
+	p_title VARCHAR(255),
+	p_content TEXT,
+	author VARCHAR(128) COMMENT 'Автор цитаты: задаётся пользователем',
+	p_img VARCHAR(255) COMMENT 'Изображение: ссылка на сохранённый файл изображения',
+	p_video VARCHAR(255) COMMENT 'Видео: ссылка на видео с youtube',
+	p_link VARCHAR(255) COMMENT 'Ссылка: ссылка на сайт, задаётся пользователем;',
+	user_id INT NOT NULL COMMENT 'Автор поста. Поле связи с user.id',
+	category_id INT NOT NULL COMMENT 'Контент/категория поста. Поле связи с category.id',
+	INDEX (user_id),
+   INDEX (category_id),
+   FOREIGN KEY (user_id) REFERENCES user (id),
+   FOREIGN KEY (category_id) REFERENCES category (id),
+	view_count INT
+) COMMENT 'Посты';
+
+-- 5.2 Комментарий
+
+CREATE TABLE IF NOT EXISTS comment (
+	id INT  AUTO_INCREMENT PRIMARY KEY,
+	dt_add DATETIME DEFAULT CURRENT_TIMESTAMP,
+	c_content TEXT NOT NULL,
+	user_id INT NOT NULL COMMENT 'Автор комментария. Поле связи с user.id',
+	post_id INT NOT NULL COMMENT 'id поста с этим комментарием. Поле связи с post.id',
+	INDEX (user_id),
+   INDEX (post_id),
+   FOREIGN KEY (user_id) REFERENCES user (id),
+   FOREIGN KEY (post_id) REFERENCES post (id)
+) COMMENT 'Комментарии к постам';
+
+-- 5.3 Лайки
+
+CREATE TABLE IF NOT EXISTS likeit (
+	id INT  AUTO_INCREMENT PRIMARY KEY,
+	user_id INT NOT NULL COMMENT 'Автор лайка. Поле связи с user.id',
+	post_id INT NOT NULL COMMENT 'id поста с этим лайком. Поле связи с post.id',
+	INDEX (user_id),
+   INDEX (post_id),
+   FOREIGN KEY (user_id) REFERENCES user (id),
+   FOREIGN KEY (post_id) REFERENCES post (id)
+) COMMENT 'Лайки к постам';
+
+-- 5.4 Подписка
+
+CREATE TABLE IF NOT EXISTS subscription (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	follower_id INT NOT NULL COMMENT 'Автор подписки. Поле связи с user.id',
+	user_id INT NOT NULL COMMENT 'Пользователь, на которого подписались. Поле связи с user.id',
+	INDEX (follower_id),
+   INDEX (user_id),
+   FOREIGN KEY (follower_id) REFERENCES user (id),
+   FOREIGN KEY (user_id) REFERENCES user (id)
+) COMMENT 'Подписка';
+
+-- 5.5 Сообщение
+
+CREATE TABLE IF NOT EXISTS message (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	dt_add DATETIME DEFAULT CURRENT_TIMESTAMP,
+	m_content TEXT NOT NULL,
+	recipient_id INT NOT NULL COMMENT 'Получатель сообщения. Поле связи с user.id',
+	sender_id INT NOT NULL COMMENT 'Отправитель сообщения. Поле связи с user.id',
+	INDEX (recipient_id),
+   INDEX (sender_id),
+   FOREIGN KEY (recipient_id) REFERENCES user (id),
+   FOREIGN KEY (sender_id) REFERENCES user (id)
+) COMMENT 'Сообщения из внутренней переписки пользователей';
+
+-- 5.6 Хештег
+
+CREATE TABLE IF NOT EXISTS hashtag (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	h_name VARCHAR(128) NOT NULL
+) COMMENT 'Хештеги';
+
+CREATE TABLE IF NOT EXISTS post_hashtag_rel (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	post_id INT NOT NULL COMMENT 'id поста с этим хештегом. Поле связи с post.id',
+	hashtag_id INT NOT NULL COMMENT 'Хештег. Поле связи с hashtag.id',
+	INDEX (post_id),
+   INDEX (hashtag_id),
+   FOREIGN KEY (post_id) REFERENCES post (id),
+   FOREIGN KEY (hashtag_id) REFERENCES hashtag (id)
+) COMMENT 'Таблица связей между постами и хештегами';

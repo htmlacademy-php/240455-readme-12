@@ -65,7 +65,7 @@ function get_interval ($date) {
     if ($cur_date_string > $date_string) {
         if ($days < 1) {
             $hours = $diff->h; 
-            if ($hours < $hours_in_day and 1 <= $hours) {
+            if (1 <= $hours and $hours < $hours_in_day) {
                 $time_count = $hours . " час" . get_noun_plural_form($hours, '', 'а', 'ов');
             }
             elseif ($hours < 1) {
