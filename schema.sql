@@ -19,19 +19,16 @@ CREATE TABLE IF NOT EXISTS user (
 
 CREATE TABLE IF NOT EXISTS category (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-	category_name VARCHAR(128) COMMENT 'название',
-	category_class_name VARCHAR(128) COMMENT 'имя класса для иконки'
+	category VARCHAR(20) COMMENT 'Наименование типа контента',
+	category_name VARCHAR(20) COMMENT 'Имя класса'
 ) COMMENT 'Тип контента';
-
-INSERT INTO `category` (`id`, `category_name`, `category_class_name`)
-VALUES (NULL, 'Текст', 'text'),  (NULL, 'Цитата', 'quote'), (NULL, 'Картинка', 'photo'), (NULL, 'Видео', 'video'), (NULL, 'Ссылка', 'link');
 
 -- 5.1 Пост
 
 CREATE TABLE IF NOT EXISTS post (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	dt_add DATETIME DEFAULT CURRENT_TIMESTAMP,
-	p_title VARCHAR(255),
+	p_title VARCHAR(255) NOT NULL,
 	p_content TEXT,
 	author VARCHAR(128) COMMENT 'Автор цитаты: задаётся пользователем',
 	p_img VARCHAR(255) COMMENT 'Изображение: ссылка на сохранённый файл изображения',
@@ -39,11 +36,11 @@ CREATE TABLE IF NOT EXISTS post (
 	p_link VARCHAR(255) COMMENT 'Ссылка: ссылка на сайт, задаётся пользователем;',
 	user_id INT NOT NULL COMMENT 'Автор поста. Поле связи с user.id',
 	category_id INT NOT NULL COMMENT 'Контент/категория поста. Поле связи с category.id',
+	view_count INT UNSIGNED DEFAULT 0,
 	INDEX (user_id),
 	INDEX (category_id),
 	FOREIGN KEY (user_id) REFERENCES user (id),
-	FOREIGN KEY (category_id) REFERENCES category (id),
-	view_count INT
+	FOREIGN KEY (category_id) REFERENCES category (id)
 ) COMMENT 'Посты';
 
 -- 5.2 Комментарий
@@ -66,8 +63,7 @@ CREATE TABLE IF NOT EXISTS likeit (
 	id INT  AUTO_INCREMENT PRIMARY KEY,
 	user_id INT NOT NULL COMMENT 'Автор лайка. Поле связи с user.id',
 	post_id INT NOT NULL COMMENT 'id поста с этим лайком. Поле связи с post.id',
-	INDEX (user_id),
-	INDEX (post_id),
+	UNIQUE INDEX (user_id, post_id),
 	FOREIGN KEY (user_id) REFERENCES user (id),
 	FOREIGN KEY (post_id) REFERENCES post (id)
 ) COMMENT 'Лайки к постам';
@@ -76,12 +72,11 @@ CREATE TABLE IF NOT EXISTS likeit (
 
 CREATE TABLE IF NOT EXISTS subscription (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-	follower_id INT NOT NULL COMMENT 'Автор подписки. Поле связи с user.id',
-	user_id INT NOT NULL COMMENT 'Пользователь, на которого подписались. Поле связи с user.id',
-	INDEX (follower_id),
-	INDEX (user_id),
-	FOREIGN KEY (follower_id) REFERENCES user (id),
-	FOREIGN KEY (user_id) REFERENCES user (id)
+	user_id INT NOT NULL COMMENT 'Автор подписки. Поле связи с user.id',
+	target_id INT NOT NULL COMMENT 'Пользователь, на которого подписались. Поле связи с user.id',
+	UNIQUE INDEX (user_id, target_id),
+	FOREIGN KEY (user_id) REFERENCES user (id),
+	FOREIGN KEY (target_id) REFERENCES user (id)
 ) COMMENT 'Подписка';
 
 -- 5.5 Сообщение
@@ -102,15 +97,14 @@ CREATE TABLE IF NOT EXISTS message (
 
 CREATE TABLE IF NOT EXISTS hashtag (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-	h_name VARCHAR(128) NOT NULL
+	h_name VARCHAR(128) NOT NULL UNIQUE
 ) COMMENT 'Хештеги';
 
 CREATE TABLE IF NOT EXISTS post_hashtag_rel (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	post_id INT NOT NULL COMMENT 'id поста с этим хештегом. Поле связи с post.id',
 	hashtag_id INT NOT NULL COMMENT 'Хештег. Поле связи с hashtag.id',
-	INDEX (post_id),
-	INDEX (hashtag_id),
+	UNIQUE INDEX (post_id, hashtag_id),
 	FOREIGN KEY (post_id) REFERENCES post (id),
 	FOREIGN KEY (hashtag_id) REFERENCES hashtag (id)
 ) COMMENT 'Таблица связей между постами и хештегами';
