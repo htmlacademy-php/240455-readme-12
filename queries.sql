@@ -5,11 +5,11 @@ USE readme;
 INSERT INTO `category`
     (`category`, `category_name`)
 VALUES 
-    ('Текст', 'text'),
-    ('Цитата', 'quote'), 
-    ('Картинка', 'photo'),
-    ('Видео', 'video'),
-    ('Ссылка', 'link');
+    ('text', 'Текст'),
+    ('quote', 'Цитата'), 
+    ('photo', 'Картинка'),
+    ('video', 'Видео'),
+    ('link', 'Ссылка');
     
  -- Добавление пользователей
 
@@ -57,20 +57,30 @@ VALUES
     
 -- Получить список постов с сортировкой по популярности (просмотры view_count) и вместе с именами авторов и типом контента
 
-SELECT p.id, p.dt_add, p.p_title, p.p_content, p.author, p.p_img, p.p_video, p.p_link, p.user_id, p.category_id, p.view_count, u.login, c.category 
-FROM post p
-LEFT JOIN user u ON p.user_id = u.id	
-LEFT JOIN category c ON p.category_id = c.id	
+SELECT 
+    p.*, 
+    u.login, 
+    c.category 
+FROM post AS p
+    INNER JOIN user AS u 
+        ON p.user_id = u.id	
+    INNER JOIN category AS c 
+        ON p.category_id = c.id	
 ORDER BY view_count DESC;
 
 -- Получить список постов для конкретного пользователя
 
-SELECT * FROM post p WHERE user_id = 3;
+SELECT * FROM post WHERE user_id = 3;
 
 -- Получить список комментариев для одного поста, в комментариях должен быть логин пользователя
 
-SELECT c.id, c.dt_add, c.c_content, c.user_id, c.post_id, p.user_id, p.id, u.login
-FROM  comment c
-JOIN post p ON c.post_id = p.id
-JOIN user u ON u.id = p.user_id 
+SELECT 
+	 c.id, c.dt_add, c.c_content, c.user_id, c.post_id, 
+	 p.user_id, p.id, 
+	 u.login
+FROM comment AS c
+	 INNER JOIN post AS p 
+	 	  ON c.post_id = p.id
+	 INNER JOIN user AS u 
+	 	  ON u.id = p.user_id 
 WHERE p.id = 2;
