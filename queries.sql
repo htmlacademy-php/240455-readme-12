@@ -75,12 +75,15 @@ SELECT * FROM post WHERE user_id = 3;
 -- Получить список комментариев для одного поста, в комментариях должен быть логин пользователя
 
 SELECT 
-	 c.id, c.dt_add, c.c_content, c.user_id, c.post_id, 
-	 p.user_id, p.id, 
+	 c.id, 
+	 c.dt_add, 
+	 c.c_content, 
+	 c.user_id, 
+	 c.post_id,  
 	 u.login
 FROM comment AS c
 	 INNER JOIN post AS p 
-	 	  ON c.post_id = p.id
+	 	  ON c.post_id = p.id 
 	 INNER JOIN user AS u 
 	 	  ON u.id = p.user_id 
 WHERE p.id = 2;
