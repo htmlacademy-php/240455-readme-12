@@ -43,10 +43,10 @@
                     </li>
                     <?php foreach ($categories as $cat): ?>
                     <li class="popular__filters-item filters__item">
-                     	<a class="filters__button filters__button--<?=$cat['category']; ?> button" href="">
-                     		<span class="visually-hidden"><?=$cat['category_name']; ?></span>
+                     	<a class="filters__button filters__button--<?= $cat['category']; ?> button" href="">
+                     		<span class="visually-hidden"><?= $cat['category_name']; ?></span>
                      		<svg class="filters__icon" width="22" height="18">
-                                <use xlink:href="#icon-filter-<?=$cat['category']; ?>"></use>
+                                <use xlink:href="#icon-filter-<?= $cat['category']; ?>"></use>
                             </svg>
                      	</a>
                      </li>
@@ -62,23 +62,39 @@
                 </header>
                 <div class="post__main">  
     	    	<?php switch ("post-".$post['category']):
+    	    	
+                        case 'post-photo': ?>
+                    <div class="post-photo__image-wrapper">
+                        <img src="img/<?= $post['p_content']; ?>" alt="Фото от пользователя" width="360" height="240">
+                    </div>
+                    	<?php break;
+                                       	
+                        case 'post-video': ?>
+                    <div class="post-video__block">
+                      <div class="post-video__preview">
+                          <?= embed_youtube_cover($post['p_content']); ?>
+                          <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
+                      </div>
+                      <a href="post-details.html" class="post-video__play-big button">
+                          <svg class="post-video__play-big-icon" width="14" height="14">
+                              <use xlink:href="#icon-video-play-big"></use>
+                          </svg>
+                          <span class="visually-hidden">Запустить проигрыватель</span>
+                      </a>
+                    </div>
+                		<?php break;
+                		
+                        case 'post-text': ?>
+                  	<p><?php echo cut_text($post['p_content']); ?></p> 
+                    	<?php break;
+                    	
                           case 'post-quote': ?>
                     <blockquote>
                     	<p><?= $post['p_content']; ?></p>
                     	<cite>Неизвестный Автор</cite>
                     </blockquote>
           	    		<?php break;
-          	    	
-                          case 'post-text': ?>
-                  	<p><?php echo cut_text($post['p_content']); ?></p> 
-                    	<?php break;
-                    
-                          case 'post-photo': ?>
-                    <div class="post-photo__image-wrapper">
-                        <img src="img/<?= $post['p_content']; ?>" alt="Фото от пользователя" width="360" height="240">
-                    </div>
-                    	<?php break;
-                    
+          	    		
                           case 'post-link': ?>
                     <div class="post-link__wrapper">
                     	<a class="post-link__external" href="http://<?= $post['p_content']; ?>" title="Перейти по ссылке">
@@ -94,21 +110,6 @@
                         </a>
                     </div>
                     	<?php break; 
-                    
-                          case 'post-video': ?>
-                    <div class="post-video__block">
-                      <div class="post-video__preview">
-                          <?= embed_youtube_cover($post['p_content']); ?>
-                          <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
-                      </div>
-                      <a href="post-details.html" class="post-video__play-big button">
-                          <svg class="post-video__play-big-icon" width="14" height="14">
-                              <use xlink:href="#icon-video-play-big"></use>
-                          </svg>
-                          <span class="visually-hidden">Запустить проигрыватель</span>
-                      </a>
-                    </div>
-                		<?php break;
                 endswitch; ?>
                 </div>
                 <footer class="post__footer">

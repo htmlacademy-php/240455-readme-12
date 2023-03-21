@@ -1,21 +1,31 @@
 <?php
-require_once 'init.php';
 
-if (!$link) {
-    $error = mysqli_connect_error();
-    $content = include_template('error.php', ['error' => $error]);
-} else {
-    $sql = 'SELECT * FROM category';
-    $result = mysqli_query($link, $sql);
+require_once 'helpers.php';
+require_once 'functions.php';
+require_once 'db.php';
+
+// Подключение к базе
+
+$link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
+
+if ($link == false) {
+    print("Ошибка подключения: " . mysqli_connect_error());
+}
+else {
+    mysqli_set_charset($link, "utf8");
+    
+    // выполнение запросов
+    
+    $query = 'SELECT * FROM category';
+    $result = mysqli_query($link, $query);
     
     if ($result) {
         $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
         $error = mysqli_error($link);
-        $content = include_template('error.php', ['error' => $error]);
     }
     
-    $sql_post = 'SELECT 
+    $query = 'SELECT 
                     p.*, 
                     u.login, 
                     u.avatar,
@@ -26,16 +36,14 @@ if (!$link) {
                     INNER JOIN category AS c 
                         ON p.category_id = c.id	
                 ORDER BY view_count DESC';
-    $result_post = mysqli_query($link, $sql_post);
-
-    if ($result_post) {
-        $posts = mysqli_fetch_all($result_post, MYSQLI_ASSOC);
+    $result = mysqli_query($link, $query);
+    
+    if ($result) {
+        $posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
         $error = mysqli_error($link);
-        $content = include_template('error.php', ['error' => $error]);
     }
 }
-
 // Генерация дат
 
 foreach ($posts as $key => $post) {
@@ -55,8 +63,8 @@ array_walk_recursive($posts, 'filter_xss');
 // Подготовка и вывод страницы
 
 $main_content = include_template('main.php', [
+    'categories' => $categories,
     'posts' => $posts,      
-    'categories' => $categories, 
 ]);
 
 $layout_content = include_template('layout.php', [
