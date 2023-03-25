@@ -17,14 +17,9 @@ else {
     // выполнение запросов
     
     $query = 'SELECT * FROM category';
-    $result = mysqli_query($link, $query);
     
-    if ($result) {
-        $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    } else {
-        $error = mysqli_error($link);
-    }
-    
+    $categories = create_result($link, $query);
+
     $query = 'SELECT 
                     p.*, 
                     u.login, 
@@ -36,14 +31,10 @@ else {
                     INNER JOIN category AS c 
                         ON p.category_id = c.id	
                 ORDER BY view_count DESC';
-    $result = mysqli_query($link, $query);
     
-    if ($result) {
-        $posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    } else {
-        $error = mysqli_error($link);
-    }
+    $posts = create_result($link, $query);
 }
+
 // Генерация дат
 
 foreach ($posts as $key => $post) {
