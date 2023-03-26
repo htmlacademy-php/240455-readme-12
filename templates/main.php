@@ -41,94 +41,38 @@
                             <span>Все</span>
                         </a>
                     </li>
+                    <?php foreach ($categories as $cat): ?>
                     <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--photo button" href="#">
-                            <span class="visually-hidden">Фото</span>
-                            <svg class="filters__icon" width="22" height="18">
-                                <use xlink:href="#icon-filter-photo"></use>
+                     	<a class="filters__button filters__button--<?= $cat['category']; ?> button" href="">
+                     		<span class="visually-hidden"><?= $cat['category_name']; ?></span>
+                     		<svg class="filters__icon" width="22" height="18">
+                                <use xlink:href="#icon-filter-<?= $cat['category']; ?>"></use>
                             </svg>
-                        </a>
-                    </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--video button" href="#">
-                            <span class="visually-hidden">Видео</span>
-                            <svg class="filters__icon" width="24" height="16">
-                                <use xlink:href="#icon-filter-video"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--text button" href="#">
-                            <span class="visually-hidden">Текст</span>
-                            <svg class="filters__icon" width="20" height="21">
-                                <use xlink:href="#icon-filter-text"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--quote button" href="#">
-                            <span class="visually-hidden">Цитата</span>
-                            <svg class="filters__icon" width="21" height="20">
-                                <use xlink:href="#icon-filter-quote"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--link button" href="#">
-                            <span class="visually-hidden">Ссылка</span>
-                            <svg class="filters__icon" width="21" height="18">
-                                <use xlink:href="#icon-filter-link"></use>
-                            </svg>
-                        </a>
-                    </li>
+                     	</a>
+                     </li>
+                    <?php endforeach; ?>
                 </ul>
             </div>
         </div>
         <div class="popular__posts">
     		<?php foreach ($posts as $post): ?>         
-            <article class="popular__post post <?= $post['type']; ?>"> 
+            <article class="popular__post post post-<?= $post['category']; ?>"> 
                 <header class="post__header">
-                    <h2><?= $post['title']; ?></h2>
+                    <h2><?= $post['p_title']; ?></h2>
                 </header>
                 <div class="post__main">  
-    	    	<?php switch ($post['type']):
-                          case 'post-quote': ?>
-                    <blockquote>
-                    	<p><?= $post['content']; ?></p>
-                    	<cite>Неизвестный Автор</cite>
-                    </blockquote>
-          	    		<?php break;
-          	    	
-                          case 'post-text': ?>
-                  	<p><?php echo cut_text($post['content']); ?></p> 
-                    	<?php break;
-                    
-                          case 'post-photo': ?>
+    	    	<?php switch ("post-".$post['category']):
+    	    	
+                        case 'post-photo': ?>
                     <div class="post-photo__image-wrapper">
-                        <img src="img/<?= $post['content']; ?>" alt="Фото от пользователя" width="360" height="240">
+                        <img src="img/<?= $post['p_content']; ?>" alt="Фото от пользователя" width="360" height="240">
                     </div>
                     	<?php break;
-                    
-                          case 'post-link': ?>
-                    <div class="post-link__wrapper">
-                    	<a class="post-link__external" href="http://<?= $post['content']; ?>" title="Перейти по ссылке">
-                        	<div class="post-link__info-wrapper">
-                            	<div class="post-link__icon-wrapper">
-                                	<img src="https://www.google.com/s2/favicons?domain=<?= $post['content']; ?>" alt="Иконка">
-                                </div>
-                                <div class="post-link__info">
-                                	<h3><?= $post['title']; ?></h3>
-                                </div>
-                            </div>
-                            <span><?= $post['content']; ?></span>
-                        </a>
-                    </div>
-                    	<?php break; 
-                    
-                          case 'post-video': ?>
+                                       	
+                        case 'post-video': ?>
                     <div class="post-video__block">
                       <div class="post-video__preview">
-                          <?= embed_youtube_cover($post['content']); ?>
+                          <?= embed_youtube_cover($post['p_content']); ?>
                           <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
                       </div>
                       <a href="post-details.html" class="post-video__play-big button">
@@ -139,6 +83,33 @@
                       </a>
                     </div>
                 		<?php break;
+                		
+                        case 'post-text': ?>
+                  	<p><?php echo cut_text($post['p_content']); ?></p> 
+                    	<?php break;
+                    	
+                          case 'post-quote': ?>
+                    <blockquote>
+                    	<p><?= $post['p_content']; ?></p>
+                    	<cite>Неизвестный Автор</cite>
+                    </blockquote>
+          	    		<?php break;
+          	    		
+                          case 'post-link': ?>
+                    <div class="post-link__wrapper">
+                    	<a class="post-link__external" href="http://<?= $post['p_content']; ?>" title="Перейти по ссылке">
+                        	<div class="post-link__info-wrapper">
+                            	<div class="post-link__icon-wrapper">
+                                	<img src="https://www.google.com/s2/favicons?domain=<?= $post['p_content']; ?>" alt="Иконка">
+                                </div>
+                                <div class="post-link__info">
+                                	<h3><?= $post['p_title']; ?></h3>
+                                </div>
+                            </div>
+                            <span><?= $post['p_content']; ?></span>
+                        </a>
+                    </div>
+                    	<?php break; 
                 endswitch; ?>
                 </div>
                 <footer class="post__footer">
@@ -150,7 +121,7 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?= $post['author']; ?></b>
-                                <time class="post__time" title="<?= $post['date_title']; ?>" datetime="<?= $post['date']; ?>"><?= $post['date_interval']; ?></time>
+                                <time class="post__time" title="<?= $post['date_title']; ?>" datetime="<?= $post['dt_add']; ?>"><?= $post['date_interval']; ?></time>
                             </div>
                         </a>
                     </div>

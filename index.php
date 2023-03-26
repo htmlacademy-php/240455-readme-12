@@ -2,58 +2,50 @@
 
 require_once 'helpers.php';
 require_once 'functions.php';
+require_once 'db.php';
+
+// Подключение к базе
+
+$link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
+
+if ($link == false) {
+    print("Ошибка подключения: " . mysqli_connect_error());
+}
+else {
+    mysqli_set_charset($link, "utf8");
+    
+    // выполнение запросов
+    
+    $query = 'SELECT * FROM category';
+    
+    $categories = create_result($link, $query);
+
+    $query = 'SELECT 
+                    p.*, 
+                    u.login, 
+                    u.avatar,
+                    c.category 
+                FROM post AS p
+                    INNER JOIN user AS u 
+                        ON p.user_id = u.id	
+                    INNER JOIN category AS c 
+                        ON p.category_id = c.id	
+                ORDER BY view_count DESC';
+    
+    $posts = create_result($link, $query);
+}
+
+// Генерация дат
+
+foreach ($posts as $key => $post) {
+    $posts[$key]['date_title'] = date("d.m.Y H:i", strtotime($post['dt_add']));
+
+    $posts[$key]['date_interval'] = get_interval($post['dt_add']);
+}
 
 $is_auth = rand(0, 1);
 
 $user_name = 'Никитина Виктория';
-
-$posts = [
-    [
-        'title' => 'Цитата',
-        'type' => 'post-quote',
-        'content' => 'Мы в жизни любим только раз, а после ищем лишь похожих',
-        'author' => 'Лариса',
-        'avatar' => 'userpic-larisa-small.jpg',
-    ],
-    [
-        'title' => 'Игра престолов',
-        'type' => 'post-text',
-        'content' => 'Не могу дождаться начала финального сезона своего любимого сериала!',
-        'author' => 'Владик',
-        'avatar' => 'userpic.jpg',
-    ],
-    [
-        'title' => 'Наконец, обработал фотки!',
-        'type' => 'post-photo',
-        'content' => 'rock-medium.jpg',
-        'author' => 'Виктор',
-        'avatar' => 'userpic-mark.jpg',
-    ],
-    [
-        'title' => 'Моя мечта',
-        'type' => 'post-photo',
-        'content' => 'coast-medium.jpg',
-        'author' => 'Лариса',
-        'avatar' => 'userpic-larisa-small.jpg',
-    ],
-    [
-        'title' => 'Лучшие курсы',
-        'type' => 'post-link',
-        'content' => 'www.htmlacademy.ru',
-        'author' => 'Владик',
-        'avatar' => 'userpic.jpg',
-    ],
-];
-
-// Генерация псевдодат
-
-foreach ($posts as $key => $post) {
-    $posts[$key]['date'] = generate_random_date($key);
-    
-    $posts[$key]['date_title'] = date("d.m.Y H:i", strtotime(generate_random_date($key)));
-    
-    $posts[$key]['date_interval'] = get_interval(generate_random_date($key));
-}
 
 // Очистка от XSS
 
@@ -62,7 +54,8 @@ array_walk_recursive($posts, 'filter_xss');
 // Подготовка и вывод страницы
 
 $main_content = include_template('main.php', [
-    'posts' => $posts,                                       
+    'categories' => $categories,
+    'posts' => $posts,      
 ]);
 
 $layout_content = include_template('layout.php', [

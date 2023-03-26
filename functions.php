@@ -94,3 +94,23 @@ function get_interval ($date) {
     
     return $time_count;
 }
+
+/**
+ * Принимает соединение и запрос и выдает результат/массив
+ *
+ * @param mysqli $link Соединение
+ * @param string $query Запрос
+ * @return array
+ */
+function create_result ($link, $query) {
+    
+    $result = mysqli_query($link, $query);
+    
+    if ($result) {
+        $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    } else {
+        print("Ошибка подключения: " . mysqli_connect_error());
+    }
+    
+    return $array;
+}
