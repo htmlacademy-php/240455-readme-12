@@ -45,7 +45,7 @@
                     <li class="popular__filters-item filters__item">
                      	<a class="filters__button filters__button--<?= $cat['category']; ?> button" href="">
                      		<span class="visually-hidden"><?= $cat['category_name']; ?></span>
-                     		<svg class="filters__icon" width="22" height="18">
+                     		<svg class="filters__icon" width="<?= $cat['category_width']; ?>" height="<?= $cat['category_height']; ?>">
                                 <use xlink:href="#icon-filter-<?= $cat['category']; ?>"></use>
                             </svg>
                      	</a>

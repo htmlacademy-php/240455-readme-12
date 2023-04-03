@@ -102,14 +102,14 @@ function get_interval ($date) {
  * @param string $query Запрос
  * @return array
  */
-function create_result ($link, $query) {
+function get_result ($link, $query) {
     
     $result = mysqli_query($link, $query);
     
     if ($result) {
         $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
-        print("Ошибка подключения: " . mysqli_connect_error());
+        exit("Ошибка подключения: " . mysqli_connect_error());
     }
     
     return $array;

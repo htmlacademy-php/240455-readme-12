@@ -9,31 +9,31 @@ require_once 'db.php';
 $link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
 
 if ($link == false) {
-    print("Ошибка подключения: " . mysqli_connect_error());
+    exit("Ошибка подключения: " . mysqli_connect_error());
 }
-else {
-    mysqli_set_charset($link, "utf8");
-    
-    // выполнение запросов
-    
-    $query = 'SELECT * FROM category';
-    
-    $categories = create_result($link, $query);
 
-    $query = 'SELECT 
-                    p.*, 
-                    u.login, 
-                    u.avatar,
-                    c.category 
-                FROM post AS p
-                    INNER JOIN user AS u 
-                        ON p.user_id = u.id	
-                    INNER JOIN category AS c 
-                        ON p.category_id = c.id	
-                ORDER BY view_count DESC';
-    
-    $posts = create_result($link, $query);
-}
+mysqli_set_charset($link, "utf8");
+
+// выполнение запросов
+
+$query = 'SELECT * FROM category';
+
+$categories = get_result($link, $query);
+
+$query = '
+    SELECT 
+        p.*, 
+        u.login, 
+        u.avatar,
+        c.category 
+    FROM post AS p
+        INNER JOIN user AS u 
+            ON p.user_id = u.id	
+        INNER JOIN category AS c 
+            ON p.category_id = c.id	
+    ORDER BY view_count DESC';
+
+$posts = get_result($link, $query);
 
 // Генерация дат
 

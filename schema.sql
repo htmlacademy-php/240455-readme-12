@@ -20,7 +20,9 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS category (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	category VARCHAR(20) COMMENT 'Наименование типа контента',
-	category_name VARCHAR(20) COMMENT 'Имя класса'
+	category_name VARCHAR(20) COMMENT 'Имя класса',
+	category_width INT COMMENT 'Ширина иконки',
+	category_height INT COMMENT 'Высота иконки'
 ) COMMENT 'Тип контента';
 
 -- 5.1 Пост
@@ -91,7 +93,7 @@ CREATE TABLE IF NOT EXISTS message (
 	INDEX (sender_id),
 	FOREIGN KEY (recipient_id) REFERENCES user (id),
 	FOREIGN KEY (sender_id) REFERENCES user (id)
-) COMMENT 'Сообщения из внутренней переписки пользователей';
+) COMMENT 'Сообщения из внутренней перепискinformation_schemaи пользователей';
 
 -- 5.6 Хештег
 
