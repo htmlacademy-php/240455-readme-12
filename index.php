@@ -14,7 +14,7 @@ if ($link == false) {
 
 mysqli_set_charset($link, "utf8");
 
-// выполнение запросов
+// Выполнение запросов
 
 $query = 'SELECT * FROM category';
 
@@ -51,11 +51,30 @@ $user_name = 'Никитина Виктория';
 
 array_walk_recursive($posts, 'filter_xss');
 
+// Фильтрация по выбранному типу контента
+
+$cat_chosen = filter_input(INPUT_GET, 'id');
+
+$all_cat = '';
+
+if (isset($cat_chosen)) {
+    // в SQL-код запроса на показ постов добавить условие с фильтрацией по выбранному типу контента.
+    foreach ($categories as $key => $cat) {   
+        if ($cat['id'] === $cat_chosen) {
+            $categories[$key]['active'] = 'filters__button--active';
+        }
+    }
+}
+else {
+    $all_cat = 'filters__button--active';
+}
+
 // Подготовка и вывод страницы
 
 $main_content = include_template('main.php', [
     'categories' => $categories,
     'posts' => $posts,      
+    'all_cat' => $all_cat,
 ]);
 
 $layout_content = include_template('layout.php', [

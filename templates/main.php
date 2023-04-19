@@ -37,13 +37,13 @@
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
                     <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <a class="filters__button filters__button--ellipse filters__button--all filters__button--active" href="#">
+                        <a class="filters__button filters__button--ellipse filters__button--all <?= $all_cat; ?>" href="/">
                             <span>Все</span>
                         </a>
                     </li>
-                    <?php foreach ($categories as $cat): ?>
+                    <?php foreach ($categories as $cat): ?>   
                     <li class="popular__filters-item filters__item">
-                     	<a class="filters__button filters__button--<?= $cat['category']; ?> button" href="">
+                     	<a class="filters__button filters__button--<?= $cat['category']; ?> button <?= $cat['active']; ?>" href="/?id=<?= $cat['id']; ?>">
                      		<span class="visually-hidden"><?= $cat['category_name']; ?></span>
                      		<svg class="filters__icon" width="<?= $cat['category_width']; ?>" height="<?= $cat['category_height']; ?>">
                                 <use xlink:href="#icon-filter-<?= $cat['category']; ?>"></use>

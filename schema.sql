@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS message (
 	INDEX (sender_id),
 	FOREIGN KEY (recipient_id) REFERENCES user (id),
 	FOREIGN KEY (sender_id) REFERENCES user (id)
-) COMMENT 'Сообщения из внутренней перепискinformation_schemaи пользователей';
+) COMMENT 'Сообщения из внутренней переписки пользователей';
 
 -- 5.6 Хештег
 
