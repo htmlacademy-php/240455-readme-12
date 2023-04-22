@@ -40,7 +40,7 @@ if (isset($post_id)) {
     $post = get_result($link, $query);
     
     foreach ($post as $item):
-        $page_title =  $item['p_title'];
+        $post_title =  $item['p_title'];
         $youtube_url = $item['p_video'];
         $url = $item['p_link'];
         $img_url = $item['p_img'];
@@ -73,7 +73,7 @@ $user_name = 'Никитина Виктория';
 
 $main_content = include_template('post.php', [
     'post' => $post,
-    'page_title' => $page_title,
+    'post_title' => $post_title,
     'title' => $title,
     'youtube_url' => $youtube_url,
     'url' => $url,
@@ -95,6 +95,7 @@ $layout_content = include_template('layout.php', [
    'is_auth' => $is_auth, 
    'user_name' => $user_name,
    'main_content' => $main_content,
+   'page_title' => $post_title,
 ]);
 
 print($layout_content);
