@@ -50,7 +50,7 @@ function filter_xss (&$value) {
  * @param string $date Дата
  * @return string $interval Возвращает интервал между экземплярами дат
  */
-function get_interval ($date) {
+function get_interval ($date, $notago = 0) {
     
     $cur_date = date_create("now"); // создаёт экземпляр даты
     $date = date_create($date); // создаёт экземпляр даты
@@ -61,7 +61,7 @@ function get_interval ($date) {
     $hours_in_day = 24; // часов в сутках
     $days_in_week = 7; // дней в неделе
     $days_in_5weeks = 35; // дней в 5 неделях
-    
+    $days_in_year = 365; // дней в году
     if ($cur_date_string > $date_string) {
         if ($days < 1) {
             $hours = $diff->h; 
@@ -78,13 +78,18 @@ function get_interval ($date) {
             } elseif ($days_in_week <= $days and $days < $days_in_5weeks) {
                 $weeks = floor($days / $days_in_week);
                 $time_count = $weeks . " недел" . get_noun_plural_form($weeks, 'ю', 'и', 'ь');
-            } elseif ($days_in_5weeks <= $days) {
+            } elseif ($days_in_5weeks <= $days and $days < $days_in_year) {
                 $months = $diff->m;
                 $time_count = $months . " месяц" . get_noun_plural_form($months, '', 'а', 'ев');
+            } elseif ($days_in_year <= $days) {
+                $years = $diff->y;
+                $time_count = $years . " " . get_noun_plural_form($years, 'год', 'года', 'лет');
             }
         }
         
-        $time_count = $time_count . " назад";
+        if (!$notago) {
+            $time_count = $time_count . " назад";
+        }
         
     } elseif ($cur_date_string == $date_string) {
         $time_count = "только что";
@@ -105,7 +110,7 @@ function get_interval ($date) {
 function get_result ($link, $query) {
     
     $result = mysqli_query($link, $query);
-    
+
     if ($result) {
         $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {

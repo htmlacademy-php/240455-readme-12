@@ -33,6 +33,37 @@ $query = '
             ON p.category_id = c.id	
     ORDER BY view_count DESC';
 
+// Фильтрация по выбранному типу контента
+
+$cat_chosen = filter_input(INPUT_GET, 'id');
+
+$all_cat = '';
+
+if (isset($cat_chosen)) {
+    foreach ($categories as $key => $cat) {
+        if ($cat['id'] === $cat_chosen) {
+            $categories[$key]['active'] = 'filters__button--active';
+            
+            $query = '
+                SELECT
+                    p.*,
+                    u.login,
+                    u.avatar,
+                    c.category
+                FROM post AS p
+                    INNER JOIN user AS u
+                        ON p.user_id = u.id
+                    INNER JOIN category AS c
+                        ON p.category_id = c.id
+                WHERE p.category_id = ' . $cat_chosen . '
+                ORDER BY view_count DESC';
+        }
+    }
+}
+else {
+    $all_cat = 'filters__button--active';
+}
+
 $posts = get_result($link, $query);
 
 // Генерация дат
@@ -50,24 +81,6 @@ $user_name = 'Никитина Виктория';
 // Очистка от XSS
 
 array_walk_recursive($posts, 'filter_xss');
-
-// Фильтрация по выбранному типу контента
-
-$cat_chosen = filter_input(INPUT_GET, 'id');
-
-$all_cat = '';
-
-if (isset($cat_chosen)) {
-    // в SQL-код запроса на показ постов добавить условие с фильтрацией по выбранному типу контента.
-    foreach ($categories as $key => $cat) {   
-        if ($cat['id'] === $cat_chosen) {
-            $categories[$key]['active'] = 'filters__button--active';
-        }
-    }
-}
-else {
-    $all_cat = 'filters__button--active';
-}
 
 // Подготовка и вывод страницы
 
