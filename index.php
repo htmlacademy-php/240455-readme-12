@@ -20,48 +20,43 @@ $query = 'SELECT * FROM category';
 
 $categories = get_result($link, $query);
 
-$query = '
-    SELECT 
-        p.*, 
-        u.login, 
-        u.avatar,
-        c.category 
-    FROM post AS p
-        INNER JOIN user AS u 
-            ON p.user_id = u.id	
-        INNER JOIN category AS c 
-            ON p.category_id = c.id	
-    ORDER BY view_count DESC';
-
 // Фильтрация по выбранному типу контента
 
-$cat_chosen = filter_input(INPUT_GET, 'id');
+$categ_chosen = (int) filter_input(INPUT_GET, 'categ_chosen', FILTER_SANITIZE_NUMBER_INT);
+$categ_chosen = (int) filter_input(INPUT_GET, 'sort_by', FILTER_SANITIZE_STRING);
 
-$all_cat = '';
-
-if (isset($cat_chosen)) {
-    foreach ($categories as $key => $cat) {
-        if ($cat['id'] === $cat_chosen) {
-            $categories[$key]['active'] = 'filters__button--active';
-            
-            $query = '
-                SELECT
-                    p.*,
-                    u.login,
-                    u.avatar,
-                    c.category
-                FROM post AS p
-                    INNER JOIN user AS u
-                        ON p.user_id = u.id
-                    INNER JOIN category AS c
-                        ON p.category_id = c.id
-                WHERE p.category_id = ' . $cat_chosen . '
-                ORDER BY view_count DESC';
-        }
-    }
-}
-else {
-    $all_cat = 'filters__button--active';
+if ($categ_chosen == 0) {
+    $all_categ = 'filters__button--active';
+    
+    $query = '
+        SELECT
+            p.*,
+            u.login,
+            u.avatar,
+            c.category
+        FROM post AS p
+            INNER JOIN user AS u
+                ON p.user_id = u.id
+            INNER JOIN category AS c
+                ON p.category_id = c.id
+        ORDER BY view_count DESC
+        LIMIT 6';
+} else {
+    $all_categ = '';
+    
+    $query = '
+        SELECT
+            p.*,
+            u.login,
+            u.avatar,
+            c.category
+        FROM post AS p
+            INNER JOIN user AS u
+                ON p.user_id = u.id
+            INNER JOIN category AS c
+                ON p.category_id = c.id
+        WHERE c.id = ' . $categ_chosen . '
+        ORDER BY view_count DESC';
 }
 
 $posts = get_result($link, $query);
@@ -87,7 +82,8 @@ array_walk_recursive($posts, 'filter_xss');
 $main_content = include_template('main.php', [
     'categories' => $categories,
     'posts' => $posts,      
-    'all_cat' => $all_cat,
+    'all_categ' => $all_categ,
+    'categ_chosen' => $categ_chosen,
 ]);
 
 $layout_content = include_template('layout.php', [

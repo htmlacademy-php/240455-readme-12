@@ -8,7 +8,7 @@
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
                     <li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="#">
+                        <a class="sorting__link sorting__link--active" href="/?sort_by=popularity">
                             <span>Популярность</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -16,7 +16,7 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="#">
+                        <a class="sorting__link" href="/?sort_by=likes">
                             <span>Лайки</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -24,7 +24,7 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="#">
+                        <a class="sorting__link" href="/?sort_by=date">
                             <span>Дата</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -37,13 +37,19 @@
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
                     <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <a class="filters__button filters__button--ellipse filters__button--all <?= $all_cat; ?>" href="/">
+                        <a class="filters__button filters__button--ellipse filters__button--all <?= $all_categ; ?>" href="/">
                             <span>Все</span>
                         </a>
                     </li>
-                    <?php foreach ($categories as $cat): ?>   
+                    <?php foreach ($categories as $cat): 
+                              if ($cat['id'] == $categ_chosen): 
+                                $cat_active = 'filters__button--active'; 
+                              else:
+                                $cat_active = ''; 
+                              endif;
+                    ?>    
                     <li class="popular__filters-item filters__item">
-                     	<a class="filters__button filters__button--<?= $cat['category']; ?> button <?= $cat['active']; ?>" href="/?id=<?= $cat['id']; ?>">
+                     	<a class="filters__button filters__button--<?= $cat['category']; ?> button <?= $cat_active; ?>" href="/?categ_chosen=<?= $cat['id']; ?>">
                      		<span class="visually-hidden"><?= $cat['category_name']; ?></span>
                      		<svg class="filters__icon" width="<?= $cat['category_width']; ?>" height="<?= $cat['category_height']; ?>">
                                 <use xlink:href="#icon-filter-<?= $cat['category']; ?>"></use>

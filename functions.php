@@ -50,7 +50,7 @@ function filter_xss (&$value) {
  * @param string $date Дата
  * @return string $interval Возвращает интервал между экземплярами дат
  */
-function get_interval ($date, $notago = 0) {
+function get_interval ($date, $not_ago = 0) {
     
     $cur_date = date_create("now"); // создаёт экземпляр даты
     $date = date_create($date); // создаёт экземпляр даты
@@ -87,7 +87,7 @@ function get_interval ($date, $notago = 0) {
             }
         }
         
-        if (!$notago) {
+        if (!$not_ago) {
             $time_count = $time_count . " назад";
         }
         
