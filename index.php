@@ -3,7 +3,7 @@
 require_once 'helpers.php';
 require_once 'functions.php';
 require_once 'db.php';
-
+ 
 // Подключение к базе
 
 $link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
@@ -22,8 +22,41 @@ $categories = get_result($link, $query);
 
 // Фильтрация по выбранному типу контента
 
+$sorting = [
+    [
+        'sorting' => 'popularity',
+        'sorting_name' => 'Популярность'
+    ],
+    [
+        'sorting' => 'likes',
+        'sorting_name' => 'Лайки'
+    ],
+    [
+        'sorting' => 'date',
+        'sorting_name' => 'Дата'
+    ],
+];
+
 $categ_chosen = (int) filter_input(INPUT_GET, 'categ_chosen', FILTER_SANITIZE_NUMBER_INT);
-$categ_chosen = (int) filter_input(INPUT_GET, 'sort_by', FILTER_SANITIZE_STRING);
+$sort_chosen = filter_input(INPUT_GET, 'sort_by', FILTER_SANITIZE_STRING);
+
+$categ_url = '';
+if ($categ_chosen) {
+    $categ_url = '&categ_chosen='.$categ_chosen;
+}
+
+$sort_url = '';
+if ($sort_chosen) {
+    $sort_url = '&sort_by='.$sort_chosen;
+}
+
+if ($sort_chosen == 'likes') {
+    $sort_by = 'likes_count';
+} elseif ($sort_chosen == 'date') {
+    $sort_by = 'dt_add';
+} else {
+    $sort_by = 'view_count';
+}
 
 if ($categ_chosen == 0) {
     $all_categ = 'filters__button--active';
@@ -33,13 +66,20 @@ if ($categ_chosen == 0) {
             p.*,
             u.login,
             u.avatar,
-            c.category
+            c.category,
+            COUNT(l.post_id) AS likes_count,
+            COUNT(com.post_id) AS comments_count
         FROM post AS p
             INNER JOIN user AS u
                 ON p.user_id = u.id
             INNER JOIN category AS c
                 ON p.category_id = c.id
-        ORDER BY view_count DESC
+            LEFT JOIN likeit AS l
+                ON p.id = l.post_id
+            LEFT JOIN comment AS com
+                ON p.id = com.post_id
+        GROUP BY p.id
+        ORDER BY ' . $sort_by . ' DESC
         LIMIT 6';
 } else {
     $all_categ = '';
@@ -49,14 +89,21 @@ if ($categ_chosen == 0) {
             p.*,
             u.login,
             u.avatar,
-            c.category
+            c.category,
+            COUNT(l.post_id) AS likes_count,
+            COUNT(com.post_id) AS comments_count
         FROM post AS p
             INNER JOIN user AS u
                 ON p.user_id = u.id
             INNER JOIN category AS c
                 ON p.category_id = c.id
+            LEFT JOIN likeit AS l
+                ON p.id = l.post_id
+            LEFT JOIN comment AS com
+                ON p.id = com.post_id
         WHERE c.id = ' . $categ_chosen . '
-        ORDER BY view_count DESC';
+        GROUP BY p.id
+        ORDER BY ' . $sort_by . ' DESC';
 }
 
 $posts = get_result($link, $query);
@@ -84,6 +131,10 @@ $main_content = include_template('main.php', [
     'posts' => $posts,      
     'all_categ' => $all_categ,
     'categ_chosen' => $categ_chosen,
+    'sort_chosen' => $sort_chosen,
+    'sort_url' => $sort_url,
+    'categ_url' => $categ_url,
+    'sorting' => $sorting,
 ]);
 
 $layout_content = include_template('layout.php', [

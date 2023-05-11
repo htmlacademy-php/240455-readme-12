@@ -7,8 +7,25 @@
             <div class="popular__sorting sorting">
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
-                    <li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="/?sort_by=popularity">
+                    <?php foreach ($sorting as $sorting_item): 
+                      if ($sorting_item['sorting'] == $sort_chosen): 
+                        $sorting_active = 'sorting__link--active'; 
+                        $sorting_item_popular = 'sorting__item--popular';
+                      else:
+                        $sorting_active = ''; 
+                        $sorting_item_popular = '';
+                      endif;
+                    ?>  
+                    <li class="sorting__item <?= $sorting_item_popular; ?>">
+                        <a class="sorting__link  <?= $sorting_active; ?>" href="/?sort_by=<?= $sorting_item['sorting'] . $categ_url; ?>">
+                            <span><?= $sorting_item['sorting_name']; ?></span>
+                            <svg class="sorting__icon" width="10" height="12">
+                                <use xlink:href="#icon-sort"></use>
+                            </svg>
+                        </a>
+                    </li>
+                    <?php /*<li class="sorting__item sorting__item--popular">
+                        <a class="sorting__link sorting__link--active" href="/?sort_by=popularity<?= $categ_url; ?>">
                             <span>Популярность</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -16,7 +33,7 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="/?sort_by=likes">
+                        <a class="sorting__link" href="/?sort_by=likes<?= $categ_url; ?>">
                             <span>Лайки</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -24,13 +41,14 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="/?sort_by=date">
+                        <a class="sorting__link" href="/?sort_by=date<?= $categ_url; ?>">
                             <span>Дата</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
                             </svg>
                         </a>
-                    </li>
+                    </li>*/?>
+                    <?php endforeach; ?>
                 </ul>
             </div>
             <div class="popular__filters filters">
@@ -43,13 +61,13 @@
                     </li>
                     <?php foreach ($categories as $cat): 
                               if ($cat['id'] == $categ_chosen): 
-                                $cat_active = 'filters__button--active'; 
+                                $categ_active = 'filters__button--active'; 
                               else:
-                                $cat_active = ''; 
+                                $categ_active = ''; 
                               endif;
                     ?>    
                     <li class="popular__filters-item filters__item">
-                     	<a class="filters__button filters__button--<?= $cat['category']; ?> button <?= $cat_active; ?>" href="/?categ_chosen=<?= $cat['id']; ?>">
+                     	<a class="filters__button filters__button--<?= $cat['category']; ?> button <?= $categ_active; ?>" href="/?categ_chosen=<?= $cat['id'] . $sort_url; ?>">
                      		<span class="visually-hidden"><?= $cat['category_name']; ?></span>
                      		<svg class="filters__icon" width="<?= $cat['category_width']; ?>" height="<?= $cat['category_height']; ?>">
                                 <use xlink:href="#icon-filter-<?= $cat['category']; ?>"></use>
@@ -140,14 +158,14 @@
                                 <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
                                     <use xlink:href="#icon-heart-active"></use>
                                 </svg>
-                                <span>0</span>
+                                <span><?= $post['likes_count']; ?></span>
                                 <span class="visually-hidden">количество лайков</span>
                             </a>
                             <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
                                 <svg class="post__indicator-icon" width="19" height="17">
                                     <use xlink:href="#icon-comment"></use>
                                 </svg>
-                                <span>0</span>
+                                <span><?= $post['comments_count']; ?></span>
                                 <span class="visually-hidden">количество комментариев</span>
                             </a>
                         </div>
