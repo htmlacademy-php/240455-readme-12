@@ -5,7 +5,6 @@
 			<h2 class="visually-hidden">Публикация</h2>
 			<div class="post-details__wrapper post-<?= $post['category']; ?>">
 				<div class="post-details__main-block post post--details">
-					<?= $post['post_block']; ?>
     				<?php
     				switch ($post['category']) :
                     case 'photo':

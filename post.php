@@ -143,7 +143,6 @@ $main_content = include_template('post.php', [
     'arr_num' => $arr_num,
     'followers_word' => $followers_word,
     'posts_word' => $posts_word,
-    'post_block' => $post_block,
 ]);
 
 $layout_content = include_template('layout.php', [
