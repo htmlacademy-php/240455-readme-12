@@ -2,23 +2,13 @@
 
 require_once 'helpers.php';
 require_once 'functions.php';
-require_once 'db.php';
- 
-// Подключение к базе
-
-$link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
-
-if ($link == false) {
-    exit("Ошибка подключения: " . mysqli_connect_error());
-}
-
-mysqli_set_charset($link, "utf8");
+require_once 'dbconn.php';
 
 // Выполнение запросов
 
 $query = 'SELECT * FROM category';
 
-$categories = get_result($link, $query);
+$categories = get_result($db_link, $query);
 
 // Фильтрация по выбранному типу контента
 
@@ -51,11 +41,11 @@ if ($sort_chosen) {
 }
 
 if ($sort_chosen == 'likes') {
-    $sort_by = 'likes_count';
+    $sort_by = 'likes_count DESC';
 } elseif ($sort_chosen == 'date') {
-    $sort_by = 'dt_add';
+    $sort_by = 'dt_add DESC';
 } else {
-    $sort_by = 'view_count';
+    $sort_by = 'view_count DESC';
 }
 
 if ($categ_chosen == 0) {
@@ -72,14 +62,14 @@ if ($categ_chosen == 0) {
         FROM post AS p
             INNER JOIN user AS u
                 ON p.user_id = u.id
-            INNER JOIN category AS c
+            LEFT JOIN category AS c
                 ON p.category_id = c.id
             LEFT JOIN likeit AS l
                 ON p.id = l.post_id
             LEFT JOIN comment AS com
                 ON p.id = com.post_id
         GROUP BY p.id
-        ORDER BY ' . $sort_by . ' DESC
+        ORDER BY '. $sort_by .'
         LIMIT 6';
 } else {
     $all_categ = '';
@@ -95,7 +85,7 @@ if ($categ_chosen == 0) {
         FROM post AS p
             INNER JOIN user AS u
                 ON p.user_id = u.id
-            INNER JOIN category AS c
+            LEFT JOIN category AS c
                 ON p.category_id = c.id
             LEFT JOIN likeit AS l
                 ON p.id = l.post_id
@@ -103,10 +93,10 @@ if ($categ_chosen == 0) {
                 ON p.id = com.post_id
         WHERE c.id = ' . $categ_chosen . '
         GROUP BY p.id
-        ORDER BY ' . $sort_by . ' DESC';
+        ORDER BY ' . $sort_by;
 }
 
-$posts = get_result($link, $query);
+$posts = get_result($db_link, $query);
 
 // Генерация дат
 

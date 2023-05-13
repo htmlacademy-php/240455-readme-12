@@ -103,18 +103,27 @@ function get_interval ($date, $not_ago = 0) {
 /**
  * Принимает соединение и запрос и выдает результат/массив
  *
- * @param mysqli $link Соединение
+ * @param mysqli $db_link Соединение
  * @param string $query Запрос
+ * @param array $data Ассоциативный массив с параметрами функции
  * @return array
  */
-function get_result ($link, $query) {
-    
-    $result = mysqli_query($link, $query);
 
-    if ($result) {
+function get_result ($db_link, $query, array $data = []) {
+    
+    extract($data);
+
+    $result = mysqli_query($db_link, $query);
+
+    if ($result && isset($one_value)) {
+        $array = mysqli_fetch_array($result);
+        $array = $array[0];
+    } elseif ($result &&  isset($one_row)) {
+        $array = mysqli_fetch_assoc($result);
+    } elseif ($result) {
         $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
-        exit("Ошибка подключения: " . mysqli_connect_error());
+        exit(mysqli_error());
     }
     
     return $array;

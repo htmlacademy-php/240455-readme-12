@@ -82,7 +82,7 @@
     		<?php foreach ($posts as $post): ?>         
             <article class="popular__post post post-<?= $post['category']; ?>"> 
                 <header class="post__header">
-                    <h2><a href="/post.php?id=<?= $post['id']; ?>"><?= $post['p_title']; ?></a></h2>
+                    <h2><a href="/post.php?post_id=<?= $post['id']; ?>"><?= $post['p_title']; ?></a></h2>
                 </header>
                 <div class="post__main">  
 	    		<?php switch ("post-".$post['category']):
