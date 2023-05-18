@@ -3,13 +3,13 @@ USE readme;
 -- Добавление списка типов контента для поста
 
 INSERT INTO `category`
-    (`category`, `category_name`)
+    (`category`, `category_name`, `category_w`, `category_h`)
 VALUES 
-    ('text', 'Текст'),
-    ('quote', 'Цитата'), 
-    ('photo', 'Картинка'),
-    ('video', 'Видео'),
-    ('link', 'Ссылка');
+    ('text', 'Текст', '22', '18'),
+    ('quote', 'Цитата', '22', '18'),
+    ('photo', 'Картинка', '22', '18'),
+    ('video', 'Видео', '22', '18'),
+    ('link', 'Ссылка', '22', '18');
     
  -- Добавление пользователей
 
@@ -19,8 +19,8 @@ VALUES
     ('2017.03.01', 'larisa@mail.ru', 'Лариса', '123', 'userpic-larisa-small.jpg'),
     ('2018.08.06', 'vladik@mail.ru', 'Владик', '1234', 'userpic.jpg'),
     ('2018.02.15', 'victor@mail.ru', 'Виктор', '12345', 'userpic-mark.jpg'),
-    ('2022.05.23', 'alena@mail.ru', 'Алена', '123456', ''),
-    ('2023.01.01', 'alex@mail.ru', 'Александр', '1234567', '');
+    ('2022.05.23', 'alena@mail.ru', 'Алена', '123456', 'user-elvira.jpg'),
+    ('2023.01.01', 'alex@mail.ru', 'Александр', '1234567', 'userpic-petro.jpg');
     
 -- Добавление постов
 
@@ -39,7 +39,8 @@ INSERT INTO `comment`
     (`dt_add`, `c_content`, `user_id`, `post_id`)
 VALUES 
     ('2022.06.05', 'Я тоже!', '1', '2'),
-    ('2022.08.07', 'Какая красота', '5', '4');
+    ('2022.08.07', 'Какая красота', '5', '4'),
+	 ('2022.09.10', 'Хочу туда!!!!', '5', '4');
     
 -- Добавить лайк к посту
 
@@ -49,6 +50,42 @@ VALUES
     ('1', '3');
     
 -- Подписаться на пользователя
+
+INSERT INTO `subscription`
+    (`user_id`, `target_id`)
+VALUES 
+    ('1', '4');
+    
+-- Добавить хештег
+
+INSERT INTO `hashtag`
+    (`h_name`)
+VALUES 
+    ('Трогательно'),
+	 ('Природа'),
+	 ('Сериал');
+
+-- Добавить хештег
+
+INSERT INTO `hashtag`
+    (`h_name`)
+VALUES 
+    ('#Трогательно'),
+	 ('#Природа'),
+	 ('#Сериал'),
+	 ('#Красота');
+
+-- Добавить связь хештега и поста
+
+INSERT INTO `post_hashtag_rel`
+    (`post_id`, `hashtag_id`)
+VALUES 
+    ('1', '1'),
+	 ('3', '2'),
+	 ('2', '3'),
+	 ('3', '4');
+	 
+-- Добавить подписчика
 
 INSERT INTO `subscription`
     (`user_id`, `target_id`)
@@ -87,3 +124,13 @@ FROM comment AS c
 	 INNER JOIN user AS u 
 	 	  ON u.id = p.user_id 
 WHERE p.id = 2;
+
+-- Добавление списка сортировки
+
+INSERT INTO `sorting`
+    (`sorting`, `sorting_name`)
+VALUES 
+    ('popularity', 'Популярность'),
+    ('likes', 'Лайки'),
+    ('date', 'Дата');
+    

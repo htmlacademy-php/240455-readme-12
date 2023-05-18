@@ -8,24 +8,13 @@ require_once 'dbconn.php';
 
 $query = 'SELECT * FROM category';
 
-$categories = get_result($db_link, $query);
+$categories = get_result($db_link, $query, 2);
 
-// Фильтрация по выбранному типу контента
+$query = 'SELECT * FROM sorting';
 
-$sorting = [
-    [
-        'sorting' => 'popularity',
-        'sorting_name' => 'Популярность'
-    ],
-    [
-        'sorting' => 'likes',
-        'sorting_name' => 'Лайки'
-    ],
-    [
-        'sorting' => 'date',
-        'sorting_name' => 'Дата'
-    ],
-];
+$sorting = get_result($db_link, $query, 2);
+
+// Фильтрация по выбранному типу контента и сортировки
 
 $categ_chosen = (int) filter_input(INPUT_GET, 'categ_chosen', FILTER_SANITIZE_NUMBER_INT);
 $sort_chosen = filter_input(INPUT_GET, 'sort_by', FILTER_SANITIZE_STRING);
@@ -48,6 +37,8 @@ if ($sort_chosen == 'likes') {
     $sort_by = 'view_count DESC';
 }
 
+//Формирование запроса в зависимости от выбранного типа контента
+
 if ($categ_chosen == 0) {
     $all_categ = 'filters__button--active';
     
@@ -62,7 +53,7 @@ if ($categ_chosen == 0) {
         FROM post AS p
             INNER JOIN user AS u
                 ON p.user_id = u.id
-            LEFT JOIN category AS c
+            INNER JOIN category AS c
                 ON p.category_id = c.id
             LEFT JOIN likeit AS l
                 ON p.id = l.post_id
@@ -85,7 +76,7 @@ if ($categ_chosen == 0) {
         FROM post AS p
             INNER JOIN user AS u
                 ON p.user_id = u.id
-            LEFT JOIN category AS c
+            INNER JOIN category AS c
                 ON p.category_id = c.id
             LEFT JOIN likeit AS l
                 ON p.id = l.post_id
@@ -96,7 +87,7 @@ if ($categ_chosen == 0) {
         ORDER BY ' . $sort_by;
 }
 
-$posts = get_result($db_link, $query);
+$posts = get_result($db_link, $query, 2);
 
 // Генерация дат
 

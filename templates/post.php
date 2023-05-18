@@ -5,25 +5,7 @@
 			<h2 class="visually-hidden">Публикация</h2>
 			<div class="post-details__wrapper post-<?= $post['category']; ?>">
 				<div class="post-details__main-block post post--details">
-    				<?php
-    				switch ($post['category']) :
-                    case 'photo':
-                        include 'post-photo.php';
-                        break;
-                    case 'video':
-                        include 'post-video.php';
-                        break;
-                    case 'text':
-                        include 'post-text.php';
-                        break;
-                    case 'quote':
-                        include 'post-quote.php';
-                        break;
-                    case 'link':
-                        include 'post-link.php';
-                        break;
-                    endswitch;
-                    ?>
+					<?php require_once $post_type; ?>
 					<div class="post__indicators">
 						<div class="post__buttons">
 							<a class="post__indicator post__indicator--likes button" href="#"
@@ -40,7 +22,7 @@
 								href="#" title="Комментарии"> <svg class="post__indicator-icon"
 									width="19" height="17">
                           <use xlink:href="#icon-comment"></use>
-                        </svg> <span><?= $arr_num['comments_count'];; ?></span> <span
+                        </svg> <span><?= $arr_num['comments_count']; ?></span> <span
 								class="visually-hidden">количество комментариев</span>
 							</a> <a class="post__indicator post__indicator--repost button"
 								href="#" title="Репост"> <svg class="post__indicator-icon"
@@ -52,11 +34,13 @@
 						</div>
 						<span class="post__view"><?php echo $post['view_count'] . " " .  $view_word ?></span>
 					</div>
+					<?php if ($hashtags): ?>
 					<ul class="post__tags">
-					<?php foreach ($hashtags as $hashtag): ?>
+						<?php foreach ($hashtags as $hashtag): ?>
 						<li><a href="#"><?= $hashtag['h_name']; ?></a></li>
-					<?php endforeach; ?>
+						<?php endforeach; ?>
 					</ul>
+					<?php endif; ?>
 					<div class="comments">
 					<form class="comments__form form" action="#" method="post">
 						<div class="comments__my-avatar">
@@ -96,11 +80,16 @@
 									<p class="comments__text"><?= $comment['c_content']; ?></p>
 								</div>
 							</li>
-        					<?php endforeach; ?>
+							<?php if (isset($comments[1])) {
+                                    break;
+                                }
+        					endforeach; ?>
 						</ul>
+						<?php if (isset($comments[1])) { ?>
 						<a class="comments__more-link" href="#"> <span>Показать все
-								комментарии</span> <sup class="comments__amount">45</sup>
+								комментарии</span> <sup class="comments__amount"><?php echo $arr_num['comments_count'] - 1; ?></sup>
 						</a>
+						<?php } ?>
 					</div>
 					<?php endif; ?>
 				</div>

@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS category (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	category VARCHAR(20) COMMENT 'Наименование типа контента',
 	category_name VARCHAR(20) COMMENT 'Имя класса',
-	category_width INT COMMENT 'Ширина иконки',
-	category_height INT COMMENT 'Высота иконки'
+	category_w TINYINT COMMENT 'Ширина иконки',
+	category_h TINYINT COMMENT 'Высота иконки'
 ) COMMENT 'Тип контента';
 
 -- 5.1 Пост
@@ -110,3 +110,11 @@ CREATE TABLE IF NOT EXISTS post_hashtag_rel (
 	FOREIGN KEY (post_id) REFERENCES post (id),
 	FOREIGN KEY (hashtag_id) REFERENCES hashtag (id)
 ) COMMENT 'Таблица связей между постами и хештегами';
+
+-- 5.7 Тип сортировки
+
+CREATE TABLE IF NOT EXISTS sorting (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	sorting VARCHAR(20) COMMENT 'Наименование типа сортировки',
+	sorting_name VARCHAR(20) COMMENT 'Имя сортировки'
+) COMMENT 'Тип сортировки';

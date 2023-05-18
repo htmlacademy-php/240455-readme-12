@@ -61,7 +61,7 @@ function get_interval ($date, $not_ago = 0) {
     $hours_in_day = 24; // часов в сутках
     $days_in_week = 7; // дней в неделе
     $days_in_5weeks = 35; // дней в 5 неделях
-    $days_in_year = 365; // дней в году
+    $days_in_year = 365.2468; // дней в году
     if ($cur_date_string > $date_string) {
         if ($days < 1) {
             $hours = $diff->h; 
@@ -105,25 +105,29 @@ function get_interval ($date, $not_ago = 0) {
  *
  * @param mysqli $db_link Соединение
  * @param string $query Запрос
- * @param array $data Ассоциативный массив с параметрами функции
+ * @param int $mode Тип ответа 
  * @return array
  */
 
-function get_result ($db_link, $query, array $data = []) {
+function get_result ($db_link, $query, $mode) {
     
-    extract($data);
-
     $result = mysqli_query($db_link, $query);
-
-    if ($result && isset($one_value)) {
-        $array = mysqli_fetch_array($result);
-        $array = $array[0];
-    } elseif ($result &&  isset($one_row)) {
-        $array = mysqli_fetch_assoc($result);
-    } elseif ($result) {
-        $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    
+    $rows = mysqli_num_rows($result);
+    
+    if ($rows) {
+        if ($mode == 1) { // одно значение
+            $array = mysqli_fetch_array($result);
+            $array = $array[0];
+        } elseif ($mode == 2) { // несколько записей и несколько полей (двумерный)
+            $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        } elseif ($mode == 3) { // несколько полей одной записи (ряд)
+            $array = mysqli_fetch_assoc($result);
+        } else {
+            exit('Неверный mode');
+        }
     } else {
-        exit(mysqli_error());
+        $array = [];
     }
     
     return $array;

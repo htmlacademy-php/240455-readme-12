@@ -24,30 +24,6 @@
                             </svg>
                         </a>
                     </li>
-                    <?php /*<li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="/?sort_by=popularity<?= $categ_url; ?>">
-                            <span>Популярность</span>
-                            <svg class="sorting__icon" width="10" height="12">
-                                <use xlink:href="#icon-sort"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="sorting__item">
-                        <a class="sorting__link" href="/?sort_by=likes<?= $categ_url; ?>">
-                            <span>Лайки</span>
-                            <svg class="sorting__icon" width="10" height="12">
-                                <use xlink:href="#icon-sort"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="sorting__item">
-                        <a class="sorting__link" href="/?sort_by=date<?= $categ_url; ?>">
-                            <span>Дата</span>
-                            <svg class="sorting__icon" width="10" height="12">
-                                <use xlink:href="#icon-sort"></use>
-                            </svg>
-                        </a>
-                    </li>*/?>
                     <?php endforeach; ?>
                 </ul>
             </div>
@@ -59,18 +35,18 @@
                             <span>Все</span>
                         </a>
                     </li>
-                    <?php foreach ($categories as $cat): 
-                              if ($cat['id'] == $categ_chosen): 
+                    <?php foreach ($categories as $categ): 
+                          if ($categ['id'] == $categ_chosen): 
                                 $categ_active = 'filters__button--active'; 
                               else:
                                 $categ_active = ''; 
                               endif;
                     ?>    
                     <li class="popular__filters-item filters__item">
-                     	<a class="filters__button filters__button--<?= $cat['category']; ?> button <?= $categ_active; ?>" href="/?categ_chosen=<?= $cat['id'] . $sort_url; ?>">
-                     		<span class="visually-hidden"><?= $cat['category_name']; ?></span>
-                     		<svg class="filters__icon" width="<?= $cat['category_width']; ?>" height="<?= $cat['category_height']; ?>">
-                                <use xlink:href="#icon-filter-<?= $cat['category']; ?>"></use>
+                     	<a class="filters__button filters__button--<?= $categ['category']; ?> button <?= $categ_active; ?>" href="/?categ_chosen=<?= $categ['id'] . $sort_url; ?>">
+                     		<span class="visually-hidden"><?= $categ['category_name']; ?></span>
+                     		<svg class="filters__icon" width="<?= $categ['category_w']; ?>" height="<?= $categ['category_h']; ?>">
+                                <use xlink:href="#icon-filter-<?= $categ['category']; ?>"></use>
                             </svg>
                      	</a>
                      </li>
