@@ -37,7 +37,7 @@
 					<?php if ($hashtags): ?>
 					<ul class="post__tags">
 						<?php foreach ($hashtags as $hashtag): ?>
-						<li><a href="#"><?= $hashtag['h_name']; ?></a></li>
+						<li><a href="#"><?= $hashtag; ?></a></li>
 						<?php endforeach; ?>
 					</ul>
 					<?php endif; ?>
@@ -106,7 +106,7 @@
 						<a class="post-details__name user__name" href="#"> <span><?= $post['login']; ?></span>
 						</a>
 						<time class="post-details__time user__time"
-							datetime="<?= $user_registration_title; ?>"><?= $user_registration_interval; ?> на сайте</time>
+							datetime="<?= $dt_user_registration_title; ?>"><?= $dt_user_registration_interval; ?> на сайте</time>
 					</div>
 				</div>
 				<div class="post-details__rating user__rating">

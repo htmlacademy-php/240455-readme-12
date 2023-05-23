@@ -8,21 +8,20 @@ require_once 'dbconn.php';
 
 $post_id = filter_input(INPUT_GET, 'post_id', FILTER_SANITIZE_NUMBER_INT);
 
-if ($post_id !== 0) {
+if ($post_id > 0) {
     $query = '
         SELECT      
             p.*,
             u.login,
             u.avatar,
-            u.dt_add AS user_registration,
+            u.dt_add AS dt_user_registration,
             c.*
         FROM post AS p
             INNER JOIN user AS u
                 ON p.user_id = u.id
             INNER JOIN category AS c
                 ON p.category_id = c.id
-        WHERE p.id = ' . $post_id . ' 
-        GROUP BY p.id';
+        WHERE p.id = ' . $post_id;
 
     $post = get_result($db_link, $query, 3);
     
@@ -71,8 +70,8 @@ if ($post_id !== 0) {
     $view_word = get_noun_plural_form($post['view_count'], 'просмотр', 'просмотра', 'просмотров');
     
     // генерация дат
-    $user_registration_interval = get_interval ($post['user_registration'], 1);
-    $user_registration_title = date("d.m.Y H:i", strtotime($post['user_registration']));
+    $dt_user_registration_interval = get_interval ($post['dt_user_registration'], 1);
+    $dt_user_registration_title = date("d.m.Y H:i", strtotime($post['dt_user_registration']));
     
     // получение хештегов
     $query = '
@@ -82,7 +81,7 @@ if ($post_id !== 0) {
             ON post_hashtag_rel.hashtag_id = hashtag.id 
         WHERE post_hashtag_rel.post_id = ' . $post_id;
     
-    $hashtags = get_result($db_link, $query, 2);
+    $hashtags = get_result($db_link, $query, 4);
   
     // получение комментариев
     $query = '
@@ -101,32 +100,13 @@ if ($post_id !== 0) {
             $comments[$key]['comment_date_title'] = get_interval($comment['dt_add']);
         }
     }
-    if (!$post) {
-        exit(mysqli_error());
-    }
 } else {
-    exit("Ошибка подключения: " . mysqli_connect_error());
+    exit('Пост не существует');
 }
 
 // выбор подшаблона поста
 
-switch ($post['category']) {
-case 'photo':
-    $post_type = 'templates/post-photo.php';
-    break;
-case 'video':
-    $post_type = 'templates/post-video.php';
-    break;
-case 'text':
-    $post_type = 'templates/post-text.php';
-    break;
-case 'quote':
-    $post_type = 'templates/post-quote.php';
-    break;
-case 'link':
-    $post_type = 'templates/post-link.php';
-    break;
-}
+$post_type = 'templates/post-' . $post['category'] . '.php';
 
 $is_auth = rand(0, 1);
 
@@ -136,8 +116,8 @@ $user_name = 'Никитина Виктория';
 
 $main_content = include_template('post.php', [
     'post' => $post,
-    'user_registration_interval' => $user_registration_interval,
-    'user_registration_title' => $user_registration_title,
+    'dt_user_registration_interval' => $dt_user_registration_interval,
+    'dt_user_registration_title' => $dt_user_registration_title,
     'view_word' => $view_word,
     'hashtags' => $hashtags,
     'comments' => $comments,

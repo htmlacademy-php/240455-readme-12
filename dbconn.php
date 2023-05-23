@@ -12,4 +12,3 @@ if ($db_link == false) {
 
 mysqli_set_charset($db_link, "utf8");
 
-?>

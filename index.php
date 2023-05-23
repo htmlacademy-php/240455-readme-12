@@ -17,6 +17,11 @@ $sorting = get_result($db_link, $query, 2);
 // Фильтрация по выбранному типу контента и сортировки
 
 $categ_chosen = (int) filter_input(INPUT_GET, 'categ_chosen', FILTER_SANITIZE_NUMBER_INT);
+
+if (!$categ_chosen) {
+    $categ_chosen = 0; // 0 - все категории
+}
+
 $sort_chosen = filter_input(INPUT_GET, 'sort_by', FILTER_SANITIZE_STRING);
 
 $categ_url = '';
@@ -39,9 +44,37 @@ if ($sort_chosen == 'likes') {
 
 //Формирование запроса в зависимости от выбранного типа контента
 
+// $query_select = '
+//         SELECT
+//             p.*,
+//             u.login,
+//             u.avatar,
+//             c.category,
+//             COUNT(l.post_id) AS likes_count,
+//             COUNT(com.post_id) AS comments_count';
+
+// $query_from = '
+//         FROM post AS p
+//             INNER JOIN user AS u
+//                 ON p.user_id = u.id
+//             INNER JOIN category AS c
+//                 ON p.category_id = c.id
+//             LEFT JOIN likeit AS l
+//                 ON p.id = l.post_id
+//             LEFT JOIN comment AS com
+//                 ON p.id = com.post_id';
+
+// $query_where = 'WHERE c.id = ' . $categ_chosen;
+
+// $query_group_order = '
+//         GROUP BY p.id
+//         ORDER BY '. $sort_by;
+
+// $query_limit = 'LIMIT 6';
+
+// $query = 
+
 if ($categ_chosen == 0) {
-    $all_categ = 'filters__button--active';
-    
     $query = '
         SELECT
             p.*,
@@ -63,8 +96,6 @@ if ($categ_chosen == 0) {
         ORDER BY '. $sort_by .'
         LIMIT 6';
 } else {
-    $all_categ = '';
-    
     $query = '
         SELECT
             p.*,
@@ -110,7 +141,6 @@ array_walk_recursive($posts, 'filter_xss');
 $main_content = include_template('main.php', [
     'categories' => $categories,
     'posts' => $posts,      
-    'all_categ' => $all_categ,
     'categ_chosen' => $categ_chosen,
     'sort_chosen' => $sort_chosen,
     'sort_url' => $sort_url,

@@ -30,8 +30,12 @@
             <div class="popular__filters filters">
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
-                    <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <a class="filters__button filters__button--ellipse filters__button--all <?= $all_categ; ?>" href="/">
+                	<?php if ($categ_chosen == 0):
+                            	$categ_active = 'filters__button--active';
+                          endif; 
+                    ?>
+                    <li class="popular__filters-item filters__item filters__item--all popular__filters-item--all">
+                        <a class="filters__button filters__button--ellipse filters__button--all <?= $categ_active; ?>" href="/">
                             <span>Все</span>
                         </a>
                     </li>

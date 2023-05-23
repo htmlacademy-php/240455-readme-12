@@ -88,7 +88,7 @@ function get_interval ($date, $not_ago = 0) {
         }
         
         if (!$not_ago) {
-            $time_count = $time_count . " назад";
+            $time_count .= " назад";
         }
         
     } elseif ($cur_date_string == $date_string) {
@@ -123,6 +123,9 @@ function get_result ($db_link, $query, $mode) {
             $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
         } elseif ($mode == 3) { // несколько полей одной записи (ряд)
             $array = mysqli_fetch_assoc($result);
+        } elseif ($mode == 4) { // одно поле из нескольких записей (колонка) 
+            $array = mysqli_fetch_all($result);
+            $array = array_column($array,0); 
         } else {
             exit('Неверный mode');
         }
