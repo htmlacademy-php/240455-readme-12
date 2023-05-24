@@ -95,7 +95,7 @@
                           case 'post-quote': ?>
                     <blockquote>
                     	<p><?= $post['p_content']; ?></p>
-                    	<cite>Неизвестный Автор</cite> 
+                    	<cite>Неизвестный Автор</cite>
                     </blockquote>
           	    		<?php break;
           	    		
