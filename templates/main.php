@@ -89,7 +89,7 @@
                 		<?php break;
                 		
                         case 'post-text': ?>
-                  	<p><?php echo cut_text($post['p_content']); ?></p>  
+                  	<p><?php echo cut_text($post['p_content']); ?></p>
                     	<?php break;
                     	
                           case 'post-quote': ?>
