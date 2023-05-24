@@ -115,7 +115,7 @@
                     </div>
                     	<?php break; 
                 endswitch; ?>
-                </div>
+                </div> 
                 <footer class="post__footer">
                     <div class="post__author">
                         <a class="post__author-link" href="#" title="Автор">
