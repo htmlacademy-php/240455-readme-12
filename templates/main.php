@@ -7,17 +7,9 @@
             <div class="popular__sorting sorting">
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
-                    <?php foreach (SORTING as $sorting_item): 
-                      if ($sorting_item[0] == $sort_chosen): 
-                        $sorting_active = 'sorting__link--active'; 
-                        $sorting_item_popular = 'sorting__item--popular';
-                      else:
-                        $sorting_active = ''; 
-                        $sorting_item_popular = '';
-                      endif;
-                    ?>  
-                    <li class="sorting__item <?= $sorting_item_popular; ?>">
-                        <a class="sorting__link  <?= $sorting_active; ?>" href="/?sort_by=<?= $sorting_item[0] . '&categ_chosen='.$categ_chosen ?>">
+                    <?php foreach (SORTING as $sorting_item): ?>  
+                    <li class="sorting__item<?= $sorting_item[0] == $sort_chosen ? ' sorting__item--popular' : ''; ?>">
+                        <a class="sorting__link<?= $sorting_item[0] == $sort_chosen ? ' sorting__link--active' : ''; ?>" href="/?sort_by=<?= $sorting_item[0] . '&categ_chosen='.$categ_chosen ?>">
                             <span><?= $sorting_item[1]; ?></span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -30,24 +22,14 @@
             <div class="popular__filters filters">
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
-                	<?php if ($categ_chosen == 0):
-                            	$categ_active = 'filters__button--active';
-                          endif; 
-                    ?>
                     <li class="popular__filters-item filters__item filters__item--all popular__filters-item--all">
-                        <a class="filters__button filters__button--ellipse filters__button--all <?= $categ_active; ?>" href="/">
+                        <a class="filters__button filters__button--ellipse filters__button--all<?= $categ_chosen == 0 ? ' filters__button--active' : ''; ?>" href="/">
                             <span>Все</span>
                         </a>
                     </li>
-                    <?php foreach ($categories as $categ): 
-                          if ($categ['id'] == $categ_chosen): 
-                                $categ_active = 'filters__button--active'; 
-                              else:
-                                $categ_active = ''; 
-                              endif;
-                    ?>    
+                    <?php foreach ($categories as $categ): ?>    
                     <li class="popular__filters-item filters__item">
-                     	<a class="filters__button filters__button--<?= $categ['category']; ?> button <?= $categ_active; ?>" href="/?categ_chosen=<?= $categ['id'] . '&sort_by='.$sort_chosen ?>">
+                     	<a class="filters__button filters__button--<?= $categ['category']; ?> button<?= $categ['id'] == $categ_chosen ? ' filters__button--active' : ''; ?>" href="/?categ_chosen=<?= $categ['id'] . '&sort_by='.$sort_chosen ?>">
                      		<span class="visually-hidden"><?= $categ['category_name']; ?></span>
                      		<svg class="filters__icon" width="<?= $categ['category_w']; ?>" height="<?= $categ['category_h']; ?>">
                                 <use xlink:href="#icon-filter-<?= $categ['category']; ?>"></use>
