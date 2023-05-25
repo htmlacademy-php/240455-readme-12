@@ -113,7 +113,7 @@ $posts = get_result($db_link, $query, 2);
 // Генерация дат
 
 foreach ($posts as $key => $post) {
-    $posts[$key]['date_title'] = date("d.m.Y H:i", strtotime($post['dt_add']));
+    $posts[$key]['date_title'] = date("d.m.Y H:i", strtotime($post['dt_add'])); 
 
     $posts[$key]['date_interval'] = get_interval($post['dt_add']);
 }
