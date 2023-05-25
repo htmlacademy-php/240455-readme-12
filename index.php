@@ -10,13 +10,9 @@ $query = 'SELECT * FROM category';
 
 $categories = get_result($db_link, $query, 2);
 
-$query = 'SELECT * FROM sorting';
-
-$sorting = get_result($db_link, $query, 2);
-
 // Фильтрация по выбранному типу контента и сортировки
 
-$categ_chosen = (int) filter_input(INPUT_GET, 'categ_chosen', FILTER_SANITIZE_NUMBER_INT);
+$categ_chosen = filter_input(INPUT_GET, 'categ_chosen', FILTER_SANITIZE_NUMBER_INT);
 
 if (!$categ_chosen) {
     $categ_chosen = 0; // 0 - все категории
@@ -24,14 +20,8 @@ if (!$categ_chosen) {
 
 $sort_chosen = filter_input(INPUT_GET, 'sort_by', FILTER_SANITIZE_STRING);
 
-$categ_url = '';
-if ($categ_chosen) {
-    $categ_url = '&categ_chosen='.$categ_chosen;
-}
-
-$sort_url = '';
-if ($sort_chosen) {
-    $sort_url = '&sort_by='.$sort_chosen;
+if (!$sort_chosen) {
+    $sort_chosen = 'popularity'; // по популярности
 }
 
 if ($sort_chosen == 'likes') {
@@ -143,9 +133,6 @@ $main_content = include_template('main.php', [
     'posts' => $posts,      
     'categ_chosen' => $categ_chosen,
     'sort_chosen' => $sort_chosen,
-    'sort_url' => $sort_url,
-    'categ_url' => $categ_url,
-    'sorting' => $sorting,
 ]);
 
 $layout_content = include_template('layout.php', [

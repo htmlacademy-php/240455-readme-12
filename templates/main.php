@@ -7,8 +7,8 @@
             <div class="popular__sorting sorting">
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
-                    <?php foreach ($sorting as $sorting_item): 
-                      if ($sorting_item['sorting'] == $sort_chosen): 
+                    <?php foreach (SORTING as $sorting_item): 
+                      if ($sorting_item[0] == $sort_chosen): 
                         $sorting_active = 'sorting__link--active'; 
                         $sorting_item_popular = 'sorting__item--popular';
                       else:
@@ -17,8 +17,8 @@
                       endif;
                     ?>  
                     <li class="sorting__item <?= $sorting_item_popular; ?>">
-                        <a class="sorting__link  <?= $sorting_active; ?>" href="/?sort_by=<?= $sorting_item['sorting'] . $categ_url; ?>">
-                            <span><?= $sorting_item['sorting_name']; ?></span>
+                        <a class="sorting__link  <?= $sorting_active; ?>" href="/?sort_by=<?= $sorting_item[0] . '&categ_chosen='.$categ_chosen ?>">
+                            <span><?= $sorting_item[1]; ?></span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
                             </svg>
@@ -47,7 +47,7 @@
                               endif;
                     ?>    
                     <li class="popular__filters-item filters__item">
-                     	<a class="filters__button filters__button--<?= $categ['category']; ?> button <?= $categ_active; ?>" href="/?categ_chosen=<?= $categ['id'] . $sort_url; ?>">
+                     	<a class="filters__button filters__button--<?= $categ['category']; ?> button <?= $categ_active; ?>" href="/?categ_chosen=<?= $categ['id'] . '&sort_by='.$sort_chosen ?>">
                      		<span class="visually-hidden"><?= $categ['category_name']; ?></span>
                      		<svg class="filters__icon" width="<?= $categ['category_w']; ?>" height="<?= $categ['category_h']; ?>">
                                 <use xlink:href="#icon-filter-<?= $categ['category']; ?>"></use>

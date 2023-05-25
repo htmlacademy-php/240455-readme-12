@@ -1,5 +1,11 @@
 <?php
 
+define('SORTING', array(
+    ['popularity', 'Популярность'],
+    ['likes', 'Лайки'],
+    ['date', 'Дата'],
+));
+
 date_default_timezone_set('Europe/Moscow');
 
 mb_internal_encoding("UTF-8");

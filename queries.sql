@@ -124,13 +124,4 @@ FROM comment AS c
 	 INNER JOIN user AS u 
 	 	  ON u.id = p.user_id 
 WHERE p.id = 2;
-
--- Добавление списка сортировки
-
-INSERT INTO `sorting`
-    (`sorting`, `sorting_name`)
-VALUES 
-    ('popularity', 'Популярность'),
-    ('likes', 'Лайки'),
-    ('date', 'Дата');
     
