@@ -15,7 +15,7 @@ if ($post_id > 0) {
             u.login,
             u.avatar,
             u.dt_add AS dt_user_registration,
-            c.*
+            c.category
         FROM post AS p
             INNER JOIN user AS u
                 ON p.user_id = u.id
@@ -84,20 +84,35 @@ if ($post_id > 0) {
     $hashtags = get_result($db_link, $query, 4);
   
     // получение комментариев
-    $query = '
-        SELECT *
-        FROM comment AS c
-        INNER	JOIN user 
-            ON user.id = c.user_id
-        WHERE c.post_id = ' . $post_id;
+    
+    if (isset($_GET['show_comments'])) {
+        $query = '
+            SELECT c.id, c.dt_add, c_content, post_id, u.login, u.avatar
+            FROM comment AS c 
+            INNER JOIN user AS u
+               ON u.id = c.user_id
+            WHERE c.post_id = ' . $post_id . '
+            ORDER BY c.dt_add ASC';
+    } else {
+        $query = '
+            SELECT c.id, c.dt_add, c_content, post_id, u.login, u.avatar
+            FROM comment AS c
+            INNER JOIN user AS u
+               ON u.id = c.user_id
+            WHERE c.post_id = ' . $post_id . '
+            ORDER BY c.dt_add ASC
+            LIMIT 1';
+    }
     
     $comments = get_result($db_link, $query, 2);
     
-    // генерация дат комментария
+    // генерация дат и номера комментария
+    $i = 1;
     if ($comments) {
         foreach ($comments as $key => $comment) {
             $comments[$key]['comment_interval'] = date("d.m.Y H:i", strtotime($comment['dt_add']));
             $comments[$key]['comment_date_title'] = get_interval($comment['dt_add']);
+            $comments[$key]['comment_number'] = $i++;
         }
     }
 } else {

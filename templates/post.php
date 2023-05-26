@@ -64,7 +64,7 @@
 					<div class="comments__list-wrapper">
 						<ul class="comments__list">
         					<?php foreach ($comments as $comment): ?>
-							<li class="comments__item user">
+							<li class="comments__item user" id="<?= $comment['comment_number']; ?>">
 								<div class="comments__avatar">
 									<a class="user__avatar-link" href="#"> <img
 										class="comments__picture" src="img/<?= $comment['avatar']; ?>"
@@ -80,14 +80,11 @@
 									<p class="comments__text"><?= $comment['c_content']; ?></p>
 								</div>
 							</li>
-							<?php if (isset($comments[1])) {
-                                    break;
-                                }
-        					endforeach; ?>
+							<?php endforeach; ?>
 						</ul>
-						<?php if (isset($comments[1])) { ?>
-						<a class="comments__more-link" href="#"> <span>Показать все
-								комментарии</span> <sup class="comments__amount"><?php echo $arr_num['comments_count'] - 1; ?></sup>
+						<?php if (!isset($_GET['show_comments']) && $arr_num['comments_count'] > 1) { ?>
+						<a class="comments__more-link" href="<?= 'post.php?post_id='.$post['id'].'&show_comments#'.$arr_num['comments_count']; ?>"> <span>Показать все
+								комментарии</span> <sup class="comments__amount"><?= $arr_num['comments_count'] - 1; ?></sup>
 						</a>
 						<?php } ?>
 					</div>
