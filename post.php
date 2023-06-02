@@ -71,7 +71,7 @@ if ($post_id > 0) {
     
     // генерация дат
     $dt_user_registration_interval = get_interval ($post['dt_user_registration'], 1);
-    $dt_user_registration_title = date("d.m.Y H:i", strtotime($post['dt_user_registration']));
+    $dt_user_registration_title = date(DATE_FORMAT, strtotime($post['dt_user_registration']));
     
     // получение хештегов
     $query = '
@@ -110,18 +110,19 @@ if ($post_id > 0) {
     $i = 1;
     if ($comments) {
         foreach ($comments as $key => $comment) {
-            $comments[$key]['comment_interval'] = date("d.m.Y H:i", strtotime($comment['dt_add']));
+            $comments[$key]['comment_interval'] = date(DATE_FORMAT, strtotime($comment['dt_add']));
             $comments[$key]['comment_date_title'] = get_interval($comment['dt_add']);
             $comments[$key]['comment_number'] = $i++;
         }
     }
+    
+    // выбор подшаблона поста
+    
+    $post_type = 'templates/post-' . $post['category'] . '.php';
+    
 } else {
     exit('Пост не существует');
 }
-
-// выбор подшаблона поста
-
-$post_type = 'templates/post-' . $post['category'] . '.php';
 
 $is_auth = rand(0, 1);
 

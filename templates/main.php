@@ -95,8 +95,10 @@
                             <span><?= $post['p_content']; ?></span>
                         </a>
                     </div>
+                    
                     	<?php break; 
                 endswitch; ?>
+                
                 </div> 
                 <footer class="post__footer">
                     <div class="post__author">

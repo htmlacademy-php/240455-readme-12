@@ -14,8 +14,12 @@ $categories = get_result($db_link, $query, 2);
 
 $categ_chosen = filter_input(INPUT_GET, 'categ_chosen', FILTER_SANITIZE_NUMBER_INT);
 
+$categ_condition = ''; // условие с категорией для запроса
+
 if (!$categ_chosen) {
     $categ_chosen = 0; // 0 - все категории
+} else {
+    $categ_condition = 'WHERE c.id = ' . $categ_chosen;
 }
 
 $sort_chosen = filter_input(INPUT_GET, 'sort_by', FILTER_SANITIZE_STRING);
@@ -34,86 +38,34 @@ if ($sort_chosen == 'likes') {
 
 //Формирование запроса в зависимости от выбранного типа контента
 
-// $query_select = '
-//         SELECT
-//             p.*,
-//             u.login,
-//             u.avatar,
-//             c.category,
-//             COUNT(l.post_id) AS likes_count,
-//             COUNT(com.post_id) AS comments_count';
+$query = '
+    SELECT
+        p.*,
+        u.login,
+        u.avatar,
+        c.category,
+        COUNT(l.post_id) AS likes_count,
+        COUNT(com.post_id) AS comments_count
+    FROM post AS p
+        INNER JOIN user AS u
+            ON p.user_id = u.id
+        INNER JOIN category AS c
+            ON p.category_id = c.id
+        LEFT JOIN likeit AS l
+            ON p.id = l.post_id
+        LEFT JOIN comment AS com
+            ON p.id = com.post_id
+    ' . $categ_condition . '
+    GROUP BY p.id
+    ORDER BY ' . $sort_by;
 
-// $query_from = '
-//         FROM post AS p
-//             INNER JOIN user AS u
-//                 ON p.user_id = u.id
-//             INNER JOIN category AS c
-//                 ON p.category_id = c.id
-//             LEFT JOIN likeit AS l
-//                 ON p.id = l.post_id
-//             LEFT JOIN comment AS com
-//                 ON p.id = com.post_id';
-
-// $query_where = 'WHERE c.id = ' . $categ_chosen;
-
-// $query_group_order = '
-//         GROUP BY p.id
-//         ORDER BY '. $sort_by;
-
-// $query_limit = 'LIMIT 6';
-
-// $query = 
-
-if ($categ_chosen == 0) {
-    $query = '
-        SELECT
-            p.*,
-            u.login,
-            u.avatar,
-            c.category,
-            COUNT(l.post_id) AS likes_count,
-            COUNT(com.post_id) AS comments_count
-        FROM post AS p
-            INNER JOIN user AS u
-                ON p.user_id = u.id
-            INNER JOIN category AS c
-                ON p.category_id = c.id
-            LEFT JOIN likeit AS l
-                ON p.id = l.post_id
-            LEFT JOIN comment AS com
-                ON p.id = com.post_id
-        GROUP BY p.id
-        ORDER BY '. $sort_by .'
-        LIMIT 6';
-} else {
-    $query = '
-        SELECT
-            p.*,
-            u.login,
-            u.avatar,
-            c.category,
-            COUNT(l.post_id) AS likes_count,
-            COUNT(com.post_id) AS comments_count
-        FROM post AS p
-            INNER JOIN user AS u
-                ON p.user_id = u.id
-            INNER JOIN category AS c
-                ON p.category_id = c.id
-            LEFT JOIN likeit AS l
-                ON p.id = l.post_id
-            LEFT JOIN comment AS com
-                ON p.id = com.post_id
-        WHERE c.id = ' . $categ_chosen . '
-        GROUP BY p.id
-        ORDER BY ' . $sort_by;
-}
 
 $posts = get_result($db_link, $query, 2);
 
 // Генерация дат
 
 foreach ($posts as $key => $post) {
-    $posts[$key]['date_title'] = date("d.m.Y H:i", strtotime($post['dt_add'])); 
+    $posts[$key]['date_title'] = date(DATE_FORMAT, strtotime($post['dt_add'])); 
 
     $posts[$key]['date_interval'] = get_interval($post['dt_add']);
 }

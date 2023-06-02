@@ -6,6 +6,8 @@ define('SORTING', array(
     ['date', 'Дата'],
 ));
 
+define("DATE_FORMAT", "d.m.Y H:i");
+
 date_default_timezone_set('Europe/Moscow');
 
 mb_internal_encoding("UTF-8");
@@ -67,7 +69,7 @@ function get_interval ($date, $not_ago = 0) {
     $hours_in_day = 24; // часов в сутках
     $days_in_week = 7; // дней в неделе
     $days_in_5weeks = 35; // дней в 5 неделях
-    $days_in_year = 365.2468; // дней в году
+    $days_in_year = 365; // дней в году
     if ($cur_date_string > $date_string) {
         if ($days < 1) {
             $hours = $diff->h; 
