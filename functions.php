@@ -143,3 +143,24 @@ function get_result ($db_link, $query, $mode) {
     
     return $array;
 }
+
+
+/**
+ * Принимает таблицу и условие и выдает количество
+ *
+ * @param string $table Таблица
+ * @param string $condition Условие
+ * @param string $value Значение условия
+ * @return int Количество
+ */
+
+function get_number ($table, $condition, $value) {
+    
+    $number = '
+        SELECT COUNT(id)
+        FROM '. $table .'
+        WHERE '.$condition.' = ' . $value;
+    
+    return $number;
+}
+

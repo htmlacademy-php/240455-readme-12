@@ -9,7 +9,7 @@
                 <ul class="popular__sorting-list sorting__list">
                     <?php foreach (SORTING as $sorting_item): ?>  
                     <li class="sorting__item<?= $sorting_item[0] == $sort_chosen ? ' sorting__item--popular' : ''; ?>">
-                        <a class="sorting__link<?= $sorting_item[0] == $sort_chosen ? ' sorting__link--active' : ''; ?>" href="/?sort_by=<?= $sorting_item[0] . '&categ_chosen='.$categ_chosen ?>">
+                        <a class="sorting__link<?= $sorting_item[0] == $sort_chosen ? ' sorting__link--active' : ''; ?>" href="/?sort_by=<?= $sorting_item[0] . '&categ_chosen=' . $categ_chosen ?>">
                             <span><?= $sorting_item[1]; ?></span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -29,9 +29,9 @@
                     </li>
                     <?php foreach ($categories as $categ): ?>    
                     <li class="popular__filters-item filters__item">
-                     	<a class="filters__button filters__button--<?= $categ['category']; ?> button<?= $categ['id'] == $categ_chosen ? ' filters__button--active' : ''; ?>" href="/?categ_chosen=<?= $categ['id'] . '&sort_by='.$sort_chosen ?>">
+                     	<a class="filters__button filters__button--<?= $categ['category']; ?> button <?= $categ['id'] == $categ_chosen ? ' filters__button--active' : ''; ?>" href="/?categ_chosen=<?= $categ['id'] . '&sort_by=' . $sort_chosen ?>">
                      		<span class="visually-hidden"><?= $categ['category_name']; ?></span>
-                     		<svg class="filters__icon" width="<?= $categ['category_w']; ?>" height="<?= $categ['category_h']; ?>">
+                     		<svg class="filters__icon" width="<?= $categ['category_w']; 'height=' . $categ['category_h']; ?>">
                                 <use xlink:href="#icon-filter-<?= $categ['category']; ?>"></use>
                             </svg>
                      	</a>
@@ -44,10 +44,11 @@
     		<?php foreach ($posts as $post): ?>         
             <article class="popular__post post post-<?= $post['category']; ?>"> 
                 <header class="post__header">
-                    <h2><a href="/post.php?post_id=<?= $post['id']; ?>"><?= $post['p_title']; ?></a></h2>
+                    <h2><a href="/post.php?post_id=<?= $post['id'] ?>"><?= $post['p_title']; ?></a></h2>
                 </header>
-                <div class="post__main">  
-	    		<?php switch ("post-".$post['category']):
+                <div class="post__main">
+                  
+	    		<?php switch ("post-" . $post['category']):
     	    	
                         case 'post-photo': ?>
                     <div class="post-photo__image-wrapper">
@@ -77,7 +78,7 @@
                           case 'post-quote': ?>
                     <blockquote>
                     	<p><?= $post['p_content']; ?></p>
-                    	<cite>Неизвестный Автор</cite>
+                    	<cite><?= $post['author']; ?></cite>
                     </blockquote>
           	    		<?php break;
           	    		
@@ -109,7 +110,7 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?= $post['author']; ?></b>
-                                <time class="post__time" title="<?= $post['date_title']; ?>" datetime="<?= $post['dt_add']; ?>"><?= $post['date_interval']; ?></time>
+                                <time class="post__time" title="<?= $post['date_title']; '" datetime="' . $post['dt_add'] ?>"><?= $post['date_interval']; ?></time>
                             </div>
                         </a>
                     </div>

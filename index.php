@@ -44,19 +44,14 @@ $query = '
         u.login,
         u.avatar,
         c.category,
-        COUNT(l.post_id) AS likes_count,
-        COUNT(com.post_id) AS comments_count
+        (SELECT COUNT(id) FROM likeit WHERE post_id = p.id) AS likes_count,
+        (SELECT COUNT(id) FROM comment WHERE post_id = p.id) AS comments_count
     FROM post AS p
         INNER JOIN user AS u
             ON p.user_id = u.id
         INNER JOIN category AS c
             ON p.category_id = c.id
-        LEFT JOIN likeit AS l
-            ON p.id = l.post_id
-        LEFT JOIN comment AS com
-            ON p.id = com.post_id
     ' . $categ_condition . '
-    GROUP BY p.id
     ORDER BY ' . $sort_by;
 
 

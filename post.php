@@ -26,29 +26,25 @@ if ($post_id > 0) {
     $post = get_result($db_link, $query, 3);
     
     // число лайков поста
-    $query = '
-        SELECT COUNT(id)
-        FROM likeit
-        WHERE post_id = ' . $post_id;
+
+    $query = get_number('likeit', 'post_id', $post_id);
     
     $arr_num['likes_count'] = get_result($db_link, $query, 1);
     
     // число комментариев к посту
-    $query = '
-        SELECT COUNT(id)
-        FROM comment
-        WHERE post_id = ' . $post_id;
+
+    $query = get_number('comment', 'post_id', $post_id);
     
     $arr_num['comments_count'] = get_result($db_link, $query, 1);
     
     // число подписчиков автора поста
     $query = '
       SELECT COUNT(id) 
-      FROM post 
-      WHERE user_id IN 
-	   (SELECT user_id 
-	   FROM post 
-	   WHERE post.id = ' . $post_id .')';
+      FROM subscription 
+      WHERE target_id IN 
+          (SELECT user_id 
+          FROM post 
+          WHERE post.id = ' . $post_id .')';
 
     $arr_num['followers_count'] = get_result($db_link, $query, 1);
 
@@ -56,13 +52,13 @@ if ($post_id > 0) {
     
     // число постов автора поста
     $query = '
-        SELECT user_id AS user,
-            (SELECT COUNT(*) 
-             FROM post 
-             WHERE user_id = user)
-        FROM post AS p
-        WHERE p.id = ' . $post_id;
-    
+        SELECT COUNT(user_id) 
+        FROM post 
+        WHERE user_id IN 
+            (SELECT user_id 
+            FROM post AS p
+            WHERE p.id = ' . $post_id .')';
+
     $arr_num['posts_count'] = get_result($db_link, $query, 1);
     
     $posts_word = get_noun_plural_form($arr_num['posts_count'], 'публикация', 'публикации', 'публикаций');
