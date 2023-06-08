@@ -19,7 +19,7 @@ mb_internal_encoding("UTF-8");
  * @param int $max_len Максимальная длина текста 
  * @return string
  */
-function cut_text ($text, $max_len = 300) {
+function cut_text ($text, $link, $max_len = 300) {
     
     $text_trimmed = trim($text);
     $text_num = mb_strlen($text_trimmed);
@@ -30,7 +30,7 @@ function cut_text ($text, $max_len = 300) {
         $position = mb_strrpos($text, ' ', 'UTF-8'); // Определение позиции последнего пробела. Именно по нему и разделяем слова
         $text = mb_substr($text, 0, $position, 'UTF-8'); // Обрезаем переменную по позиции
 
-        $text .= '... <a class="post-text__more-link" href="#">Читать далее</a>';
+        $text .= '... <a class="post-text__more-link" href="' . $link . '">Читать далее</a>';
 
     } 
 
@@ -56,6 +56,7 @@ function filter_xss (&$value) {
  * 35 дней <= n -> "n месяцев назад"
  *
  * @param string $date Дата
+ * @param int $not_ago Слово "назад"
  * @return string $interval Возвращает интервал между экземплярами дат
  */
 function get_interval ($date, $not_ago = 0) {
@@ -144,7 +145,6 @@ function get_result ($db_link, $query, $mode) {
     return $array;
 }
 
-
 /**
  * Принимает таблицу и условие и выдает количество
  *
@@ -164,3 +164,37 @@ function get_number ($table, $condition, $value) {
     return $number;
 }
 
+/**
+ * Добавляет элементы в массив
+ *
+ * @param array $array Массив
+ * @param string $array_el Элемент массива
+ * @param string $date_name Название столбца с датой 
+ * @param string $index_date Название для индекса интервала  
+ * @param string $index_date_title Название для индекса даты 
+ * @param int $not_ago Нужно ли слово "назад"
+ * @return int array
+ */
+
+function add_elements ($array, $array_el, $date_name, $index_date, $index_date_title, $not_ago = 0) {
+    if ($array_el !== '') {  //нужен цикл
+        foreach ($array as $key => $array_el) {  
+            if ($not_ago) {
+                $array[$key][$index_date] = get_interval($array_el[$date_name], 1);
+            } else {
+                $array[$key][$index_date] = get_interval($array_el[$date_name]);
+            }
+
+            $array[$key][$index_date_title] = date(DATE_FORMAT, strtotime($array_el[$date_name]));
+        }
+    } else {
+        if ($not_ago) {
+            $array[$index_date] = get_interval($array[$date_name], 1);
+        } else {
+            $array[$index_date] = get_interval($array[$date_name]);
+        }
+        
+        $array[$index_date_title] = date(DATE_FORMAT, strtotime($array[$date_name]));
+    }
+    return $array;
+}

@@ -72,7 +72,7 @@
                 		<?php break;
                 		
                         case 'post-text': ?>
-                  	<p><?php echo cut_text($post['p_content']); ?></p>
+                  	<p><?php echo cut_text($post['p_content'], '/post.php?post_id=' . $post['id']); ?></p>
                     	<?php break;
                     	
                           case 'post-quote': ?>

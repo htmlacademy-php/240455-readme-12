@@ -64,7 +64,7 @@
 					<div class="comments__list-wrapper">
 						<ul class="comments__list">
         					<?php foreach ($comments as $comment): ?>
-							<li class="comments__item user" id="<?= $comment['comment_number']; ?>">
+							<li class="comments__item user" id="<?= $comment['count']; ?>">
 								<div class="comments__avatar">
 									<a class="user__avatar-link" href="#"> <img
 										class="comments__picture" src="img/<?= $comment['avatar']; ?>"
@@ -75,7 +75,7 @@
 									<div class="comments__name-wrapper">
 										<a class="comments__user-name" href="#"> <span><?= $comment['login']; ?></span>
 										</a>
-										<time class="comments__time" datetime="<?= $comment['comment_date_title']; ?>"><?= $comment['comment_interval']; ?></time>
+										<time class="comments__time" datetime="<?= $comment['date_title']; ?>"><?= $comment['date_interval']; ?></time>
 									</div>
 									<p class="comments__text"><?= $comment['c_content']; ?></p>
 								</div>
@@ -103,7 +103,7 @@
 						<a class="post-details__name user__name" href="#"> <span><?= $post['login']; ?></span>
 						</a>
 						<time class="post-details__time user__time"
-							datetime="<?= $dt_user_registration_title; ?>"><?= $dt_user_registration_interval; ?> на сайте</time>
+							datetime="<?= $post['date_user_title']; ?>"><?= $post['date_user_interval']; ?> на сайте</time>
 					</div>
 				</div>
 				<div class="post-details__rating user__rating">

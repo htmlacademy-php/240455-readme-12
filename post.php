@@ -66,8 +66,7 @@ if ($post_id > 0) {
     $view_word = get_noun_plural_form($post['view_count'], 'просмотр', 'просмотра', 'просмотров');
     
     // генерация дат
-    $dt_user_registration_interval = get_interval ($post['dt_user_registration'], 1);
-    $dt_user_registration_title = date(DATE_FORMAT, strtotime($post['dt_user_registration']));
+    $post = add_elements($post, '', 'dt_user_registration', 'date_user_interval', 'date_user_title', $not_ago = 1);
     
     // получение хештегов
     $query = '
@@ -81,36 +80,32 @@ if ($post_id > 0) {
   
     // получение комментариев
     
+    $comment_condition = ' LIMIT 1';  //условие для ограничения количества выводимых комментариев
+    
     if (isset($_GET['show_comments'])) {
-        $query = '
-            SELECT c.id, c.dt_add, c_content, post_id, u.login, u.avatar
-            FROM comment AS c 
-            INNER JOIN user AS u
-               ON u.id = c.user_id
-            WHERE c.post_id = ' . $post_id . '
-            ORDER BY c.dt_add ASC';
-    } else {
-        $query = '
-            SELECT c.id, c.dt_add, c_content, post_id, u.login, u.avatar
-            FROM comment AS c
-            INNER JOIN user AS u
-               ON u.id = c.user_id
-            WHERE c.post_id = ' . $post_id . '
-            ORDER BY c.dt_add ASC
-            LIMIT 1';
+        $comment_condition = '';
     }
     
+    $query = '
+        SELECT c.id, c.dt_add, c_content, post_id, u.login, u.avatar
+        FROM comment AS c
+        INNER JOIN user AS u
+           ON u.id = c.user_id
+        WHERE c.post_id = ' . $post_id . '
+        ORDER BY c.dt_add ASC' . $comment_condition;
+
     $comments = get_result($db_link, $query, 2);
     
     // генерация дат и номера комментария
     $i = 1;
     if ($comments) {
         foreach ($comments as $key => $comment) {
-            $comments[$key]['comment_interval'] = date(DATE_FORMAT, strtotime($comment['dt_add']));
-            $comments[$key]['comment_date_title'] = get_interval($comment['dt_add']);
-            $comments[$key]['comment_number'] = $i++;
+            $comments[$key]['count'] = $i++;
         }
+        
+        $comments = add_elements($comments, '$comment', 'dt_add', 'date_interval', 'date_title');
     }
+    
     
     // выбор подшаблона поста
     
@@ -128,8 +123,6 @@ $user_name = 'Никитина Виктория';
 
 $main_content = include_template('post.php', [
     'post' => $post,
-    'dt_user_registration_interval' => $dt_user_registration_interval,
-    'dt_user_registration_title' => $dt_user_registration_title,
     'view_word' => $view_word,
     'hashtags' => $hashtags,
     'comments' => $comments,
