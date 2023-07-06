@@ -44,7 +44,7 @@
     		<?php foreach ($posts as $post): ?>         
             <article class="popular__post post post-<?= $post['category']; ?>"> 
                 <header class="post__header">
-                    <h2><a href="/posting.php?post_id=<?= $post['id'] ?>"><?= $post['p_title']; ?></a></h2>
+                    <h2><a href="/post.php?post_id=<?= $post['id'] ?>"><?= $post['p_title']; ?></a></h2>
                 </header>
                 <div class="post__main">
                   
@@ -72,7 +72,7 @@
                 		<?php break;
                 		
                         case 'post-text': ?>
-                  	<p><?php echo cut_text($post['p_content'], '/posting.php?post_id=' . $post['id']); ?></p>
+                  	<p><?php echo cut_text($post['p_content'], '/post.php?post_id=' . $post['id']); ?></p>
                     	<?php break;
                     	
                           case 'post-quote': ?>

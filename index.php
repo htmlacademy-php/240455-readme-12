@@ -11,13 +11,11 @@ $categories = get_result($db_link, $query);
 
 // Фильтрация по выбранному типу контента и сортировки
 $categ_chosen = filter_input(INPUT_GET, 'categ_chosen', FILTER_SANITIZE_NUMBER_INT);
-
-$categ_condition = ''; // условие с категорией для запроса
-
-if (!$categ_chosen) {
-    $categ_chosen = 0; // 0 - все категории
-} else {
+$categ_chosen = (int) $categ_chosen; // 0 - все категории
+if ($categ_chosen) {
     $categ_condition = 'WHERE c.id = ' . $categ_chosen;
+} else {
+    $categ_condition = '';
 }
 
 $sort_chosen = filter_input(INPUT_GET, 'sort_by', FILTER_SANITIZE_STRING);

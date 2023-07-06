@@ -62,7 +62,8 @@ $posts_word = get_noun_plural_form($arr_num['posts_count'], 'публикаци�
 $view_word = get_noun_plural_form($post['view_count'], 'просмотр', 'просмотра', 'просмотров');
 
 // генерация дат
-$post = add_elements($post, '', 'dt_user_registration', 'date_user_interval', 'date_user_title', $not_ago = 1);
+$post['date_user_interval'] = get_interval ($post['dt_user_registration'], 1);
+$post['date_user_title'] = date(DATE_FORMAT, strtotime($post['dt_user_registration']));
 
 // получение хештегов
 $query = '
@@ -94,12 +95,16 @@ $comments = get_result($db_link, $query);
 
 // генерация дат и номера комментария
 $i = 1;
+
 if ($comments) {
     foreach ($comments as $key => $comment) {
-        $comments[$key]['count'] = $i++;
+
+        $comments[$key]['comment_interval'] = date(DATE_FORMAT, strtotime($comment['dt_add']));
+
+        $comments[$key]['comment_date_title'] = get_interval($comment['dt_add']);
+
+        $comments[$key]['comment_number'] = $i++;
     }
-    
-    $comments = add_elements($comments, '$comment', 'dt_add', 'date_interval', 'date_title');
 }
 
 // выбор подшаблона поста
