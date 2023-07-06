@@ -82,9 +82,9 @@
 							</li>
 							<?php endforeach; ?>
 						</ul>
-						<?php if (!isset($_GET['show_comments']) && $arr_num['comments_count'] > 1) { ?>
-						<a class="comments__more-link" href="<?= 'post.php?post_id=' . $post['id'] . '&show_comments#' . $arr_num['comments_count']; ?>"> <span>Показать все
-								комментарии</span> <sup class="comments__amount"><?= $arr_num['comments_count'] - 1; ?></sup>
+						<?php if (!isset($_GET['show_comments']) && $arr_num['comments_count'] > 2) { ?>
+						<a class="comments__more-link" href="<?= 'posting.php?post_id=' . $post['id'] . '&show_comments#' . $arr_num['comments_count']; ?>"> 
+						<span>Показать все комментарии</span> <sup class="comments__amount"><?= $arr_num['comments_count'] - 2; ?></sup>
 						</a>
 						<?php } ?>
 					</div>

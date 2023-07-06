@@ -56,7 +56,7 @@ function filter_xss (&$value) {
  * 35 дней <= n -> "n месяцев назад"
  *
  * @param string $date Дата
- * @param int $not_ago Слово "назад"
+ * @param bool $not_ago Слово "назад"
  * @return string $interval Возвращает интервал между экземплярами дат
  */
 function get_interval ($date, $not_ago = 0) {
@@ -118,7 +118,7 @@ function get_interval ($date, $not_ago = 0) {
  * @return array
  */
 
-function get_result ($db_link, $query, $mode) {
+function get_result ($db_link, $query, $mode = 2) {
     
     $result = mysqli_query($db_link, $query);
     
@@ -154,12 +154,14 @@ function get_result ($db_link, $query, $mode) {
  * @return int Количество
  */
 
-function get_number ($table, $condition, $value) {
+function get_number ($db_link, $table, $condition) {
     
-    $number = '
+    $query = '
         SELECT COUNT(id)
         FROM '. $table .'
-        WHERE '.$condition.' = ' . $value;
+        WHERE '.$condition;
+    
+    $number = get_result($db_link, $query, 1);
     
     return $number;
 }

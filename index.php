@@ -5,13 +5,11 @@ require_once 'functions.php';
 require_once 'dbconn.php';
 
 // Выполнение запросов
-
 $query = 'SELECT * FROM category';
 
-$categories = get_result($db_link, $query, 2);
+$categories = get_result($db_link, $query);
 
 // Фильтрация по выбранному типу контента и сортировки
-
 $categ_chosen = filter_input(INPUT_GET, 'categ_chosen', FILTER_SANITIZE_NUMBER_INT);
 
 $categ_condition = ''; // условие с категорией для запроса
@@ -28,16 +26,15 @@ if (!$sort_chosen) {
     $sort_chosen = 'popularity'; // по популярности
 }
 
-if ($sort_chosen == 'likes') {
+if ($sort_chosen === 'likes') {
     $sort_by = 'likes_count DESC';
-} elseif ($sort_chosen == 'date') {
+} elseif ($sort_chosen === 'date') {
     $sort_by = 'dt_add DESC';
 } else {
     $sort_by = 'view_count DESC';
 }
 
 //Формирование запроса в зависимости от выбранного типа контента
-
 $query = '
     SELECT
         p.*,
@@ -55,10 +52,9 @@ $query = '
     ORDER BY ' . $sort_by;
 
 
-$posts = get_result($db_link, $query, 2);
+$posts = get_result($db_link, $query);
 
 // Генерация дат
-
 $posts = add_elements($posts, '$post', 'dt_add', 'date_interval', 'date_title');
 
 $is_auth = rand(0, 1);
@@ -66,11 +62,9 @@ $is_auth = rand(0, 1);
 $user_name = 'Никитина Виктория';
 
 // Очистка от XSS
-
 array_walk_recursive($posts, 'filter_xss');
 
 // Подготовка и вывод страницы
-
 $main_content = include_template('main.php', [
     'categories' => $categories,
     'posts' => $posts,      
