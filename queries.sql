@@ -55,6 +55,9 @@ VALUES
 INSERT INTO `subscription`
     (`user_id`, `target_id`)
 VALUES 
+	 ('4', '1'),
+	 ('3', '1'),
+	 ('2', '1'),
     ('1', '4');
     
 -- Добавить хештег

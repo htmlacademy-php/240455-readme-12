@@ -1,9 +1,9 @@
 <?php
 
 define('SORTING', array(
-    ['popularity', 'Популярность'],
-    ['likes', 'Лайки'],
-    ['date', 'Дата'],
+    0 => 'Популярность',
+    1 => 'Лайки',
+    2 => 'Дата',
 ));
 
 define("DATE_FORMAT", "d.m.Y H:i");

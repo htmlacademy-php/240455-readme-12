@@ -11,12 +11,16 @@ if ($post_id === 0) {
     exit('Пост не существует');
 }
 
+// Проверка существования параметра show_comments и скрытых комментариев
+$show_comments = filter_input(INPUT_GET, 'show_comments', FILTER_SANITIZE_NUMBER_INT);
+
 $query = '
     SELECT      
         p.*,
         u.login,
         u.avatar,
         u.dt_add AS dt_user_registration,
+        u.id AS user_id,
         c.category
     FROM post AS p
         INNER JOIN user AS u
@@ -27,6 +31,10 @@ $query = '
 
 $post = get_result($db_link, $query, 3);
 
+if(!$post) {
+    exit('Пост не существует');
+}
+
 // число лайков поста
 $arr_num['likes_count'] = get_number($db_link, 'likeit', 'post_id =' . $post_id);
 
@@ -34,28 +42,12 @@ $arr_num['likes_count'] = get_number($db_link, 'likeit', 'post_id =' . $post_id)
 $arr_num['comments_count'] = get_number($db_link, 'comment', 'post_id =' . $post_id);
 
 // число подписчиков автора поста
-$query = '
-  SELECT COUNT(id) 
-  FROM subscription 
-  WHERE target_id IN 
-      (SELECT user_id 
-      FROM post 
-      WHERE post.id = ' . $post_id .')';
-
-$arr_num['followers_count'] = get_result($db_link, $query, 1);
+$arr_num['followers_count'] = get_number($db_link, 'subscription', 'target_id =' . $post['user_id']);
 
 $followers_word = get_noun_plural_form($arr_num['followers_count'], 'подписчик', 'подписчика', 'подписчиков');
 
 // число постов автора поста
-$query = '
-    SELECT COUNT(user_id) 
-    FROM post 
-    WHERE user_id IN 
-        (SELECT user_id 
-        FROM post AS p
-        WHERE p.id = ' . $post_id .')';
-
-$arr_num['posts_count'] = get_result($db_link, $query, 1);
+$arr_num['posts_count'] = get_number($db_link, 'post', 'user_id =' . $post['user_id']);
 
 $posts_word = get_noun_plural_form($arr_num['posts_count'], 'публикация', 'публикации', 'публикаций');
 
@@ -124,6 +116,7 @@ $main_content = include_template('posting.php', [
     'followers_word' => $followers_word,
     'posts_word' => $posts_word,
     'post_type' => $post_type,
+    'show_comments' => $show_comments,
 ]);
 
 $layout_content = include_template('layout.php', [

@@ -21,12 +21,12 @@ if ($categ_chosen) {
 $sort_chosen = filter_input(INPUT_GET, 'sort_by', FILTER_SANITIZE_STRING);
 
 if (!$sort_chosen) {
-    $sort_chosen = 'popularity'; // по популярности
+    $sort_chosen = 'Популярность'; // по популярности
 }
 
-if ($sort_chosen === 'likes') {
+if ($sort_chosen === 'Лайки') {
     $sort_by = 'likes_count DESC';
-} elseif ($sort_chosen === 'date') {
+} elseif ($sort_chosen === 'Дата') {
     $sort_by = 'dt_add DESC';
 } else {
     $sort_by = 'view_count DESC';
