@@ -7,46 +7,32 @@
             <div class="popular__sorting sorting">
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
-                    <li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="#">
-                            <span>Популярность</span>
+                    <?php foreach (SORTING as $sorting_item): ?>  
+                    <li class="sorting__item<?= $sorting_item == $sort_chosen ? ' sorting__item--popular' : ''; ?>">
+                        <a class="sorting__link<?= $sorting_item == $sort_chosen ? ' sorting__link--active' : ''; ?>" href="/?sort_by=<?= $sorting_item . '&categ_chosen=' . $categ_chosen ?>">
+                            <span><?= $sorting_item; ?></span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
                             </svg>
                         </a>
                     </li>
-                    <li class="sorting__item">
-                        <a class="sorting__link" href="#">
-                            <span>Лайки</span>
-                            <svg class="sorting__icon" width="10" height="12">
-                                <use xlink:href="#icon-sort"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="sorting__item">
-                        <a class="sorting__link" href="#">
-                            <span>Дата</span>
-                            <svg class="sorting__icon" width="10" height="12">
-                                <use xlink:href="#icon-sort"></use>
-                            </svg>
-                        </a>
-                    </li>
+                    <?php endforeach; ?>
                 </ul>
             </div>
             <div class="popular__filters filters">
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
-                    <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <a class="filters__button filters__button--ellipse filters__button--all filters__button--active" href="#">
+                    <li class="popular__filters-item filters__item filters__item--all popular__filters-item--all">
+                        <a class="filters__button filters__button--ellipse filters__button--all<?= $categ_chosen == 0 ? ' filters__button--active' : ''; ?>" href="/">
                             <span>Все</span>
                         </a>
                     </li>
-                    <?php foreach ($categories as $cat): ?>
+                    <?php foreach ($categories as $categ): ?>    
                     <li class="popular__filters-item filters__item">
-                     	<a class="filters__button filters__button--<?= $cat['category']; ?> button" href="">
-                     		<span class="visually-hidden"><?= $cat['category_name']; ?></span>
-                     		<svg class="filters__icon" width="22" height="18">
-                                <use xlink:href="#icon-filter-<?= $cat['category']; ?>"></use>
+                     	<a class="filters__button filters__button--<?= $categ['category']; ?> button <?= $categ['id'] == $categ_chosen ? ' filters__button--active' : ''; ?>" href="/?categ_chosen=<?= $categ['id'] . '&sort_by=' . $sort_chosen ?>">
+                     		<span class="visually-hidden"><?= $categ['category_name']; ?></span>
+                     		<svg class="filters__icon" width=<?= $categ['category_w'] . ' height=' . $categ['category_h']; ?>>
+                                <use xlink:href="#icon-filter-<?= $categ['category']; ?>"></use>
                             </svg>
                      	</a>
                      </li>
@@ -58,10 +44,11 @@
     		<?php foreach ($posts as $post): ?>         
             <article class="popular__post post post-<?= $post['category']; ?>"> 
                 <header class="post__header">
-                    <h2><?= $post['p_title']; ?></h2>
+                    <h2><a href="/post.php?post_id=<?= $post['id'] ?>"><?= $post['p_title']; ?></a></h2>
                 </header>
-                <div class="post__main">  
-    	    	<?php switch ("post-".$post['category']):
+                <div class="post__main">
+                  
+	    		<?php switch ("post-" . $post['category']):
     	    	
                         case 'post-photo': ?>
                     <div class="post-photo__image-wrapper">
@@ -85,13 +72,13 @@
                 		<?php break;
                 		
                         case 'post-text': ?>
-                  	<p><?php echo cut_text($post['p_content']); ?></p> 
+                  	<p><?php echo cut_text($post['p_content'], '/post.php?post_id=' . $post['id']); ?></p>
                     	<?php break;
                     	
                           case 'post-quote': ?>
                     <blockquote>
                     	<p><?= $post['p_content']; ?></p>
-                    	<cite>Неизвестный Автор</cite>
+                    	<cite><?= $post['author']; ?></cite>
                     </blockquote>
           	    		<?php break;
           	    		
@@ -100,7 +87,7 @@
                     	<a class="post-link__external" href="http://<?= $post['p_content']; ?>" title="Перейти по ссылке">
                         	<div class="post-link__info-wrapper">
                             	<div class="post-link__icon-wrapper">
-                                	<img src="https://www.google.com/s2/favicons?domain=<?= $post['p_content']; ?>" alt="Иконка">
+                                	<img src="https://www.google.com/s2/favicons?domain=<?= $post['p_content']; ?>" alt="Иконка">  
                                 </div>
                                 <div class="post-link__info">
                                 	<h3><?= $post['p_title']; ?></h3>
@@ -109,9 +96,11 @@
                             <span><?= $post['p_content']; ?></span>
                         </a>
                     </div>
+                    
                     	<?php break; 
                 endswitch; ?>
-                </div>
+                
+                </div> 
                 <footer class="post__footer">
                     <div class="post__author">
                         <a class="post__author-link" href="#" title="Автор">
@@ -134,14 +123,14 @@
                                 <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
                                     <use xlink:href="#icon-heart-active"></use>
                                 </svg>
-                                <span>0</span>
+                                <span><?= $post['likes_count']; ?></span>
                                 <span class="visually-hidden">количество лайков</span>
                             </a>
                             <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
                                 <svg class="post__indicator-icon" width="19" height="17">
                                     <use xlink:href="#icon-comment"></use>
                                 </svg>
-                                <span>0</span>
+                                <span><?= $post['comments_count']; ?></span>
                                 <span class="visually-hidden">количество комментариев</span>
                             </a>
                         </div>

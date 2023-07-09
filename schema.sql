@@ -20,7 +20,9 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS category (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	category VARCHAR(20) COMMENT 'Наименование типа контента',
-	category_name VARCHAR(20) COMMENT 'Имя класса'
+	category_name VARCHAR(20) COMMENT 'Имя класса',
+	category_w TINYINT COMMENT 'Ширина иконки',
+	category_h TINYINT COMMENT 'Высота иконки'
 ) COMMENT 'Тип контента';
 
 -- 5.1 Пост
