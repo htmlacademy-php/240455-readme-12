@@ -1,9 +1,9 @@
 <?php
 
 define('SORTING', array(
-    0 => 'Популярность',
-    1 => 'Лайки',
-    2 => 'Дата',
+    'popularity' => 'Популярность',
+    'likes' => 'Лайки',
+    'date' => 'Дата',
 ));
 
 define("DATE_FORMAT", "d.m.Y H:i");
@@ -20,7 +20,9 @@ mb_internal_encoding("UTF-8");
  * @return string
  */
 function cut_text ($text, $link, $max_len = 300) {
-    
+    /**
+     * @return string
+     */
     $text_trimmed = trim($text);
     $text_num = mb_strlen($text_trimmed);
 
@@ -44,6 +46,9 @@ function cut_text ($text, $link, $max_len = 300) {
  * @return string
  */
 function filter_xss (&$value) {
+    /**
+     * @return string
+     */
     $value = htmlentities($value);
 }
 
@@ -60,7 +65,9 @@ function filter_xss (&$value) {
  * @return string $interval Возвращает интервал между экземплярами дат
  */
 function get_interval ($date, $not_ago = 0) {
-    
+    /**
+     * @return string
+     */
     $cur_date = date_create("now"); // создаёт экземпляр даты
     $date = date_create($date); // создаёт экземпляр даты
     $date_string = $date->format('Y.m.d H:i'); // возвращает дату в указанном формате string
@@ -119,7 +126,9 @@ function get_interval ($date, $not_ago = 0) {
  */
 
 function get_result ($db_link, $query, $mode = 2) {
-    
+    /**
+     * @return array
+     */
     $result = mysqli_query($db_link, $query);
     
     $rows = mysqli_num_rows($result);
@@ -155,48 +164,15 @@ function get_result ($db_link, $query, $mode = 2) {
  */
 
 function get_number ($db_link, $table, $condition) {
-    
+    /**
+     * @return int
+     */
     $query = '
         SELECT COUNT(id)
         FROM '. $table .'
-        WHERE '.$condition;
+        WHERE '. $condition;
     
     $number = get_result($db_link, $query, 1);
     
     return $number;
-}
-
-/**
- * Добавляет элементы в массив
- *
- * @param array $array Массив
- * @param string $array_el Элемент массива
- * @param string $date_name Название столбца с датой 
- * @param string $index_date Название для индекса интервала  
- * @param string $index_date_title Название для индекса даты 
- * @param int $not_ago Нужно ли слово "назад"
- * @return int array
- */
-
-function add_elements ($array, $array_el, $date_name, $index_date, $index_date_title, $not_ago = 0) {
-    if ($array_el !== '') {  //нужен цикл
-        foreach ($array as $key => $array_el) {  
-            if ($not_ago) {
-                $array[$key][$index_date] = get_interval($array_el[$date_name], 1);
-            } else {
-                $array[$key][$index_date] = get_interval($array_el[$date_name]);
-            }
-
-            $array[$key][$index_date_title] = date(DATE_FORMAT, strtotime($array_el[$date_name]));
-        }
-    } else {
-        if ($not_ago) {
-            $array[$index_date] = get_interval($array[$date_name], 1);
-        } else {
-            $array[$index_date] = get_interval($array[$date_name]);
-        }
-        
-        $array[$index_date_title] = date(DATE_FORMAT, strtotime($array[$date_name]));
-    }
-    return $array;
 }

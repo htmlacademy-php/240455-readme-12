@@ -68,14 +68,16 @@ $query = '
 $hashtags = get_result($db_link, $query, 4);
 
 // получение комментариев
-$comment_condition = ' LIMIT 2';  //условие для ограничения количества выводимых комментариев
-
-if (isset($_GET['show_comments'])) {
-    $comment_condition = '';
-}
+$comment_condition  = isset($_GET['show_comments']) ? '' : ' LIMIT 2'; //условие для ограничения количества выводимых комментариев
 
 $query = '
-    SELECT c.id, c.dt_add, c_content, post_id, u.login, u.avatar
+    SELECT 
+        c.id, 
+        c.dt_add, 
+        c_content, 
+        post_id, 
+        u.login, 
+        u.avatar
     FROM comment AS c
     INNER JOIN user AS u
        ON u.id = c.user_id

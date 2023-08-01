@@ -21,12 +21,12 @@ if ($categ_chosen) {
 $sort_chosen = filter_input(INPUT_GET, 'sort_by', FILTER_SANITIZE_STRING);
 
 if (!$sort_chosen) {
-    $sort_chosen = 'Популярность'; // по популярности
+    $sort_chosen = 'popularity'; // по популярности
 }
 
-if ($sort_chosen === 'Лайки') {
+if ($sort_chosen === 'likes') {
     $sort_by = 'likes_count DESC';
-} elseif ($sort_chosen === 'Дата') {
+} elseif ($sort_chosen === 'date') {
     $sort_by = 'dt_add DESC';
 } else {
     $sort_by = 'view_count DESC';
@@ -53,7 +53,10 @@ $query = '
 $posts = get_result($db_link, $query);
 
 // Генерация дат
-$posts = add_elements($posts, '$post', 'dt_add', 'date_interval', 'date_title');
+foreach ($posts as $key => $post) {  
+    $posts[$key]['date_interval'] = get_interval ($post['dt_add'], 1);
+    $posts[$key]['date_title'] = date(DATE_FORMAT, strtotime($post['dt_add']));
+}
 
 $is_auth = rand(0, 1);
 

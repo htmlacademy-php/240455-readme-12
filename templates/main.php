@@ -7,9 +7,9 @@
             <div class="popular__sorting sorting">
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
-                    <?php foreach (SORTING as $sorting_item): ?>  
+                    <?php foreach (SORTING as $key => $sorting_item): ?>  
                     <li class="sorting__item<?= $sorting_item == $sort_chosen ? ' sorting__item--popular' : ''; ?>">
-                        <a class="sorting__link<?= $sorting_item == $sort_chosen ? ' sorting__link--active' : ''; ?>" href="/?sort_by=<?= $sorting_item . '&categ_chosen=' . $categ_chosen ?>">
+                        <a class="sorting__link<?= $sorting_item == $sort_chosen ? ' sorting__link--active' : ''; ?>" href="/?sort_by=<?= $key . '&categ_chosen=' . $categ_chosen ?>">
                             <span><?= $sorting_item; ?></span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
