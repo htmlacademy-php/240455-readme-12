@@ -8,8 +8,8 @@
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
                     <?php foreach (SORTING as $key => $sorting_item): ?>  
-                    <li class="sorting__item<?= $sorting_item == $sort_chosen ? ' sorting__item--popular' : ''; ?>">
-                        <a class="sorting__link<?= $sorting_item == $sort_chosen ? ' sorting__link--active' : ''; ?>" href="/?sort_by=<?= $key . '&categ_chosen=' . $categ_chosen ?>">
+                    <li class="sorting__item<?= $key == $sort_chosen ? ' sorting__item--popular' : ''; ?>">
+                        <a class="sorting__link<?= $key == $sort_chosen ? ' sorting__link--active' : ''; ?>" href="/?sort_by=<?= $key . '&categ_chosen=' . $categ_chosen ?>">
                             <span><?= $sorting_item; ?></span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -31,7 +31,7 @@
                     <li class="popular__filters-item filters__item">
                      	<a class="filters__button filters__button--<?= $categ['category']; ?> button <?= $categ['id'] == $categ_chosen ? ' filters__button--active' : ''; ?>" href="/?categ_chosen=<?= $categ['id'] . '&sort_by=' . $sort_chosen ?>">
                      		<span class="visually-hidden"><?= $categ['category_name']; ?></span>
-                     		<svg class="filters__icon" width=<?= $categ['category_w'] . ' height=' . $categ['category_h']; ?>>
+                     		<svg class="filters__icon" width=<?= $categ['category_w_main'] . ' height=' . $categ['category_h_main']; ?>>
                                 <use xlink:href="#icon-filter-<?= $categ['category']; ?>"></use>
                             </svg>
                      	</a>
