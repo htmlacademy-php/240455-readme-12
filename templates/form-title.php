@@ -1,10 +1,10 @@
 <div class="adding-post__input-wrapper form__input-wrapper">
 	<label class="adding-post__label form__label"
-		for="photo-heading">Заголовок <span
+		for="<?= $categ['category']; ?>-heading">Заголовок <span
 		class="form__input-required">*</span></label>
 	<div class="form__input-section">
 		<input class="adding-post__input form__input"
-			id="photo-heading" type="text" name="photo-heading"
+			id="<?= $categ['category']; ?>-heading" type="text" name="<?= $categ['category']; ?>-heading"
 			placeholder="Введите заголовок">
 		<button class="form__error-button button" type="button">
 			!<span class="visually-hidden">Информация об ошибке</span>
