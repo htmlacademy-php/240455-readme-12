@@ -44,20 +44,14 @@ $arr_num['comments_count'] = get_number($db_link, 'comment', 'post_id =' . $post
 // число подписчиков автора поста
 $arr_num['followers_count'] = get_number($db_link, 'subscription', 'target_id =' . $post['user_id']);
 
-$followers_word = 'подписчик';
-
-$followers_word = get_noun_plural_form($arr_num['followers_count'], $followers_word, $followers_word . 'а', $followers_word . 'ов');
+$followers_word = 'подписчик' . get_noun_plural_form($arr_num['followers_count'], '', 'а', 'ов');
 
 // число постов автора поста
 $arr_num['posts_count'] = get_number($db_link, 'post', 'user_id =' . $post['user_id']);
 
-$posts_word = 'публикаци';
+$posts_word = 'публикаци' . get_noun_plural_form($arr_num['posts_count'], 'я', 'и', 'й');
 
-$posts_word = get_noun_plural_form($arr_num['posts_count'], $posts_word . 'я', $posts_word . 'и',  $posts_word . 'й');
-
-$view_word = 'просмотр';
-
-$view_word = get_noun_plural_form($post['view_count'], $view_word, $view_word . 'а',  $view_word . 'ов');
+$view_word = 'просмотр' . get_noun_plural_form($post['view_count'], '', 'а', 'ов');
 
 // генерация дат
 $post['date_user_interval'] = get_interval ($post['dt_user_registration'], 1);

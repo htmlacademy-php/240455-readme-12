@@ -20,9 +20,6 @@ mb_internal_encoding("UTF-8");
  * @return string
  */
 function cut_text ($text, $link, $max_len = 300) {
-    /**
-     * @return string
-     */
     $text_trimmed = trim($text);
     $text_num = mb_strlen($text_trimmed);
 
@@ -46,9 +43,6 @@ function cut_text ($text, $link, $max_len = 300) {
  * @return string
  */
 function filter_xss (&$value) {
-    /**
-     * @return string
-     */
     $value = htmlentities($value);
 }
 
@@ -65,9 +59,6 @@ function filter_xss (&$value) {
  * @return string $interval Возвращает интервал между экземплярами дат
  */
 function get_interval ($date, $not_ago = 0) {
-    /**
-     * @return string
-     */
     $cur_date = date_create("now"); // создаёт экземпляр даты
     $date = date_create($date); // создаёт экземпляр даты
     $date_string = $date->format('Y.m.d H:i'); // возвращает дату в указанном формате string
@@ -126,9 +117,6 @@ function get_interval ($date, $not_ago = 0) {
  */
 
 function get_result ($db_link, $query, $mode = 2) {
-    /**
-     * @return array
-     */
     $result = mysqli_query($db_link, $query);
     
     $rows = mysqli_num_rows($result);
@@ -159,14 +147,10 @@ function get_result ($db_link, $query, $mode = 2) {
  *
  * @param string $table Таблица
  * @param string $condition Условие
- * @param string $value Значение условия
  * @return int Количество
  */
 
 function get_number ($db_link, $table, $condition) {
-    /**
-     * @return int
-     */
     $query = '
         SELECT COUNT(id)
         FROM '. $table .'
