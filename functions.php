@@ -160,3 +160,7 @@ function get_number ($db_link, $table, $condition) {
     
     return $number;
 }
+
+function getPostVal($name) {
+    return $_POST[$name] ?? "";
+}

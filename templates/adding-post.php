@@ -10,7 +10,7 @@
                     	<?php foreach ($categories as $categ): ?>    
                         <li class="adding-post__tabs-item filters__item">
                          	<a class="adding-post__tabs-link tabs__item filters__button  filters__button--<?= $categ['category']; ?> 
-                         		button <?= $categ['id'] == $categ_chosen ? ' filters__button--active tabs__item--active' : ''; ?>" href="add.php?categ_chosen=<?= $categ['id']; ?>">
+                         		button <?= $categ['id'] == $categ_chosen ? ' filters__button--active tabs__item--active' : ''; ?>" href="?categ_chosen=<?= $categ['id']; ?>">
                          		<svg class="filters__icon" width=<?= $categ['category_w'] . ' height=' . $categ['category_h']; ?>>
                                     <use xlink:href="#icon-filter-<?= $categ['category']; ?>"></use>
                                 </svg> <span><?= $categ['category_name']; ?></span>
@@ -27,7 +27,7 @@
 					<section
 						class="adding-post__photo tabs__content tabs__content--active">
 						<h2 class="visually-hidden">Форма добавления фото</h2>
-						<form class="adding-post__form form" action="#" method="post"
+						<form class="adding-post__form form" action="add.php" method="post"
 							enctype="multipart/form-data">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
@@ -84,7 +84,7 @@
                     case ($categ['id'] == 4 && $categ_chosen == 4): ?>
 					<section class="adding-post__video tabs__content tabs__content--active">
 						<h2 class="visually-hidden">Форма добавления видео</h2>
-						<form class="adding-post__form form" action="#" method="post"
+						<form class="adding-post__form form" action="add.php" method="post"
 							enctype="multipart/form-data">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
@@ -117,7 +117,7 @@
                     case ($categ['id'] == 1 && $categ_chosen == 1): ?>
 					<section class="adding-post__text tabs__content tabs__content--active">
 						<h2 class="visually-hidden">Форма добавления текста</h2>
-						<form class="adding-post__form form" action="#" method="post">
+						<form class="adding-post__form form" action="add.php" method="post">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
@@ -127,9 +127,9 @@
 											поста <span class="form__input-required">*</span>
 										</label>
 										<div class="form__input-section">
-											<textarea
+											<textarea name="post-message"
 												class="adding-post__textarea form__textarea form__input"
-												id="post-text" placeholder="Введите текст публикации"></textarea>
+												id="post-text" placeholder="Введите текст публикации"><?= getPostVal('post-message'); ?>></textarea>
 											<?php require 'form-error.php';?>
 										</div>
 									</div>
@@ -149,7 +149,7 @@
                     case ($categ['id'] == 2 && $categ_chosen == 2): ?>
 					<section class="adding-post__quote tabs__content tabs__content--active">
 						<h2 class="visually-hidden">Форма добавления цитаты</h2>
-						<form class="adding-post__form form" action="#" method="post">
+						<form class="adding-post__form form" action="add.php" method="post">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
@@ -189,7 +189,7 @@
                     case ($categ['id'] == 5 && $categ_chosen == 5): ?>
 					<section class="adding-post__link tabs__content tabs__content--active">
 						<h2 class="visually-hidden">Форма добавления ссылки</h2>
-						<form class="adding-post__form form" action="#" method="post">
+						<form class="adding-post__form form" action="add.php" method="post">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>

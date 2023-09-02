@@ -17,6 +17,10 @@ if (!$categ_chosen) {
     $categ_chosen = 1; // публикация с текстом по умолчанию
 } 
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    print_r($_POST);
+}
+
 $is_auth = rand(0, 1);
 
 $user_name = 'Никитина Виктория';
