@@ -37,7 +37,7 @@
 											из интернета</label>
 										<div class="form__input-section">
 											<input class="adding-post__input form__input" id="photo-url"
-												type="text" name="photo-heading"
+												type="text" name="photo-url"
 												placeholder="Введите ссылку">
 											<?php require 'form-error.php';?>
 										</div>
@@ -95,7 +95,7 @@
 										</label>
 										<div class="form__input-section">
 											<input class="adding-post__input form__input" id="video-url"
-												type="text" name="video-heading"
+												type="text" name="video-url"
 												placeholder="Введите ссылку">
 											<?php require 'form-error.php';?>
 										</div>
@@ -127,9 +127,9 @@
 											поста <span class="form__input-required">*</span>
 										</label>
 										<div class="form__input-section">
-											<textarea name="post-message"
+											<textarea name="post-text"
 												class="adding-post__textarea form__textarea form__input"
-												id="post-text" placeholder="Введите текст публикации"><?= getPostVal('post-message'); ?>></textarea>
+												id="post-text" placeholder="Введите текст публикации"><?= getPostVal('post-message'); ?></textarea>
 											<?php require 'form-error.php';?>
 										</div>
 									</div>
@@ -160,7 +160,7 @@
 										<div class="form__input-section">
 											<textarea
 												class="adding-post__textarea adding-post__textarea--quote form__textarea form__input"
-												id="cite-text" placeholder="Текст цитаты"></textarea>
+												id="cite-text" placeholder="Текст цитаты"  name="quote-text"></textarea>
 											<?php require 'form-error.php';?>
 										</div>
 									</div>
