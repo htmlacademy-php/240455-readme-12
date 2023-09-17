@@ -161,6 +161,56 @@ function get_number ($db_link, $table, $condition) {
     return $number;
 }
 
+/**
+ * Сохраняет значения полей формы после валидации
+ *
+ * @param string $name Значение поля
+ * @return string Значение поля
+ */
+
 function getPostVal($name) {
     return $_POST[$name] ?? "";
+}
+
+/**
+ * Проверка на корректный email
+ *
+ * @param string $name Значение поля
+ * @return string Текст 
+ */
+
+function validateEmail($name) {
+    if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_EMAIL)) {
+        return "Введите корректный email";
+    }
+}
+
+/**
+ * Проверка на заполненость поля
+ *
+ * @param string $name Значение поля
+ * @return string Текст
+ */
+
+function validateFilled($name) {
+    if (empty($_POST[$name])) {
+        return "Это поле должно быть заполнено";
+    }
+}
+
+/**
+ * Проверка длины
+ *
+ * @param string $name Значение поля
+ * @param int $min Минимальное значение
+ * @param int $max Максимальное значение
+ * @return string Текст
+ */
+
+function validateLength($name, $min, $max = 10000) {
+    $len = strlen($_POST[$name]);
+    
+    if ($len < $min or $len > $max) {
+        return "Значение должно быть от $min до $max символов";
+    }
 }

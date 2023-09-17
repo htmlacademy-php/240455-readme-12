@@ -23,94 +23,103 @@ $errors = []; // массив ошибок. будут накапливатьс�
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //$curr_type = get_current_type(INPUT_POST); // текущий тип поста получен по POST
     
-    /* данные, полученные методом POST
-     $_POST = array(
-     'product_id'    => 'libgd<script>',
-     'component'     => '10',
-     'versions'      => '2.0.33',
-     'testscalar'    => array('2', '23', '10', '12'),
-     'testarray'     => '2',
-     
-     [text-heading] => Заголовок,
-     [post-text] => Текст публикации,
-     [text-tags] => теги,
-     
-     [quote-heading] => Заголовок цитаты,
-     [quote-text] => Текст цитаты,
-     [quote-author] => Автор цитаты,
-     [quote-tags] => Теги цитаты,
-     
-     [photo-heading] => Ссылка из интернета с картинкой,
-     [photo-url] => ссылка для картинки из инета,
-     [photo-tags] => Теги для картинки,
-     [файл]
-     
-     [video-heading] => ссылка на видео,
-     [video-url] => ссылка YOUTUBE,
-     [video-tags] => теги видео,
-     
-     [link-heading] => Заголовок ссылки,
-     [post-link] => адрес ссылки,
-     [link-tags] => теги для ссылки
-     
-     );
-     */
-    
-    $arr_options = array(
-        'text-heading' => FILTER_SANITIZE_STRING,
-        'post-text'   => FILTER_SANITIZE_STRING,
-        'text-tags'   =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
+    if ($_POST['post-type'] == 'text') {
+        $arr_options = array(
+            'text-heading' => FILTER_SANITIZE_STRING,
+            'post-text' => FILTER_SANITIZE_STRING,
+            'text-tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
+            'post-type' =>  FILTER_SANITIZE_STRING,
+        );
         
-        'quote-heading' =>  FILTER_SANITIZE_STRING,
-        'quote-text' =>  FILTER_SANITIZE_STRING,
-        'quote-author' =>  FILTER_SANITIZE_STRING,
-        'quote-tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
+        $post_data = filter_input_array(INPUT_POST, $arr_options); // отфильтрованные данные из POST
+
+        //Валидация полей формы публикации
+        $rules = [
+            'text-heading' => function() {
+            return validateFilled('text-heading');
+            },
+            'post-text' => function() {
+            return validateFilled('post-text');
+            },
+            'post-text' => function() {
+            return validateLength('post-text', 70);
+            }
+            ];
         
-        'photo-heading' =>  FILTER_SANITIZE_STRING,
-        'photo-url' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже Обязательность - Нет
-        'photo-tags' =>  FILTER_SANITIZE_STRING,// Обязательность - Нет
-        
-        'video-heading' =>  FILTER_SANITIZE_STRING,
-        'video-url' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже
-        'video-tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
-        
-        'link-heading' =>  FILTER_SANITIZE_STRING,
-        'post-link' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже
-        'link-tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
-    );
-    
-    $post_data = filter_input_array(INPUT_POST, $arr_options); // отфильтрованные данные из POST. Отсутствующие поля заполняем пустыми значениями.
-    
-    // формируем список полей, обязательных для заполнения
-    $required_fields = ['text-heading', 'post-text', 'quote-heading', 'quote-text', 'quote-author', 
-                        'photo-heading', 'video-heading', 'video-url', 'link-heading', 'post-link'];
-    
-    foreach ($required_fields as $field) {
-        if (empty($_POST[$field])) {
-            $errors[$field] = 'Поле не заполнено';
+        foreach ($_POST as $key => $value) {
+            if (isset($rules[$key])) {
+                $rule = $rules[$key];
+                $errors[$key] = $rule();
+            }
         }
-    }
-    
-    if (count($errors)) {
-        // показать ошибку валидации
-    }
-    
-    if (isset($_FILES['userpic-file-photo'])) {
-        $file_name = $_FILES['userpic-file-photo']['name'];
-        $file_path = __DIR__ . '/uploads/';
-        // Формат загруженного файла должен быть изображением одного из следующих типов: png, jpeg, gif. 
-        move_uploaded_file($_FILES['userpic-file-photo']['tmp_name'], $file_path . $file_name);
+        
+        $tags = array_filter(explode("#", $post_data['text-tags']));
+        
+        $post_type_chosen = $post_data['post-type'];
+        
+        $errors = array_filter($errors);
+        
+        //Запись данных 
+        if (!$errors) {
+            
+            //header("Location: /post.php?post_id=");
+        }
+        
+    } elseif ($_POST['post-type'] == 'photo') {
+        $arr_options = array(
+            'photo-heading' =>  FILTER_SANITIZE_STRING,
+            'photo-url' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже Обязательность - Нет
+            'photo-tags' =>  FILTER_SANITIZE_STRING,// Обязательность - Нет
+        );
+        
+        $post_data = filter_input_array(INPUT_POST, $arr_options); // отфильтрованные данные из POST. Отсутствующие поля заполняем пустыми значениями.
+        
+        if (isset($_FILES['userpic-file-photo'])) {
+            $file_name = $_FILES['userpic-file-photo']['name'];
+            $file_path = __DIR__ . '/uploads/';
+            // Формат загруженного файла должен быть изображением одного из следующих типов: png, jpeg, gif.
+            move_uploaded_file($_FILES['userpic-file-photo']['tmp_name'], $file_path . $file_name);
+        }
+        
+    } elseif ($_POST['post-type'] == 'video') {
+        $arr_options = array(
+            'video-heading' =>  FILTER_SANITIZE_STRING,
+            'video-url' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже
+            'video-tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
+        );
+        
+        $post_data = filter_input_array(INPUT_POST, $arr_options); // отфильтрованные данные из POST. Отсутствующие поля заполняем пустыми значениями.
+        
+    } elseif ($_POST['post-type'] == 'quote') {
+        $arr_options = array(
+            'quote-heading' =>  FILTER_SANITIZE_STRING,
+            'quote-text' =>  FILTER_SANITIZE_STRING,
+            'quote-author' =>  FILTER_SANITIZE_STRING,
+            'quote-tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
+        );
+        
+        $post_data = filter_input_array(INPUT_POST, $arr_options); // отфильтрованные данные из POST. Отсутствующие поля заполняем пустыми значениями.
+        
+    } elseif ($_POST['post-type'] == 'link') {
+        $arr_options = array(
+            'link-heading' =>  FILTER_SANITIZE_STRING,
+            'post-link' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже
+            'link-tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
+        );
+        
+        $post_data = filter_input_array(INPUT_POST, $arr_options); // отфильтрованные данные из POST. Отсутствующие поля заполняем пустыми значениями.
+        
     }
 } else { 
     //$curr_type = get_current_type(INPUT_GET); // текущий тип поста получен по GET 
     
     // Открытие таба по выбранному типу контента
-    $post_type_chosen = filter_input(INPUT_GET, 'post_type_chosen', FILTER_SANITIZE_NUMBER_INT);
-    $post_type_chosen = (int) $post_type_chosen;
+    $post_type_chosen = filter_input(INPUT_GET, 'post_type_chosen', FILTER_SANITIZE_STRING);
+//     $post_type_chosen = (int) $post_type_chosen;
 }
 
 if (!isset($post_type_chosen)) {
-    $post_type_chosen = 1; // публикация с текстом по умолчанию
+    $post_type_chosen = 'text'; // публикация с текстом по умолчанию
 } 
 
 // массив отображаемых наименований
