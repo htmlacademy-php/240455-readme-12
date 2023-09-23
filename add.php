@@ -23,7 +23,7 @@ $errors = []; // массив ошибок. будут накапливатьс�
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //$curr_type = get_current_type(INPUT_POST); // текущий тип поста получен по POST
     
-    if ($_POST['post-type'] == 'text') {
+    if ($_POST['post-type'] == '1') {
         $arr_options = array(
             'text-heading' => FILTER_SANITIZE_STRING,
             'post-text' => FILTER_SANITIZE_STRING,
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         );
         
         $post_data = filter_input_array(INPUT_POST, $arr_options); // отфильтрованные данные из POST
-
+ 
         //Валидация полей формы публикации
         $rules = [
             'text-heading' => function() {
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'post-text' => function() {
             return validateLength('post-text', 70);
             }
-            ];
+        ];
         
         foreach ($_POST as $key => $value) {
             if (isset($rules[$key])) {
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
         
-        $tags = array_filter(explode("#", $post_data['text-tags']));
+        $tags = array_filter(explode(" ", $post_data['text-tags']));
         
         $post_type_chosen = $post_data['post-type'];
         
@@ -61,11 +61,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         //Запись данных 
         if (!$errors) {
+            $post_data['user_id'] = 3; //пока укажите в качестве ID пользователя любое число
+            $query = 'INSERT INTO post (p_title, p_content, user_id, category_id) VALUES (?, ?, ?, ?)';
+            $stmt = mysqli_prepare($db_link, $query);
+            mysqli_stmt_bind_param($stmt, 'ssii', $post_data['text-heading'], $post_data['post-text'], $post_data['user_id'], $post_data['post-type']);
+            mysqli_stmt_execute($stmt);
             
-            //header("Location: /post.php?post_id=");
+            $query = "SELECT * FROM post WHERE id = LAST_INSERT_ID()";
+            $post = get_result($db_link, $query, 3);
+            header("Location: /post.php?post_id=" . $post['id']);
         }
         
-    } elseif ($_POST['post-type'] == 'photo') {
+    } elseif ($_POST['post-type'] == '3') {
         $arr_options = array(
             'photo-heading' =>  FILTER_SANITIZE_STRING,
             'photo-url' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже Обязательность - Нет
@@ -81,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             move_uploaded_file($_FILES['userpic-file-photo']['tmp_name'], $file_path . $file_name);
         }
         
-    } elseif ($_POST['post-type'] == 'video') {
+    } elseif ($_POST['post-type'] == '4') {
         $arr_options = array(
             'video-heading' =>  FILTER_SANITIZE_STRING,
             'video-url' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже
@@ -90,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         $post_data = filter_input_array(INPUT_POST, $arr_options); // отфильтрованные данные из POST. Отсутствующие поля заполняем пустыми значениями.
         
-    } elseif ($_POST['post-type'] == 'quote') {
+    } elseif ($_POST['post-type'] == '2') {
         $arr_options = array(
             'quote-heading' =>  FILTER_SANITIZE_STRING,
             'quote-text' =>  FILTER_SANITIZE_STRING,
@@ -100,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         $post_data = filter_input_array(INPUT_POST, $arr_options); // отфильтрованные данные из POST. Отсутствующие поля заполняем пустыми значениями.
         
-    } elseif ($_POST['post-type'] == 'link') {
+    } elseif ($_POST['post-type'] == '5') {
         $arr_options = array(
             'link-heading' =>  FILTER_SANITIZE_STRING,
             'post-link' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже
@@ -110,16 +117,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $post_data = filter_input_array(INPUT_POST, $arr_options); // отфильтрованные данные из POST. Отсутствующие поля заполняем пустыми значениями.
         
     }
-} else { 
+} else if ($_SERVER['REQUEST_METHOD'] == 'GET') { 
     //$curr_type = get_current_type(INPUT_GET); // текущий тип поста получен по GET 
     
     // Открытие таба по выбранному типу контента
-    $post_type_chosen = filter_input(INPUT_GET, 'post_type_chosen', FILTER_SANITIZE_STRING);
-//     $post_type_chosen = (int) $post_type_chosen;
+    $post_type_chosen = filter_input(INPUT_GET, 'post_type_chosen', FILTER_SANITIZE_NUMBER_INT);
+    $post_type_chosen = (int) $post_type_chosen; 
 }
 
-if (!isset($post_type_chosen)) {
-    $post_type_chosen = 'text'; // публикация с текстом по умолчанию
+if ($post_type_chosen == 0) {
+    $post_type_chosen = 1; // публикация с текстом по умолчанию
 } 
 
 // массив отображаемых наименований

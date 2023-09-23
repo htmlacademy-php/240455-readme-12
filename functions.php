@@ -207,7 +207,7 @@ function validateFilled($name) {
  * @return string Текст
  */
 
-function validateLength($name, $min, $max = 10000) {
+function validateLength($name, $min, $max = 300) {
     $len = strlen($_POST[$name]);
     
     if ($len < $min or $len > $max) {

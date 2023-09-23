@@ -10,7 +10,7 @@
                     	<?php foreach ($post_types as $post_type): ?>    
                         <li class="adding-post__tabs-item filters__item">
                          	<a class="adding-post__tabs-link tabs__item filters__button  filters__button--<?= $post_type['category']; ?> 
-                         		button <?= $post_type['category'] == $post_type_chosen ? ' filters__button--active tabs__item--active' : ''; ?>" href="?post_type_chosen=<?= $post_type['category']; ?>">
+                         		button <?= $post_type['id'] == $post_type_chosen ? ' filters__button--active tabs__item--active' : ''; ?>" href="?post_type_chosen=<?= $post_type['id']; ?>">
                          		<svg class="filters__icon" width=<?= $post_type['category_w'] . ' height=' . $post_type['category_h']; ?>>
                                     <use xlink:href="#icon-filter-<?= $post_type['category']; ?>"></use>
                                 </svg> <span><?= $post_type['category_name']; ?></span>
@@ -19,13 +19,14 @@
                          <?php endforeach; ?>
 					</ul>
 				</div>
+				
 				<div class="adding-post__tab-content">  
 					<?php foreach ($post_types as $post_type): ?>  
-					<?php switch ($post_type['category']):
+					<?php switch ($post_type['id']):
     	    	
-                            case ($post_type['category'] == 'photo' && $post_type_chosen == 'photo'): ?>
+                            case ($post_type['id'] == '3'): ?>
 					<section
-						class="adding-post__photo tabs__content tabs__content--active">
+						class="adding-post__photo tabs__content<?= $post_type['id'] == $post_type_chosen ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления фото</h2>
 						<form class="adding-post__form form" action="add.php" method="post"
 							enctype="multipart/form-data">
@@ -77,13 +78,13 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="post-type" value="photo">
+							<input type="hidden" name="post-type" value="3">
 						</form>
 					</section>
         					<?php break;
                         		
-                            case ($post_type['category'] == 'video' && $post_type_chosen == 'video'): ?>
-					<section class="adding-post__video tabs__content tabs__content--active">
+                            case ($post_type['id'] == '4'): ?>
+					<section class="adding-post__video tabs__content<?= $post_type['id'] == $post_type_chosen ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления видео</h2>
 						<form class="adding-post__form form" action="add.php" method="post"
 							enctype="multipart/form-data">
@@ -111,13 +112,13 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="post-type" value="video">
+							<input type="hidden" name="post-type" value="4">
 						</form>
 					</section>
         					<?php break;
                         		
-                            case ($post_type['category'] == 'text' && $post_type_chosen == 'text'): ?>	
-					<section class="adding-post__text tabs__content tabs__content--active">
+                            case ($post_type['id'] == '1'): ?>	
+					<section class="adding-post__text tabs__content<?= $post_type['id'] == $post_type_chosen ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления текста</h2>
 						<form class="adding-post__form form" action="add.php" method="post">
 							<div class="form__text-inputs-wrapper">
@@ -145,7 +146,7 @@
 								</div>
 								<?php require 'form-invalid-block.php';?>
 							</div>
-							<input type="hidden" name="post-type" value="text">
+							<input type="hidden" name="post-type" value="1">
 							<div class="adding-post__buttons">
 								<button class="adding-post__submit button button--main"
 									type="submit">Опубликовать</button>
@@ -155,8 +156,8 @@
 					</section>
         					<?php break;
                         		
-                            case ($post_type['category'] == 'quote' && $post_type_chosen == 'quote'): ?>
-					<section class="adding-post__quote tabs__content tabs__content--active">
+                            case ($post_type['id'] == '2'): ?>
+					<section class="adding-post__quote tabs__content <?= $post_type['id'] == $post_type_chosen ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления цитаты</h2>
 						<form class="adding-post__form form" action="add.php" method="post">
 							<div class="form__text-inputs-wrapper">
@@ -191,13 +192,13 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="post-type" value="quote">
+							<input type="hidden" name="post-type" value="2">
 						</form>
 					</section>
         					<?php break;
                         		
-                            case ($post_type['category'] == 'link' && $post_type_chosen == 'link'): ?>
-					<section class="adding-post__link tabs__content tabs__content--active">
+                            case ($post_type['id'] == '5'): ?>
+					<section class="adding-post__link tabs__content <?= $post_type['id'] == $post_type_chosen ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления ссылки</h2>
 						<form class="adding-post__form form" action="add.php" method="post">
 							<div class="form__text-inputs-wrapper">
@@ -222,7 +223,7 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="post-type" value="link">
+							<input type="hidden" name="post-type" value="5">
 						</form>
 					</section>
 					<?php break; 
