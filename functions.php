@@ -173,15 +173,15 @@ function getPostVal($name) {
 }
 
 /**
- * Проверка на корректный email
+ * Проверка на корректную ссылку
  *
  * @param string $name Значение поля
  * @return string Текст 
  */
 
-function validateEmail($name) {
-    if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_EMAIL)) {
-        return "Введите корректный email";
+function validateUrl($name) {
+    if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_URL)) {
+        return "Укажите корректную ссылку";
     }
 }
 

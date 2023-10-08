@@ -12,15 +12,8 @@
 			!<span class="visually-hidden">Информация об ошибке</span>
 		</button>
 		<div class="form__error-text">
-			<h3 class="form__error-title">Заголовок сообщения</h3>
-			<p class="form__error-desc"><?= $errors['heading']; ?></p>
+			<h3 class="form__error-title"><?= $errors['heading']['head']; ?></h3>
+			<p class="form__error-desc"><?= $errors['heading']['description']; ?></p>
 		</div>
 	</div>
 </div>
-
-<!-- Если проверка формы выявила ошибки, то сделать следующее: -->
-
-<!-- для всех полей формы, где найдены ошибки: -->
-<!-- добавить контейнеру с этим полем класс form__input-section--error; -->
-<!-- в тег div.form__error-text этого контейнера записать текст ошибки внутри параграфа с классом form__error-desc. Например: «Заполните это поле»; -->
-<!-- весь список ошибок надо вывести в блоке div.form__invalid-block (см. пример из вёрстки). -->

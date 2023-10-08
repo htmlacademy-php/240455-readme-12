@@ -157,11 +157,11 @@ function include_template($name, array $data = [])
 function check_youtube_url($url)
 {
     $id = extract_youtube_id($url);
-    
+
     set_error_handler(function () {}, E_WARNING);
     $headers = get_headers('https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=' . $id);
     restore_error_handler();
-    
+
     if (!is_array($headers)) {
         return "Видео по такой ссылке не найдено. Проверьте ссылку на видео";
     }
@@ -221,7 +221,7 @@ function extract_youtube_id($youtube_url)
     $id = false;
     
     $parts = parse_url($youtube_url);
-    
+
     if ($parts) {
         if ($parts['path'] == '/watch') {
             parse_str($parts['query'], $vars);

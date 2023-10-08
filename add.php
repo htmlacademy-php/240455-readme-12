@@ -13,41 +13,53 @@ $post_types = get_result($db_link, $query); //создание вспомога�
 $post_data = []; // массив полученных данных
 $errors = []; // массив ошибок
 
-// будут накапливаться все ошибки по типу поста $errors['url'], $errors['photo']
-//По такому принципу $errors['photo'] = [ 'head' => 'Фото', 'description' => 'Файл фото недопустимого типа.', ];
-
-//учесть $allow_ext = ['png', 'jpeg', 'jpg', 'gif']; // разрешенные типы фото
-
-// если нет ошибок, то запись данных и переход на страницу просмотра поста (post.php) if (!$errors) {
-// данные записываем через подготовленное выражение
-//}
-
-//Если были ошибки массив полученных данных отправляем опять на adding-post.php И там должно отразиться неверные данные и 
-//причины - почему данные не приняты. Эта процедура может крутиться много раз
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $required = ['heading', 'post-text', 'cite-text', 'quote-author']; // формируем список полей, обязательных для заполнения
+    $required = ['heading', 'post-text', 'cite-text', 'quote-author', 'post-link', 'video-url']; // формируем список полей, обязательных для заполнения
 
     //текстовая публикация
-//     if ($_POST['post-type'] == 1) {
-//         $arr_options = array(
-//             'heading' => FILTER_SANITIZE_STRING,
-//             'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
-//             'post-type' =>  FILTER_SANITIZE_STRING,
-//             'post-text' => FILTER_SANITIZE_STRING,
-//         );
-//     }
+    if ($_POST['post-type'] == 1) {
+        $arr_options = array(
+            'heading' => FILTER_SANITIZE_STRING,
+            'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
+            'post-type' =>  FILTER_SANITIZE_STRING,
+            'post-text' => FILTER_SANITIZE_STRING,
+        );
+    }
     //цитата
-//     if ($_POST['post-type'] == 2) {
-//         $arr_options = array(
-//             'heading' => FILTER_SANITIZE_STRING,
-//             'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
-//             'post-type' =>  FILTER_SANITIZE_STRING,
-//             'cite-text' => FILTER_SANITIZE_STRING,
-//             'quote-author' => FILTER_SANITIZE_STRING,
-//         );
-//     }
-
+    if ($_POST['post-type'] == 2) {
+        $arr_options = array(
+            'heading' => FILTER_SANITIZE_STRING,
+            'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
+            'post-type' =>  FILTER_SANITIZE_STRING,
+            'cite-text' => FILTER_SANITIZE_STRING,
+            'quote-author' => FILTER_SANITIZE_STRING,
+        );
+    }
+    //картинка
+    if ($_POST['post-type'] == 3) {
+        $arr_options = array(
+            'heading' => FILTER_SANITIZE_STRING,
+            'photo-url' => FILTER_SANITIZE_STRING,
+            'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
+        );
+    }
+    //видео
+    if ($_POST['post-type'] == 4) {
+        $arr_options = array(
+            'heading' => FILTER_SANITIZE_STRING,
+            'video-url' => FILTER_SANITIZE_STRING,
+            'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
+        );
+    }
+    //ссылка
+    if ($_POST['post-type'] == 5) {
+        $arr_options = array(
+            'heading' => FILTER_SANITIZE_STRING,
+            'post-link' => FILTER_SANITIZE_STRING,
+            'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
+        );
+    }
+    
     //Отфильтрованные данные из POST
     $post_data = filter_input_array(INPUT_POST); 
 
@@ -65,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             mysqli_stmt_execute($stmt);
         }
     }
- 
+
     //Валидация полей формы публикации
     $rules = [
         'post-text' => function() {
@@ -74,57 +86,123 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'cite-text' => function() {
             return validateLength('cite-text', 1, 70);
         },
+        'post-link' => function() {
+            return validateUrl('post-link');
+        },
+        'video-url' => function() {
+            return validateUrl('video-url');
+        },
+        'video-url' => function() {
+            return check_youtube_url(($_POST['video-url']));
+        },
     ];
     
     foreach ($post_data as $key => $value) {
         if (in_array($key, $required) && empty($value)) {
-            $errors[$key] = "Поле надо заполнить";
+            if ($key == 'heading') {
+                $errors[$key]['head'] = "Заголовок";
+            } elseif ($key == 'post-text') {
+                $errors[$key]['head'] = "Текст поста";
+            } elseif ($key == 'quote-author') {
+                $errors[$key]['head'] = "Автор";
+            } elseif ($key == 'cite-text') {
+                $errors[$key]['head'] = "Текст цитаты";
+            } elseif ($key == 'post-link') {
+                $errors[$key]['head'] = "Ссылка";
+            } elseif ($key == 'video-url') {
+                $errors[$key]['head'] = "Ссылка YouTube";
+            } 
+            $errors[$key]['description'] = "Поле надо заполнить";
         }
 
-        if (isset($rules[$key])) {
+        if (isset($rules[$key]) && !isset($errors[$key])) {
             $rule = $rules[$key];
-            $errors[$key] = $rule();
+            $error = $rule();
+            
+            if (!empty($error)) {
+                if ($key != 'video-url') {
+                    $errors[$key]['description'] = $rule();
+                } elseif ($key == 'video-url' && $error != 1) {
+                    $errors[$key]['description'] = $rule();
+                }
+                if ($key == 'post-text') {
+                    $errors[$key]['head'] = "Текст поста";
+                } elseif ($key == 'cite-text') {
+                    $errors[$key]['head'] = "Текст цитаты";
+                } elseif ($key == 'post-link') {
+                    $errors[$key]['head'] = "Ссылка";
+                } elseif ($key == 'video-url' && $error != 1) {
+                    $errors[$key]['head'] = "Ссылка YouTube";
+                }
+            }
+        }
+    }
+
+    if ($_POST['post-type'] == 3) {
+
+        if (isset($_FILES['userpic-file-photo']['name'])) {
+            $tmp_name = $_FILES['userpic-file-photo']['tmp_name'];
+            $file_path = __DIR__ . '/uploads/';
+            $file_name = $_FILES['userpic-file-photo']['name'];
+            
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $file_type = finfo_file($finfo, $tmp_name);
+            if ($file_type !== "image/jpeg" && $file_type !== "image/jpg" && $file_type !== "image/gif" && $file_type !== "image/png") {
+                $errors['file']['head'] = 'Файл фото недопустимого типа';
+                $errors['file']['description'] = 'Загрузите картинку в формате png, jpeg, jpg или gif';
+            } else {
+                move_uploaded_file($tmp_name, $file_path . $file_name);
+                $post_data['file'] = $file_name;
+            }
+        } elseif (!empty($post_data['photo-url'])) {
+            if (empty(validateUrl('photo-url'))) {
+                $img_url = $post_data['photo-url'];
+                $Headers = @get_headers($img_url);
+                if (preg_match("|200|", $Headers[0])) {
+                    $image = file_get_contents($img_url);
+                    file_put_contents(__DIR__ . '/uploads/img.jpg', $image);
+                    $post_data['file'] = 'img.jpg';
+                } else {
+                    $errors['file']['head'] = 'Нет фото';
+                    $errors['file']['description'] = 'По данной ссылке не существует фото';
+                }
+            } else {
+                $errors['file']['head'] = 'Нет фото';
+                $errors['file']['description'] = 'Некорректная ссылка';
+            }
+        } elseif (empty($post_data['photo-url']) && !isset($_FILES['userpic-file-photo']['name'])) {
+            $errors['file']['head'] = 'Нет фото';
+            $errors['file']['description'] = 'Вы не загрузили файл/не указали ссылку';
         }
     }
 
     $errors = array_filter($errors);
-//    print_r($errors);
-//     } elseif ($_POST['post-type'] == '3') {
-//         $arr_options = array(
-//             'photo-heading' =>  FILTER_SANITIZE_STRING,
-//             'photo-url' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже Обязательность - Нет
-//             'photo-tags' =>  FILTER_SANITIZE_STRING,// Обязательность - Нет
-//         );
-        
-//         $post_data = filter_input_array(INPUT_POST, $arr_options); // отфильтрованные данные из POST. Отсутствующие поля заполняем пустыми значениями.
-        
-//         if (isset($_FILES['userpic-file-photo'])) {
-//             $file_name = $_FILES['userpic-file-photo']['name'];
-//             $file_path = __DIR__ . '/uploads/';
-//             // Формат загруженного файла должен быть изображением одного из следующих типов: png, jpeg, gif.
-//             move_uploaded_file($_FILES['userpic-file-photo']['tmp_name'], $file_path . $file_name);
-//         }
-        
-//     } elseif ($_POST['post-type'] == '4') {
-//         $arr_options = array(
-//             'video-heading' =>  FILTER_SANITIZE_STRING,
-//             'video-url' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже
-//             'video-tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
-//         );
-        
-//     } elseif ($_POST['post-type'] == '5') {
-//         $arr_options = array(
-//             'post-link' =>  FILTER_SANITIZE_STRING, //url, при наличии в $_POST, будет обработано ниже
-//         );
 
-    
     //Запись данных
     if (!$errors) {
         $post_data['user_id'] = 3; //пока укажите в качестве ID пользователя любое число
+        //текстовая публикация
         if ($post_type_chosen == 1) {
             $query = 'INSERT INTO post (p_title, p_content, user_id, category_id) VALUES (?, ?, ?, ?)';
             $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['post-text'], $post_data['user_id'], $post_data['post-type']));
-        } elseif ($post_type_chosen == 2) {
+        } 
+        //цитата
+        elseif ($post_type_chosen == 2) {
+            $query = 'INSERT INTO post (p_title, p_content, author, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
+            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['cite-text'], $post_data['quote-author'], $post_data['user_id'], $post_data['post-type']));
+        }
+        //картинка
+        elseif ($post_type_chosen == 3) {
+            $query = 'INSERT INTO post (p_title, p_content, author, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
+            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['cite-text'], $post_data['quote-author'], $post_data['user_id'], $post_data['post-type']));
+        }
+        //видео
+        elseif ($post_type_chosen == 4) {
+            $query = 'INSERT INTO post (p_title, p_content, author, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
+            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['cite-text'], $post_data['quote-author'], $post_data['user_id'], $post_data['post-type']));
+        }
+        //ссылка
+        elseif ($post_type_chosen == 5) {
             $query = 'INSERT INTO post (p_title, p_content, author, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
             $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['cite-text'], $post_data['quote-author'], $post_data['user_id'], $post_data['post-type']));
         }
@@ -155,16 +233,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 if ($post_type_chosen == 0) {
     $post_type_chosen = 1; // публикация с текстом по умолчанию
 } 
-
-// массив отображаемых наименований
-$field_heads = [];
-
-
-// добавляем обязательное для всех постов поле Заголовок
-// проверка на обязательность заполнения определённых полей формы
-// валидация URL 
-// валидация Тегов 
-// валидация Фото по выбранному фото или ссылке на него 
 
 $is_auth = rand(0, 1);
 

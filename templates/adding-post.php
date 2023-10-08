@@ -36,11 +36,16 @@
 									<div class="adding-post__input-wrapper form__input-wrapper">
 										<label class="adding-post__label form__label" for="photo-url">Ссылка
 											из интернета</label>
-										<div class="form__input-section">
+										<div class="form__input-section<?= isset($errors['file']) ? ' form__input-section--error' : ''; ?>">
 											<input class="adding-post__input form__input" id="photo-url"
-												type="text" name="photo-url"
-												placeholder="Введите ссылку">
-											<?php require 'form-error.php';?>
+												type="text" name="photo-url" placeholder="Введите ссылку" value="<?= getPostVal('photo-url'); ?>">
+											<button class="form__error-button button" type="button">
+                                            	!<span class="visually-hidden">Информация об ошибке</span>
+                                            </button>
+                                            <div class="form__error-text">
+                                            	<h3 class="form__error-title"><?= $errors['file']['head']; ?></h3>
+                                            	<p class="form__error-desc"><?= $errors['file']['description']; ?></p>
+                                            </div>
 										</div>
 									</div>
 									<?php require 'form-tags.php';?>
@@ -54,9 +59,7 @@
 									<div
 										class="adding-post__file-zone adding-post__file-zone--photo form__file-zone dropzone">
 										<input class="adding-post__input-file form__input-file"
-											id="userpic-file-photo" type="file" name="userpic-file-photo"
-											title=" ">
-										
+											id="userpic-file-photo" type="file" name="userpic-file-photo">
 									</div>
 									<button
 										class="adding-post__input-file-button form__input-file-button form__input-file-button--photo button"
@@ -95,11 +98,17 @@
 										<label class="adding-post__label form__label" for="video-url">Ссылка
 											youtube <span class="form__input-required">*</span>
 										</label>
-										<div class="form__input-section">
+										<div class="form__input-section<?= isset($errors['video-url']) ? ' form__input-section--error' : ''; ?>">
 											<input class="adding-post__input form__input" id="video-url"
 												type="text" name="video-url"
-												placeholder="Введите ссылку">											
-											<?php require 'form-error.php';?>
+												placeholder="Введите ссылку" value="<?= getPostVal('video-url'); ?>">											
+											<button class="form__error-button button" type="button">
+                                            	!<span class="visually-hidden">Информация об ошибке</span>
+                                            </button>
+                                            <div class="form__error-text">
+                                            	<h3 class="form__error-title"><?= $errors['video-url']['head']; ?></h3>
+                                            	<p class="form__error-desc"><?= $errors['video-url']['description']; ?></p>
+                                            </div>
 										</div>
 									</div>
 									<?php require 'form-tags.php';?>
@@ -129,7 +138,7 @@
 										<label class="adding-post__label form__label" for="post-text">Текст
 											поста <span class="form__input-required">*</span>
 										</label>
-										<div class="form__input-section <?= isset($errors['post-text']) ? ' form__input-section--error' : ''; ?>">
+										<div class="form__input-section<?= isset($errors['post-text']) ? ' form__input-section--error' : ''; ?>">
 											<textarea name="post-text"
 												class="adding-post__textarea form__textarea form__input"
 												id="post-text" placeholder="Введите текст публикации"><?= getPostVal('post-text'); ?></textarea>
@@ -137,8 +146,8 @@
                                             	!<span class="visually-hidden">Информация об ошибке</span>
                                             </button>
                                             <div class="form__error-text">
-                                            	<h3 class="form__error-title">Заголовок сообщения</h3>
-                                            	<p class="form__error-desc"><?= $errors['post-text']; ?></p>
+                                            	<h3 class="form__error-title"><?= $errors['post-text']['head']; ?></h3>
+                                            	<p class="form__error-desc"><?= $errors['post-text']['description']; ?></p>
                                             </div>
 										</div>
 									</div>
@@ -175,19 +184,24 @@
                                             	!<span class="visually-hidden">Информация об ошибке</span>
                                             </button>
                                             <div class="form__error-text">
-                                            	<h3 class="form__error-title">Заголовок сообщения</h3>
-                                            	<p class="form__error-desc">Текст сообщения об ошибке,
-                                            		подробно объясняющий, что не так.</p>
+                                            	<h3 class="form__error-title"><?= $errors['cite-text']['head']; ?></h3>
+                                            	<p class="form__error-desc"><?= $errors['cite-text']['description']; ?></p>
                                             </div>
 										</div>
 									</div>
 									<div class="adding-post__textarea-wrapper form__input-wrapper">
 										<label class="adding-post__label form__label"
 											for="quote-author">Автор <span class="form__input-required">*</span></label>
-										<div class="form__input-section">
+										<div class="form__input-section<?= isset($errors['quote-author']) ? ' form__input-section--error' : ''; ?>">
 											<input class="adding-post__input form__input"
 												id="quote-author" type="text" name="quote-author" value="<?= getPostVal('quote-author'); ?>">
-											<?php require 'form-error.php';?>
+											<button class="form__error-button button" type="button">
+                                            	!<span class="visually-hidden">Информация об ошибке</span>
+                                            </button>
+                                            <div class="form__error-text">
+                                            	<h3 class="form__error-title"><?= $errors['quote-author']['head']; ?></h3>
+                                            	<p class="form__error-desc"><?= $errors['quote-author']['description']; ?></p>
+                                            </div>
 										</div>
 									</div>
 									<?php require 'form-tags.php';?>
@@ -215,10 +229,16 @@
 										<label class="adding-post__label form__label" for="post-link">Ссылка
 											<span class="form__input-required">*</span>
 										</label>
-										<div class="form__input-section">
+										<div class="form__input-section<?= isset($errors['post-link']) ? ' form__input-section--error' : ''; ?>">
 											<input class="adding-post__input form__input" id="post-link"
-												type="text" name="post-link">
-											<?php require 'form-error.php';?>
+												type="text" name="post-link" value="<?= getPostVal('post-link'); ?>">
+											<button class="form__error-button button" type="button">
+                                            	!<span class="visually-hidden">Информация об ошибке</span>
+                                            </button>
+                                            <div class="form__error-text">
+                                            	<h3 class="form__error-title"><?= $errors['post-link']['head']; ?></h3>
+                                            	<p class="form__error-desc"><?= $errors['post-link']['description']; ?></p>
+                                            </div>
 										</div>
 									</div>
 									<?php require 'form-tags.php';?>
