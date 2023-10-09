@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     //Валидация картинки
     if ($_POST['post-type'] == 3) {
-
+        //Валидация выбранной картинки
         if ($_FILES['userpic-file-photo']['name']) {
             $tmp_name = $_FILES['userpic-file-photo']['tmp_name'];
             $file_path = __DIR__ . '/img/uploads/';
@@ -155,6 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 move_uploaded_file($tmp_name, $file_path . $file_name);
                 $post_data['file'] =  'uploads/' . $file_name;
             }
+        //Валидация ссылки с картинкой
         } elseif (!empty($post_data['photo-url'])) {
             if (empty(validateUrl('photo-url'))) {
                 $img_url = $post_data['photo-url'];

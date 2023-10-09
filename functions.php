@@ -21,12 +21,12 @@ mb_internal_encoding("UTF-8");
  */
 function cut_text ($text, $link, $max_len = 300) {
     $text_trimmed = trim($text);
-    $text_num = mb_strlen($text_trimmed);
+    $text_len = mb_strlen($text_trimmed);
 
-    if ($text_num > $max_len) {
+    if ($text_len > $max_len) {
        
         $text = mb_substr($text, 0, $max_len,'UTF-8'); // Обрезаем и работаем со всеми кодировками и указываем исходную кодировку
-        $position = mb_strrpos($text, ' ', 'UTF-8'); // Определение позиции последнего пробела. Именно по нему и разделяем слова
+        $position = mb_strrpos($text, ' ', 0, 'UTF-8'); // Определение позиции последнего пробела. Именно по нему и разделяем слова
         $text = mb_substr($text, 0, $position, 'UTF-8'); // Обрезаем переменную по позиции
 
         $text .= '... <a class="post-text__more-link" href="' . $link . '">Читать далее</a>';
@@ -42,8 +42,8 @@ function cut_text ($text, $link, $max_len = 300) {
  * @param string $value Значение массива
  * @return string
  */
-function filter_xss (&$value) {
-    $value = htmlentities($value);
+function filter_xss (&$arr) {
+    $arr = htmlentities($arr);
 }
 
 /**
@@ -55,21 +55,21 @@ function filter_xss (&$value) {
  * 35 дней <= n -> "n месяцев назад"
  *
  * @param string $date Дата
- * @param bool $not_ago Слово "назад"
+ * @param bool $not_ago Признак слова "назад"
  * @return string $interval Возвращает интервал между экземплярами дат
  */
 function get_interval ($date, $not_ago = 0) {
-    $cur_date = date_create("now"); // создаёт экземпляр даты
+    $cur_date = date_create("now"); // создаёт экземпляр текущей даты
     $date = date_create($date); // создаёт экземпляр даты
     $date_string = $date->format('Y.m.d H:i'); // возвращает дату в указанном формате string
-    $cur_date_string = $cur_date->format('Y.m.d H:i'); // возвращает дату в указанном формате string
+    $cur_date_string = $cur_date->format('Y.m.d H:i'); // возвращает текущую дату в указанном формате string
     $diff = date_diff($date, $cur_date); // возвращает разницу между датами
     $days = $diff->days; // возвращает разницу между датами в днях
     $hours_in_day = 24; // часов в сутках
     $days_in_week = 7; // дней в неделе
     $days_in_5weeks = 35; // дней в 5 неделях
     $days_in_year = 365; // дней в году
-    if ($cur_date_string > $date_string) {
+    if ($cur_date_string > $date_string) { // если текущая дата актуальнее принятой
         if ($days < 1) {
             $hours = $diff->h; 
             if (1 <= $hours and $hours < $hours_in_day) {
@@ -98,9 +98,9 @@ function get_interval ($date, $not_ago = 0) {
             $time_count .= " назад";
         }
         
-    } elseif ($cur_date_string == $date_string) {
+    } elseif ($cur_date_string == $date_string) { // если текущая дата и принятая одинаковы
         $time_count = "только что";
-    } else { 
+    } else {  // если принятая дата и актуальнее текущей
         $time_count = $date_string . " - дата в будущем";
     }
     

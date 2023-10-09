@@ -109,4 +109,4 @@ CREATE TABLE IF NOT EXISTS post_hashtag_rel (
 	UNIQUE INDEX (post_id, hashtag_id),
 	FOREIGN KEY (post_id) REFERENCES post (id),
 	FOREIGN KEY (hashtag_id) REFERENCES hashtag (id)
-) COMMENT 'Таблица связей между постами и хештегами';
+) COMMENT 'Таблица связей между постами и хештегами';hashtag
