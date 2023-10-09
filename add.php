@@ -137,12 +137,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     }
-
+    //Валидация картинки
     if ($_POST['post-type'] == 3) {
 
-        if (isset($_FILES['userpic-file-photo']['name'])) {
+        if ($_FILES['userpic-file-photo']['name']) {
             $tmp_name = $_FILES['userpic-file-photo']['tmp_name'];
-            $file_path = __DIR__ . '/uploads/';
+            $file_path = __DIR__ . '/img/uploads/';
+
             $file_name = $_FILES['userpic-file-photo']['name'];
             
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -152,27 +153,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $errors['file']['description'] = 'Загрузите картинку в формате png, jpeg, jpg или gif';
             } else {
                 move_uploaded_file($tmp_name, $file_path . $file_name);
-                $post_data['file'] = $file_name;
+                $post_data['file'] =  'uploads/' . $file_name;
             }
         } elseif (!empty($post_data['photo-url'])) {
             if (empty(validateUrl('photo-url'))) {
                 $img_url = $post_data['photo-url'];
-                $Headers = @get_headers($img_url);
-                if (preg_match("|200|", $Headers[0])) {
+                $headers = get_headers($img_url, 1);
+
+                if (preg_match("|200|", $headers[0]) && preg_match("/(jpeg|jpg|gif|png)/", $headers['Content-Type'])) {
                     $image = file_get_contents($img_url);
-                    file_put_contents(__DIR__ . '/uploads/img.jpg', $image);
-                    $post_data['file'] = 'img.jpg';
+                    
+                    if (!$image) {
+                        $errors['file']['head'] = 'Нет фото';
+                        $errors['file']['description'] = 'Не удалось скачать файл';
+                    }
+
+                    $image_name = basename($img_url);
+                    
+                    file_put_contents(__DIR__ . '/uploads/' . $image_name, $image);
+                    $post_data['file'] = 'uploads/' . $image_name;
                 } else {
                     $errors['file']['head'] = 'Нет фото';
-                    $errors['file']['description'] = 'По данной ссылке не существует фото';
+                    $errors['file']['description'] = 'Ссылка битая или не содержит фото';
                 }
             } else {
                 $errors['file']['head'] = 'Нет фото';
                 $errors['file']['description'] = 'Некорректная ссылка';
             }
-        } elseif (empty($post_data['photo-url']) && !isset($_FILES['userpic-file-photo']['name'])) {
+        } else {
             $errors['file']['head'] = 'Нет фото';
-            $errors['file']['description'] = 'Вы не загрузили файл/не указали ссылку';
+            $errors['file']['description'] = 'Загрузите файл или укажите ссылку на файл';
         }
     }
 
@@ -193,18 +203,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         //картинка
         elseif ($post_type_chosen == 3) {
-            $query = 'INSERT INTO post (p_title, p_content, author, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
-            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['cite-text'], $post_data['quote-author'], $post_data['user_id'], $post_data['post-type']));
+            $query = 'INSERT INTO post (p_title, p_img, user_id, category_id) VALUES (?, ?, ?, ?)';
+            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['file'], $post_data['user_id'], $post_data['post-type']));
         }
         //видео
         elseif ($post_type_chosen == 4) {
-            $query = 'INSERT INTO post (p_title, p_content, author, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
-            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['cite-text'], $post_data['quote-author'], $post_data['user_id'], $post_data['post-type']));
+            $query = 'INSERT INTO post (p_title, p_video, user_id, category_id) VALUES (?, ?, ?, ?)';
+            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['video-url'], $post_data['user_id'], $post_data['post-type']));
         }
         //ссылка
         elseif ($post_type_chosen == 5) {
-            $query = 'INSERT INTO post (p_title, p_content, author, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
-            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['cite-text'], $post_data['quote-author'], $post_data['user_id'], $post_data['post-type']));
+            $query = 'INSERT INTO post (p_title, p_content, p_link, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
+            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['post-link'], $post_data['post-link'], $post_data['user_id'], $post_data['post-type']));
         }
         mysqli_stmt_execute($stmt);
         
