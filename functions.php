@@ -251,3 +251,17 @@ function hash_tags2arr($tags) {
     
     return $arr;
 }
+
+/**
+ * Проверка наличия/существования удаленного файла (страницы)
+ *
+ * @param string $url
+ * @return bool результат проверки
+ */
+function is_url_exist($url) {
+    
+    $urlHeaders = get_headers($url);
+    $res = strpos($urlHeaders[0], '200');
+    
+    return (bool) $res;
+}

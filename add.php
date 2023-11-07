@@ -11,6 +11,14 @@ $categories = getCategories($db_link);
 $post_data = []; // массив полученных данных
 $errors = []; // массив ошибок
 
+// разрешенные типы фото
+define('ALLOW_EXT', array(
+    'png',
+    'jpeg',
+    'jpg',
+    'gif',
+));
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {    
     //Записываем ключи массива $_POST
     $arr_keys = array_keys($_POST);
@@ -27,12 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'post-text' => function($value) {
             return validateLength($value, 70);
         },
-        'cite-text' => function($value) {
-            return validateLength($value, 1, 70);
-        },
         'post-link' => function($value) {
             if (!validateUrl($value)) {
                 return "Укажите корректную ссылку";
+            } elseif (!is_url_exist($value)) {
+                return "Страница не найдена";
             }
         },
         'video-url' => function($value) {
@@ -73,75 +80,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    
+  
     //Валидация картинки
-    if ($_POST['category'] == 3) {
-        print_r($_FILES);
+    if ($category_chosen == 3) {
+        $file_path = __DIR__ . '/uploads/';
         // Если загружен файл и нет ошибок сохраняем его в папку UPLOAD_PATH_IMG
         if ($_FILES['userpic-file-photo']['error'] === UPLOAD_ERR_OK) { 
-            $tmp_name = $_FILES['userpic-file-photo']['tmp_name'];
-            $file_path = __DIR__ . '/uploads/';
-            $file_name = $_FILES['userpic-file-photo']['name'];
-            move_uploaded_file($tmp_name, $file_path . $file_name);
-            $post_data['file'] =  'uploads/' . $file_name;
-        // Если есть интернет-ссылка и нет ошибок проверки ссылки, скачиваем файл и сохраняем в папку UPLOAD_PATH_IMG
-        } elseif ($post_data['photo-url'] and !isset($errors['photo-url'])) { 
             
+            $tmp_name = $_FILES['userpic-file-photo']['tmp_name'];
+            
+            $mime_type = mime_content_type($tmp_name); //mime тип
+            $mime_type_ext = str_replace("image/", "", $mime_type);
+
+            
+            if (in_array($mime_type_ext, ALLOW_EXT)) {
+
+                $file_name =  strtolower(uniqid() . $_FILES['userpic-file-photo']['name']);
+                move_uploaded_file($tmp_name, $file_path . $file_name);
+                
+                $post_data['file'] =  'uploads/' . $file_name;
+            } else {
+                $errors['file']['head'] = 'Файл фото недопустимого типа';
+                $errors['file']['description'] = 'Загрузите картинку в формате png, jpeg, jpg или gif';
+            }
+        // Если есть интернет-ссылка и нет ошибок проверки ссылки, скачиваем файл и сохраняем в папку UPLOAD_PATH_IMG
+        } elseif ($post_data['photo-url'] and !isset($errors['file'])) { 
+            if (validateUrl($post_data['photo-url'])) {
+                if (is_url_exist($post_data['photo-url'])) {
+                    $file_info = new finfo(FILEINFO_MIME_TYPE);
+                    $image = file_get_contents($post_data['photo-url']);
+                    
+                    $mime_type = $file_info->buffer($image);
+                    $mime_type_ext = str_replace("image/", "", $mime_type);
+ 
+                    if (in_array($mime_type_ext, ALLOW_EXT)) {
+                        
+                        $file_name =  uniqid() . '.' . $mime_type_ext;
+                        file_put_contents($file_path . $file_name, $image);
+                        
+                        $post_data['file'] =  'uploads/' . $file_name;
+                    } else {
+                        $errors['file']['head'] = 'Файл фото недопустимого типа';
+                        $errors['file']['description'] = 'Загрузите картинку в формате png, jpeg, jpg или gif';
+                    }
+                } else {
+                    $errors['file']['head'] = 'Нет фото';
+                    $errors['file']['description'] = 'Ссылка не существует или не содержит фото';
+                }
+            } else {
+                $errors['file']['head'] = 'Нет фото';
+                $errors['file']['description'] = 'Укажите корректную ссылку';
+            }
         } else { // нет фото
             $errors['file']['head'] = 'Нет фото';
             $errors['file']['description'] = 'Загрузите файл или укажите ссылку на файл';
         }
     }
-        
- 
-//     if ($_POST['category'] == 3) {
-//         //Валидация выбранной картинки
-//         if ($_FILES['userpic-file-photo']['name']) {
-//             $tmp_name = $_FILES['userpic-file-photo']['tmp_name'];
-//             $file_path = __DIR__ . '/img/uploads/';
-
-//             $file_name = $_FILES['userpic-file-photo']['name'];
-            
-//             $finfo = finfo_open(FILEINFO_MIME_TYPE);
-//             $file_type = finfo_file($finfo, $tmp_name);
-//             if ($file_type !== "image/jpeg" && $file_type !== "image/jpg" && $file_type !== "image/gif" && $file_type !== "image/png") {
-//                 $errors['file']['head'] = 'Файл фото недопустимого типа';
-//                 $errors['file']['description'] = 'Загрузите картинку в формате png, jpeg, jpg или gif';
-//             } else {
-//                 move_uploaded_file($tmp_name, $file_path . $file_name);
-//                 $post_data['file'] =  'uploads/' . $file_name;
-//             }
-//         //Валидация ссылки с картинкой
-//         } elseif (!empty($post_data['photo-url'])) {
-//             if (validateUrl('photo-url')) {
-//                 $img_url = $post_data['photo-url'];
-//                 $headers = get_headers($img_url, 1);
-
-//                 if (preg_match("|200|", $headers[0]) && preg_match("/(jpeg|jpg|gif|png)/", $headers['Content-Type'])) {
-//                     $image = file_get_contents($img_url);
-                    
-//                     if (!$image) {
-//                         $errors['file']['head'] = 'Нет фото';
-//                         $errors['file']['description'] = 'Не удалось скачать файл';
-//                     }
-
-//                     $image_name = basename($img_url);
-                    
-//                     file_put_contents(__DIR__ . '/uploads/' . $image_name, $image);
-//                     $post_data['file'] = 'uploads/' . $image_name;
-//                 } else {
-//                     $errors['file']['head'] = 'Нет фото';
-//                     $errors['file']['description'] = 'Ссылка не существует или не содержит фото';
-//                 }
-//             } else {
-//                 $errors['file']['head'] = 'Нет фото';
-//                 $errors['file']['description'] = 'Некорректная ссылка';
-//             }
-//         } else {
-//             $errors['file']['head'] = 'Нет фото';
-//             $errors['file']['description'] = 'Загрузите файл или укажите ссылку на файл';
-//         }
-//     }
 
     $errors = array_filter($errors);
 
@@ -208,11 +202,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Открытие таба по выбранному типу контента
     $category_chosen = filter_input(INPUT_GET, 'category_chosen', FILTER_SANITIZE_NUMBER_INT);
     $category_chosen = (int) $category_chosen; 
+    
+    if ($category_chosen == 0) {
+        $category_chosen = 1; // публикация с текстом по умолчанию
+    }
 }
-
-if ($category_chosen == 0) {
-    $category_chosen = 1; // публикация с текстом по умолчанию
-} 
 
 $is_auth = rand(0, 1);
 
