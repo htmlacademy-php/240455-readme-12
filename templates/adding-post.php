@@ -7,13 +7,13 @@
 			<div class="adding-post__tabs-wrapper tabs">
 				<div class="adding-post__tabs filters">
 					<ul class="adding-post__tabs-list filters__list tabs__list">
-                    	<?php foreach ($post_types as $post_type): ?>    
+                    	<?php foreach ($categories as $category): ?>    
                         <li class="adding-post__tabs-item filters__item">
-                         	<a class="adding-post__tabs-link tabs__item filters__button  filters__button--<?= $post_type['category']; ?> 
-                         		button <?= $post_type['id'] == $post_type_chosen ? ' filters__button--active tabs__item--active' : ''; ?>" href="?post_type_chosen=<?= $post_type['id']; ?>">
-                         		<svg class="filters__icon" width=<?= $post_type['category_w'] . ' height=' . $post_type['category_h']; ?>>
-                                    <use xlink:href="#icon-filter-<?= $post_type['category']; ?>"></use>
-                                </svg> <span><?= $post_type['category_name']; ?></span>
+                         	<a class="adding-post__tabs-link tabs__item filters__button  filters__button--<?= $category['category']; ?> 
+                         		button <?= $category['id'] == $category_chosen ? ' filters__button--active tabs__item--active' : ''; ?>" href="?category_chosen=<?= $category['id']; ?>">
+                         		<svg class="filters__icon" width=<?= $category['category_w'] . ' height=' . $category['category_h']; ?>>
+                                    <use xlink:href="#icon-filter-<?= $category['category']; ?>"></use>
+                                </svg> <span><?= $category['category_name']; ?></span>
                          	</a>
                          </li>
                          <?php endforeach; ?>
@@ -21,12 +21,12 @@
 				</div>
 				
 				<div class="adding-post__tab-content">  
-					<?php foreach ($post_types as $post_type): ?>  
-					<?php switch ($post_type['id']):
+					<?php foreach ($categories as $category): ?>  
+					<?php switch ($category['id']):
     	    	
-                            case ($post_type['id'] == '3'): ?>
+                            case ($category['id'] == '3'): ?>
 					<section
-						class="adding-post__photo tabs__content<?= $post_type['id'] == $post_type_chosen ? ' tabs__content--active' : ''; ?>">
+						class="adding-post__photo tabs__content<?= $category['id'] == $category_chosen ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления фото</h2>
 						<form class="adding-post__form form" action="add.php" method="post"
 							enctype="multipart/form-data">
@@ -81,13 +81,13 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="post-type" value="3">
+							<input type="hidden" name="category" value="3">
 						</form>
 					</section>
         					<?php break;
                         		
-                            case ($post_type['id'] == '4'): ?>
-					<section class="adding-post__video tabs__content<?= $post_type['id'] == $post_type_chosen ? ' tabs__content--active' : ''; ?>">
+                            case ($category['id'] == '4'): ?>
+					<section class="adding-post__video tabs__content<?= $category['id'] == $category_chosen ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления видео</h2>
 						<form class="adding-post__form form" action="add.php" method="post"
 							enctype="multipart/form-data">
@@ -121,13 +121,13 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="post-type" value="4">
+							<input type="hidden" name="category" value="4">
 						</form>
 					</section>
         					<?php break;
                         		
-                            case ($post_type['id'] == '1'): ?>	
-					<section class="adding-post__text tabs__content<?= $post_type['id'] == $post_type_chosen ? ' tabs__content--active' : ''; ?>">
+                            case ($category['id'] == '1'): ?>	
+					<section class="adding-post__text tabs__content<?= $category['id'] == $category_chosen ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления текста</h2>
 						<form class="adding-post__form form" action="add.php" method="post">
 							<div class="form__text-inputs-wrapper">
@@ -155,7 +155,7 @@
 								</div>
 								<?php require 'form-invalid-block.php';?>
 							</div>
-							<input type="hidden" name="post-type" value="1">
+							<input type="hidden" name="category" value="1">
 							<div class="adding-post__buttons">
 								<button class="adding-post__submit button button--main"
 									type="submit">Опубликовать</button>
@@ -165,8 +165,8 @@
 					</section>
         					<?php break;
                         		
-                            case ($post_type['id'] == '2'): ?>
-					<section class="adding-post__quote tabs__content <?= $post_type['id'] == $post_type_chosen ? ' tabs__content--active' : ''; ?>">
+                            case ($category['id'] == '2'): ?>
+					<section class="adding-post__quote tabs__content <?= $category['id'] == $category_chosen ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления цитаты</h2>
 						<form class="adding-post__form form" action="add.php" method="post">
 							<div class="form__text-inputs-wrapper">
@@ -213,13 +213,13 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="post-type" value="2">
+							<input type="hidden" name="category" value="2">
 						</form>
 					</section>
         					<?php break;
                         		
-                            case ($post_type['id'] == '5'): ?>
-					<section class="adding-post__link tabs__content <?= $post_type['id'] == $post_type_chosen ? ' tabs__content--active' : ''; ?>">
+                            case ($category['id'] == '5'): ?>
+					<section class="adding-post__link tabs__content <?= $category['id'] == $category_chosen ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления ссылки</h2>
 						<form class="adding-post__form form" action="add.php" method="post">
 							<div class="form__text-inputs-wrapper">
@@ -250,7 +250,7 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="post-type" value="5">
+							<input type="hidden" name="category" value="5">
 						</form>
 					</section>
 					<?php break; 

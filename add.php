@@ -5,217 +5,186 @@ require_once 'functions.php';
 require_once 'dbconn.php';
 
 // Выполнение запросов
-$query = 'SELECT * FROM category';
-
-$post_types = get_result($db_link, $query); //создание вспомогательных массивов, например $post_types
+$categories = getCategories($db_link);
 
 //объявление пустых массивов
 $post_data = []; // массив полученных данных
 $errors = []; // массив ошибок
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $required = ['heading', 'post-text', 'cite-text', 'quote-author', 'post-link', 'video-url']; // формируем список полей, обязательных для заполнения
-
-    //текстовая публикация
-    if ($_POST['post-type'] == 1) {
-        $arr_options = array(
-            'heading' => FILTER_SANITIZE_STRING,
-            'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
-            'post-type' =>  FILTER_SANITIZE_STRING,
-            'post-text' => FILTER_SANITIZE_STRING,
-        );
-    }
-    //цитата
-    if ($_POST['post-type'] == 2) {
-        $arr_options = array(
-            'heading' => FILTER_SANITIZE_STRING,
-            'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
-            'post-type' =>  FILTER_SANITIZE_STRING,
-            'cite-text' => FILTER_SANITIZE_STRING,
-            'quote-author' => FILTER_SANITIZE_STRING,
-        );
-    }
-    //картинка
-    if ($_POST['post-type'] == 3) {
-        $arr_options = array(
-            'heading' => FILTER_SANITIZE_STRING,
-            'photo-url' => FILTER_SANITIZE_STRING,
-            'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
-        );
-    }
-    //видео
-    if ($_POST['post-type'] == 4) {
-        $arr_options = array(
-            'heading' => FILTER_SANITIZE_STRING,
-            'video-url' => FILTER_SANITIZE_STRING,
-            'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
-        );
-    }
-    //ссылка
-    if ($_POST['post-type'] == 5) {
-        $arr_options = array(
-            'heading' => FILTER_SANITIZE_STRING,
-            'post-link' => FILTER_SANITIZE_STRING,
-            'tags' =>  FILTER_SANITIZE_STRING, // Обязательность - Нет
-        );
-    }
-    
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {    
+    //Записываем ключи массива $_POST
+    $arr_keys = array_keys($_POST);
+    //Создаем фильтры для ключей
+    $arr_options = array_fill_keys($arr_keys, FILTER_SANITIZE_STRING);
     //Отфильтрованные данные из POST
-    $post_data = filter_input_array(INPUT_POST); 
-
+    $post_data = filter_input_array(INPUT_POST, $arr_options); 
     //Выбранная категория формы
-    $post_type_chosen = $post_data['post-type'];
-    
-    //Добавление тегов в базу
-    $tags = array_unique(array_filter(explode(" ", $post_data['tags'])));
-    if ($tags) {
-        $tagsAmount = count($tags); //количество тегов
-
-        foreach ($tags as $tag) {
-            $query = 'INSERT INTO hashtag (h_name) VALUES (?)';
-            $stmt = db_get_prepare_stmt($db_link, $query, $data = [$tag]);
-            mysqli_stmt_execute($stmt);
-        }
-    }
+    $category_chosen = $post_data['category'];
 
     //Валидация полей формы публикации
+    //Формируем правила для валидации
     $rules = [
-        'post-text' => function() {
-            return validateLength('post-text', 70);
+        'post-text' => function($value) {
+            return validateLength($value, 70);
         },
-        'cite-text' => function() {
-            return validateLength('cite-text', 1, 70);
+        'cite-text' => function($value) {
+            return validateLength($value, 1, 70);
         },
-        'post-link' => function() {
-            return validateUrl('post-link');
+        'post-link' => function($value) {
+            if (!validateUrl($value)) {
+                return "Укажите корректную ссылку";
+            }
         },
-        'video-url' => function() {
-            return validateUrl('video-url');
-        },
-        'video-url' => function() {
-            return check_youtube_url(($_POST['video-url']));
+        'video-url' => function($value) {
+            if (!validateUrl($value)) {
+                return "Укажите корректную ссылку";
+            } else {
+                if (check_youtube_url($value) != 1) {
+                    return check_youtube_url($value);
+                }
+            }
         },
     ];
     
+    //Формируем список полей, обязательных для заполнения
+    $required = [
+        'heading' => "Заголовок",
+        'post-text' => "Текст поста",
+        'cite-text' => "Текст цитаты",
+        'quote-author' => "Автор",
+        'post-link' => "Ссылка",
+        'video-url' => "Ссылка YouTube",
+    ];
+    
     foreach ($post_data as $key => $value) {
-        if (in_array($key, $required) && empty($value)) {
-            if ($key == 'heading') {
-                $errors[$key]['head'] = "Заголовок";
-            } elseif ($key == 'post-text') {
-                $errors[$key]['head'] = "Текст поста";
-            } elseif ($key == 'quote-author') {
-                $errors[$key]['head'] = "Автор";
-            } elseif ($key == 'cite-text') {
-                $errors[$key]['head'] = "Текст цитаты";
-            } elseif ($key == 'post-link') {
-                $errors[$key]['head'] = "Ссылка";
-            } elseif ($key == 'video-url') {
-                $errors[$key]['head'] = "Ссылка YouTube";
-            } 
-            $errors[$key]['description'] = "Поле надо заполнить";
-        }
-
-        if (isset($rules[$key]) && !isset($errors[$key])) {
-            $rule = $rules[$key];
-            $error = $rule();
-            
-            if (!empty($error)) {
-                if ($key != 'video-url') {
-                    $errors[$key]['description'] = $rule();
-                } elseif ($key == 'video-url' && $error != 1) {
-                    $errors[$key]['description'] = $rule();
-                }
-                if ($key == 'post-text') {
-                    $errors[$key]['head'] = "Текст поста";
-                } elseif ($key == 'cite-text') {
-                    $errors[$key]['head'] = "Текст цитаты";
-                } elseif ($key == 'post-link') {
-                    $errors[$key]['head'] = "Ссылка";
-                } elseif ($key == 'video-url' && $error != 1) {
-                    $errors[$key]['head'] = "Ссылка YouTube";
+        if (array_key_exists($key, $required)) {
+            if (!validateFilled($value)) {
+                $errors[$key]['head'] = $required[$key];
+                $errors[$key]['description'] = "Поле надо заполнить";
+            } else {
+                if (isset($rules[$key])) {
+                    $rule = $rules[$key];
+                    $error = $rule($value);
+                    if ($error) {
+                        $errors[$key]['head'] = $required[$key];
+                        $errors[$key]['description'] = $rule($value);
+                    }
                 }
             }
         }
     }
+    
     //Валидация картинки
-    if ($_POST['post-type'] == 3) {
-        //Валидация выбранной картинки
-        if ($_FILES['userpic-file-photo']['name']) {
+    if ($_POST['category'] == 3) {
+        print_r($_FILES);
+        // Если загружен файл и нет ошибок сохраняем его в папку UPLOAD_PATH_IMG
+        if ($_FILES['userpic-file-photo']['error'] === UPLOAD_ERR_OK) { 
             $tmp_name = $_FILES['userpic-file-photo']['tmp_name'];
-            $file_path = __DIR__ . '/img/uploads/';
-
+            $file_path = __DIR__ . '/uploads/';
             $file_name = $_FILES['userpic-file-photo']['name'];
+            move_uploaded_file($tmp_name, $file_path . $file_name);
+            $post_data['file'] =  'uploads/' . $file_name;
+        // Если есть интернет-ссылка и нет ошибок проверки ссылки, скачиваем файл и сохраняем в папку UPLOAD_PATH_IMG
+        } elseif ($post_data['photo-url'] and !isset($errors['photo-url'])) { 
             
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $file_type = finfo_file($finfo, $tmp_name);
-            if ($file_type !== "image/jpeg" && $file_type !== "image/jpg" && $file_type !== "image/gif" && $file_type !== "image/png") {
-                $errors['file']['head'] = 'Файл фото недопустимого типа';
-                $errors['file']['description'] = 'Загрузите картинку в формате png, jpeg, jpg или gif';
-            } else {
-                move_uploaded_file($tmp_name, $file_path . $file_name);
-                $post_data['file'] =  'uploads/' . $file_name;
-            }
-        //Валидация ссылки с картинкой
-        } elseif (!empty($post_data['photo-url'])) {
-            if (empty(validateUrl('photo-url'))) {
-                $img_url = $post_data['photo-url'];
-                $headers = get_headers($img_url, 1);
-
-                if (preg_match("|200|", $headers[0]) && preg_match("/(jpeg|jpg|gif|png)/", $headers['Content-Type'])) {
-                    $image = file_get_contents($img_url);
-                    
-                    if (!$image) {
-                        $errors['file']['head'] = 'Нет фото';
-                        $errors['file']['description'] = 'Не удалось скачать файл';
-                    }
-
-                    $image_name = basename($img_url);
-                    
-                    file_put_contents(__DIR__ . '/uploads/' . $image_name, $image);
-                    $post_data['file'] = 'uploads/' . $image_name;
-                } else {
-                    $errors['file']['head'] = 'Нет фото';
-                    $errors['file']['description'] = 'Ссылка битая или не содержит фото';
-                }
-            } else {
-                $errors['file']['head'] = 'Нет фото';
-                $errors['file']['description'] = 'Некорректная ссылка';
-            }
-        } else {
+        } else { // нет фото
             $errors['file']['head'] = 'Нет фото';
             $errors['file']['description'] = 'Загрузите файл или укажите ссылку на файл';
         }
     }
+        
+ 
+//     if ($_POST['category'] == 3) {
+//         //Валидация выбранной картинки
+//         if ($_FILES['userpic-file-photo']['name']) {
+//             $tmp_name = $_FILES['userpic-file-photo']['tmp_name'];
+//             $file_path = __DIR__ . '/img/uploads/';
+
+//             $file_name = $_FILES['userpic-file-photo']['name'];
+            
+//             $finfo = finfo_open(FILEINFO_MIME_TYPE);
+//             $file_type = finfo_file($finfo, $tmp_name);
+//             if ($file_type !== "image/jpeg" && $file_type !== "image/jpg" && $file_type !== "image/gif" && $file_type !== "image/png") {
+//                 $errors['file']['head'] = 'Файл фото недопустимого типа';
+//                 $errors['file']['description'] = 'Загрузите картинку в формате png, jpeg, jpg или gif';
+//             } else {
+//                 move_uploaded_file($tmp_name, $file_path . $file_name);
+//                 $post_data['file'] =  'uploads/' . $file_name;
+//             }
+//         //Валидация ссылки с картинкой
+//         } elseif (!empty($post_data['photo-url'])) {
+//             if (validateUrl('photo-url')) {
+//                 $img_url = $post_data['photo-url'];
+//                 $headers = get_headers($img_url, 1);
+
+//                 if (preg_match("|200|", $headers[0]) && preg_match("/(jpeg|jpg|gif|png)/", $headers['Content-Type'])) {
+//                     $image = file_get_contents($img_url);
+                    
+//                     if (!$image) {
+//                         $errors['file']['head'] = 'Нет фото';
+//                         $errors['file']['description'] = 'Не удалось скачать файл';
+//                     }
+
+//                     $image_name = basename($img_url);
+                    
+//                     file_put_contents(__DIR__ . '/uploads/' . $image_name, $image);
+//                     $post_data['file'] = 'uploads/' . $image_name;
+//                 } else {
+//                     $errors['file']['head'] = 'Нет фото';
+//                     $errors['file']['description'] = 'Ссылка не существует или не содержит фото';
+//                 }
+//             } else {
+//                 $errors['file']['head'] = 'Нет фото';
+//                 $errors['file']['description'] = 'Некорректная ссылка';
+//             }
+//         } else {
+//             $errors['file']['head'] = 'Нет фото';
+//             $errors['file']['description'] = 'Загрузите файл или укажите ссылку на файл';
+//         }
+//     }
 
     $errors = array_filter($errors);
 
-    //Запись данных
+    // если нет ошибок, то запись данных и переход на страницу просмотра поста (post.php)
     if (!$errors) {
-        $post_data['user_id'] = 3; //пока укажите в качестве ID пользователя любое число
+        //Добавление тегов в базу
+        $tags = hash_tags2arr($post_data['tags']);
+        
+        if ($tags) {
+            $tagsAmount = count($tags); //количество тегов
+            
+            foreach ($tags as $tag) {
+                $query = 'INSERT INTO hashtag (h_name) VALUES (?)';
+                $stmt = db_get_prepare_stmt($db_link, $query, $data = [$tag]);
+                mysqli_stmt_execute($stmt);
+            }
+        }
+        //пока укажите в качестве ID пользователя любое число
+        $post_data['user_id'] = 3; 
         //текстовая публикация
-        if ($post_type_chosen == 1) {
+        if ($category_chosen == 1) {
             $query = 'INSERT INTO post (p_title, p_content, user_id, category_id) VALUES (?, ?, ?, ?)';
-            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['post-text'], $post_data['user_id'], $post_data['post-type']));
+            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['post-text'], $post_data['user_id'], $post_data['category']));
         } 
         //цитата
-        elseif ($post_type_chosen == 2) {
+        elseif ($category_chosen == 2) {
             $query = 'INSERT INTO post (p_title, p_content, author, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
-            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['cite-text'], $post_data['quote-author'], $post_data['user_id'], $post_data['post-type']));
+            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['cite-text'], $post_data['quote-author'], $post_data['user_id'], $post_data['category']));
         }
         //картинка
-        elseif ($post_type_chosen == 3) {
+        elseif ($category_chosen == 3) {
             $query = 'INSERT INTO post (p_title, p_img, user_id, category_id) VALUES (?, ?, ?, ?)';
-            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['file'], $post_data['user_id'], $post_data['post-type']));
+            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['file'], $post_data['user_id'], $post_data['category']));
         }
         //видео
-        elseif ($post_type_chosen == 4) {
+        elseif ($category_chosen == 4) {
             $query = 'INSERT INTO post (p_title, p_video, user_id, category_id) VALUES (?, ?, ?, ?)';
-            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['video-url'], $post_data['user_id'], $post_data['post-type']));
+            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['video-url'], $post_data['user_id'], $post_data['category']));
         }
         //ссылка
-        elseif ($post_type_chosen == 5) {
+        elseif ($category_chosen == 5) {
             $query = 'INSERT INTO post (p_title, p_content, p_link, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
-            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['post-link'], $post_data['post-link'], $post_data['user_id'], $post_data['post-type']));
+            $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['post-link'], $post_data['post-link'], $post_data['user_id'], $post_data['category']));
         }
         mysqli_stmt_execute($stmt);
         
@@ -235,14 +204,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
     
-} else if ($_SERVER['REQUEST_METHOD'] == 'GET') { 
+} else { 
     // Открытие таба по выбранному типу контента
-    $post_type_chosen = filter_input(INPUT_GET, 'post_type_chosen', FILTER_SANITIZE_NUMBER_INT);
-    $post_type_chosen = (int) $post_type_chosen; 
+    $category_chosen = filter_input(INPUT_GET, 'category_chosen', FILTER_SANITIZE_NUMBER_INT);
+    $category_chosen = (int) $category_chosen; 
 }
 
-if ($post_type_chosen == 0) {
-    $post_type_chosen = 1; // публикация с текстом по умолчанию
+if ($category_chosen == 0) {
+    $category_chosen = 1; // публикация с текстом по умолчанию
 } 
 
 $is_auth = rand(0, 1);
@@ -251,8 +220,8 @@ $user_name = 'Никитина Виктория';
 
 // Подготовка и вывод страницы
 $main_content = include_template('adding-post.php', [
-    'post_types' => $post_types,
-    'post_type_chosen' => $post_type_chosen,
+    'categories' => $categories,
+    'category_chosen' => $category_chosen,
     'errors' => $errors,
 ]);
 

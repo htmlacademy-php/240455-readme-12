@@ -31,7 +31,7 @@ $query = '
 
 $post = get_result($db_link, $query, 3);
 
-if(!$post) {
+if (!$post) {
     exit('Пост не существует');
 }
 
@@ -92,11 +92,8 @@ $i = 1;
 
 if ($comments) {
     foreach ($comments as $key => $comment) {
-
         $comments[$key]['comment_interval'] = date(DATE_FORMAT, strtotime($comment['dt_add']));
-
         $comments[$key]['comment_date_title'] = get_interval($comment['dt_add']);
-
         $comments[$key]['comment_number'] = $i++;
     }
 }

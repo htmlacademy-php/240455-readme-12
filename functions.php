@@ -16,10 +16,12 @@ mb_internal_encoding("UTF-8");
  * Обрезает текстовое содержимое если оно превышает заданное число символов. Также, если текст был обрезан, добавляет к нему ссылку «Читать далее»
  *
  * @param string $text Текстовая строка
+ * @param string $link Текстовая строка со ссылкой
  * @param int $max_len Максимальная длина текста 
  * @return string
  */
 function cut_text ($text, $link, $max_len = 300) {
+    
     $text_trimmed = trim($text);
     $text_len = mb_strlen($text_trimmed);
 
@@ -43,6 +45,7 @@ function cut_text ($text, $link, $max_len = 300) {
  * @return string
  */
 function filter_xss (&$arr) {
+    
     $arr = htmlentities($arr);
 }
 
@@ -59,6 +62,7 @@ function filter_xss (&$arr) {
  * @return string $interval Возвращает интервал между экземплярами дат
  */
 function get_interval ($date, $not_ago = 0) {
+    
     $cur_date = date_create("now"); // создаёт экземпляр текущей даты
     $date = date_create($date); // создаёт экземпляр даты
     $date_string = $date->format('Y.m.d H:i'); // возвращает дату в указанном формате string
@@ -79,7 +83,7 @@ function get_interval ($date, $not_ago = 0) {
                 $minuts = $diff->i; 
                 $time_count = $minuts . " минут" . get_noun_plural_form($minuts, 'у', 'ы', '');
             }
-        } elseif (1 <= $days) {
+        } elseif ($days >= 1) {  // если разница больше одного дня
             if ($days < $days_in_week) {
                 $time_count = $days . " " . get_noun_plural_form($days, 'день', 'дня', 'дней');
             } elseif ($days_in_week <= $days and $days < $days_in_5weeks) {
@@ -100,7 +104,7 @@ function get_interval ($date, $not_ago = 0) {
         
     } elseif ($cur_date_string == $date_string) { // если текущая дата и принятая одинаковы
         $time_count = "только что";
-    } else {  // если принятая дата и актуальнее текущей
+    } else { // дата в будущем
         $time_count = $date_string . " - дата в будущем";
     }
     
@@ -117,19 +121,20 @@ function get_interval ($date, $not_ago = 0) {
  */
 
 function get_result ($db_link, $query, $mode = 2) {
+    
     $result = mysqli_query($db_link, $query);
     
     $rows = mysqli_num_rows($result);
     
     if ($rows) {
-        if ($mode == 1) { // одно значение
+        if ($mode === 1) { // одно значение
             $array = mysqli_fetch_array($result);
             $array = $array[0];
-        } elseif ($mode == 2) { // несколько записей и несколько полей (двумерный)
+        } elseif ($mode === 2) { // несколько записей и несколько полей (двумерный)
             $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        } elseif ($mode == 3) { // несколько полей одной записи (ряд)
+        } elseif ($mode === 3) { // несколько полей одной записи (ряд)
             $array = mysqli_fetch_assoc($result);
-        } elseif ($mode == 4) { // одно поле из нескольких записей (колонка) 
+        } elseif ($mode === 4) { // одно поле из нескольких записей (колонка) 
             $array = mysqli_fetch_all($result);
             $array = array_column($array,0); 
         } else {
@@ -145,12 +150,14 @@ function get_result ($db_link, $query, $mode = 2) {
 /**
  * Принимает таблицу и условие и выдает количество
  *
+ * @param string $db_link Соединение
  * @param string $table Таблица
  * @param string $condition Условие
  * @return int Количество
  */
 
 function get_number ($db_link, $table, $condition) {
+    
     $query = '
         SELECT COUNT(id)
         FROM '. $table .'
@@ -162,40 +169,39 @@ function get_number ($db_link, $table, $condition) {
 }
 
 /**
- * Сохраняет значения полей формы после валидации
+ * Получаем значение переданной переменной
  *
- * @param string $name Значение поля
- * @return string Значение поля
+ * @param string $value Значение переданной переменной
+ * @return string Значение переданной переменной
  */
 
-function getPostVal($name) {
-    return $_POST[$name] ?? "";
+function getPostVal($value) {
+    
+    return $_POST[$value] ?? "";
 }
 
 /**
  * Проверка на корректную ссылку
  *
- * @param string $name Значение поля
- * @return string Текст 
+ * @param string $value Значение поля
+ * @return bool true при корректной ссылке, иначе false 
  */
 
-function validateUrl($name) {
-    if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_URL)) {
-        return "Укажите корректную ссылку";
-    }
+function validateUrl($value) {
+    
+    return filter_var($value, FILTER_VALIDATE_URL);
 }
 
 /**
  * Проверка на заполненость поля
  *
- * @param string $name Значение поля
- * @return string Текст
+ * @param string $value Значение поля
+ * @return bool true при заполненном поле, иначе false
  */
 
-function validateFilled($name) {
-    if (empty($_POST[$name])) {
-        return "Это поле должно быть заполнено";
-    }
+function validateFilled($value) {
+    
+    return !empty($value);
 }
 
 /**
@@ -208,9 +214,40 @@ function validateFilled($name) {
  */
 
 function validateLength($name, $min, $max = 300) {
-    $len = strlen($_POST[$name]);
+    
+    $len = mb_strlen($name);
     
     if ($len < $min or $len > $max) {
         return "Значение должно быть от $min до $max символов";
     }
+}
+
+/**
+ * Получение массива категорий
+ *
+ * @param mysqli $db_link Соединение
+ * @param string $query Запрос
+ * @param int $mode Тип ответа 
+ * @return array
+ */
+
+function getCategories($db_link, $query = 'SELECT * FROM category', $mode = 2) {
+    
+    return get_result($db_link, $query);
+}
+
+/**
+ *Преобразование строки хеш-тегов в массив
+ *
+ *@param string $tags
+ *@return array
+ */
+function hash_tags2arr($tags) {
+    
+    $tags = trim($tags,' #'); // убираем концевые пробелы строки и первый #
+    $arr = explode('#',$tags); // разбивка на массив
+    $arr = array_map('trim',$arr); // удаляем концевые пробелы слова
+    $arr = array_unique($arr); // удаляем возможные дубли
+    
+    return $arr;
 }

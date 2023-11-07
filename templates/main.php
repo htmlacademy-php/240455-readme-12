@@ -52,7 +52,7 @@
     	    	
                         case 'post-photo': ?>
                     <div class="post-photo__image-wrapper">
-                        <img src="img/<?= $post['p_content']; ?>" alt="Фото от пользователя" width="360" height="240">
+                        <img src="<?= $post['p_img']; ?>" alt="Фото от пользователя" width="360" height="240">
                     </div>
                     	<?php break;
                                        	
