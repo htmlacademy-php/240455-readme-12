@@ -19,16 +19,11 @@
                          <?php endforeach; ?>
 					</ul>
 				</div>
-				
 				<div class="adding-post__tab-content">  
-					<?php foreach ($categories as $category): ?>  
-					<?php switch ($category['id']):
-    	    	
-                            case ($category['id'] == '3'): ?>
 					<section
-						class="adding-post__photo tabs__content<?= $category['id'] == $category_chosen ? ' tabs__content--active' : ''; ?>">
+						class="adding-post__photo tabs__content<?= $category_chosen == 3 ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления фото</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=<?= $category['id']; ?>" method="post"
+						<form class="adding-post__form form" action="add.php?category_chosen=3" method="post"
 							enctype="multipart/form-data">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
@@ -84,12 +79,9 @@
 							<input type="hidden" name="category" value="3">
 						</form>
 					</section>
-        					<?php break;
-                        		
-                            case ($category['id'] == '4'): ?>
-					<section class="adding-post__video tabs__content<?= $category['id'] == $category_chosen ? ' tabs__content--active' : ''; ?>">
+					<section class="adding-post__video tabs__content<?= $category_chosen == 4 ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления видео</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=<?= $category['id']; ?>" method="post"
+						<form class="adding-post__form form" action="add.php?category_chosen=4" method="post"
 							enctype="multipart/form-data">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
@@ -124,12 +116,9 @@
 							<input type="hidden" name="category" value="4">
 						</form>
 					</section>
-        					<?php break;
-                        		
-                            case ($category['id'] == '1'): ?>	
-					<section class="adding-post__text tabs__content<?= $category['id'] == $category_chosen ? ' tabs__content--active' : ''; ?>">
+					<section class="adding-post__text tabs__content<?= $category_chosen == 1 ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления текста</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=<?= $category['id']; ?>" method="post">
+						<form class="adding-post__form form" action="add.php?category_chosen=1" method="post">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
@@ -163,12 +152,9 @@
 							</div>
 						</form>
 					</section>
-        					<?php break;
-                        		
-                            case ($category['id'] == '2'): ?>
-					<section class="adding-post__quote tabs__content <?= $category['id'] == $category_chosen ? ' tabs__content--active' : ''; ?>">
+					<section class="adding-post__quote tabs__content <?= $category_chosen == 2 ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления цитаты</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=<?= $category['id']; ?>" method="post">
+						<form class="adding-post__form form" action="add.php?category_chosen=2" method="post">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
@@ -216,12 +202,9 @@
 							<input type="hidden" name="category" value="2">
 						</form>
 					</section>
-        					<?php break;
-                        		
-                            case ($category['id'] == '5'): ?>
-					<section class="adding-post__link tabs__content <?= $category['id'] == $category_chosen ? ' tabs__content--active' : ''; ?>">
+					<section class="adding-post__link tabs__content <?= $category_chosen == 5 ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления ссылки</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=<?= $category['id']; ?>" method="post">
+						<form class="adding-post__form form" action="add.php?category_chosen=5" method="post">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
@@ -253,9 +236,6 @@
 							<input type="hidden" name="category" value="5">
 						</form>
 					</section>
-					<?php break; 
-                endswitch;
-                endforeach; ?>
 				</div>
 			</div>
 		</div>

@@ -18,7 +18,7 @@ mb_internal_encoding("UTF-8");
  * @param string $text Текстовая строка
  * @param string $link Текстовая строка со ссылкой
  * @param int $max_len Максимальная длина текста 
- * @return string
+ * @return string $text Ссылка на полный текст
  */
 function cut_text ($text, $link, $max_len = 300) {
     
