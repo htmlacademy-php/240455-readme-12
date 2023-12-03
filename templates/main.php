@@ -108,7 +108,7 @@
                                 <img class="post__author-avatar" src="img/<?= $post['avatar']; ?>" alt="Аватар пользователя">
                             </div>
                             <div class="post__info">
-                                <b class="post__author-name"><?= $post['author']; ?></b>
+                                <b class="post__author-name"><?= $post['login']; ?></b>
                                 <time class="post__time" title="<?= $post['date_title']; ?>" datetime="<?= $post['dt_add']; ?>"><?= $post['date_interval']; ?></time>
                             </div>
                         </a>

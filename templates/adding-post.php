@@ -8,7 +8,6 @@
 				<div class="adding-post__tabs filters">
 					<ul class="adding-post__tabs-list filters__list tabs__list">
                     	<?php foreach ($categories as $category): ?>    
-                    	<?php echo $category['category']; ?>
                         <li class="adding-post__tabs-item filters__item">
                          	<a class="adding-post__tabs-link tabs__item filters__button  filters__button--<?= $category['category']; ?> 
                          		button<?= $category['category'] == $category_chosen ? ' filters__button--active tabs__item--active' : ''; ?>" href="?category_chosen=<?= $category['category']; ?>">
@@ -77,7 +76,8 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="category" value="3">
+							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
+							<input type="hidden" name="category_id" value="3">
 						</form>
 					</section>
 					<section class="adding-post__video tabs__content<?= $category_chosen === 'video' ? ' tabs__content--active' : ''; ?>">
@@ -114,7 +114,8 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="category" value="4">
+							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
+							<input type="hidden" name="category_id" value="4">
 						</form>
 					</section>
 					<section class="adding-post__text tabs__content<?= $category_chosen === 'text' ? ' tabs__content--active' : ''; ?>">
@@ -145,7 +146,8 @@
 								</div>
 								<?php require 'form-invalid-block.php';?>
 							</div>
-							<input type="hidden" name="category" value="1">
+							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
+							<input type="hidden" name="category_id" value="1">
 							<div class="adding-post__buttons">
 								<button class="adding-post__submit button button--main"
 									type="submit">Опубликовать</button>
@@ -200,7 +202,8 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="category" value="2">
+							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
+							<input type="hidden" name="category_id" value="2">
 						</form>
 					</section>
 					<section class="adding-post__link tabs__content <?= $category_chosen === 'link' ? ' tabs__content--active' : ''; ?>">
@@ -234,7 +237,8 @@
 									type="submit">Опубликовать</button>
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
-							<input type="hidden" name="category" value="5">
+							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
+							<input type="hidden" name="category_id" value="5">
 						</form>
 					</section>
 				</div>
