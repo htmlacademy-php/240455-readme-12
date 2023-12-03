@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     mysqli_stmt_execute($stmt);
                     $tag_id = mysqli_insert_id($db_link);            
                 } else {
-                    $query =  'SELECT id FROM hashtag WHERE h_name = "' . $tag .'"';
+                    $query =  'SELECT id FROM hashtag WHERE h_name = "' . $tag . '"';
                     $tag_id = get_result($db_link, $query, 1);
                 }
                 $query = 'INSERT INTO post_hashtag_rel (post_id, hashtag_id) VALUES (?, ?)';
