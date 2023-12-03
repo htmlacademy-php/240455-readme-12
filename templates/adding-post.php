@@ -8,9 +8,10 @@
 				<div class="adding-post__tabs filters">
 					<ul class="adding-post__tabs-list filters__list tabs__list">
                     	<?php foreach ($categories as $category): ?>    
+                    	<?php echo $category['category']; ?>
                         <li class="adding-post__tabs-item filters__item">
                          	<a class="adding-post__tabs-link tabs__item filters__button  filters__button--<?= $category['category']; ?> 
-                         		button <?= $category['id'] == $category_chosen ? ' filters__button--active tabs__item--active' : ''; ?>" href="?category_chosen=<?= $category['id']; ?>">
+                         		button<?= $category['category'] == $category_chosen ? ' filters__button--active tabs__item--active' : ''; ?>" href="?category_chosen=<?= $category['category']; ?>">
                          		<svg class="filters__icon" width=<?= $category['category_w'] . ' height=' . $category['category_h']; ?>>
                                     <use xlink:href="#icon-filter-<?= $category['category']; ?>"></use>
                                 </svg> <span><?= $category['category_name']; ?></span>
@@ -21,9 +22,9 @@
 				</div>
 				<div class="adding-post__tab-content">  
 					<section
-						class="adding-post__photo tabs__content<?= $category_chosen == 3 ? ' tabs__content--active' : ''; ?>">
+						class="adding-post__photo tabs__content<?= $category_chosen === 'photo' ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления фото</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=3" method="post"
+						<form class="adding-post__form form" action="add.php?category_chosen=photo" method="post"
 							enctype="multipart/form-data">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
@@ -79,9 +80,9 @@
 							<input type="hidden" name="category" value="3">
 						</form>
 					</section>
-					<section class="adding-post__video tabs__content<?= $category_chosen == 4 ? ' tabs__content--active' : ''; ?>">
+					<section class="adding-post__video tabs__content<?= $category_chosen === 'video' ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления видео</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=4" method="post"
+						<form class="adding-post__form form" action="add.php?category_chosen=video" method="post"
 							enctype="multipart/form-data">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
@@ -116,9 +117,9 @@
 							<input type="hidden" name="category" value="4">
 						</form>
 					</section>
-					<section class="adding-post__text tabs__content<?= $category_chosen == 1 ? ' tabs__content--active' : ''; ?>">
+					<section class="adding-post__text tabs__content<?= $category_chosen === 'text' ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления текста</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=1" method="post">
+						<form class="adding-post__form form" action="add.php?category_chosen=text" method="post">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
@@ -152,9 +153,9 @@
 							</div>
 						</form>
 					</section>
-					<section class="adding-post__quote tabs__content <?= $category_chosen == 2 ? ' tabs__content--active' : ''; ?>">
+					<section class="adding-post__quote tabs__content <?= $category_chosen === 'quote' ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления цитаты</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=2" method="post">
+						<form class="adding-post__form form" action="add.php?category_chosen=quote" method="post">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
@@ -202,9 +203,9 @@
 							<input type="hidden" name="category" value="2">
 						</form>
 					</section>
-					<section class="adding-post__link tabs__content <?= $category_chosen == 5 ? ' tabs__content--active' : ''; ?>">
+					<section class="adding-post__link tabs__content <?= $category_chosen === 'link' ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления ссылки</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=5" method="post">
+						<form class="adding-post__form form" action="add.php?category_chosen=link" method="post">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>

@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   
     //Валидация картинки
-    if ($category_chosen == 3) {
+    if ($category_chosen === 'photo') {
         $file_path = __DIR__ . '/uploads/';
         // Если загружен файл и нет ошибок сохраняем его в папку UPLOAD_PATH_IMG
         if ($_FILES['userpic-file-photo']['error'] === UPLOAD_ERR_OK) { 
@@ -156,27 +156,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         //пока укажите в качестве ID пользователя любое число
         $post_data['user_id'] = 3; 
         //текстовая публикация
-        if ($category_chosen == 1) {
+        if ($category_chosen === 'text') {
             $query = 'INSERT INTO post (p_title, p_content, user_id, category_id) VALUES (?, ?, ?, ?)';
             $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['post-text'], $post_data['user_id'], $post_data['category']));
         } 
         //цитата
-        elseif ($category_chosen == 2) {
+        elseif ($category_chosen === 'quote') {
             $query = 'INSERT INTO post (p_title, p_content, author, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
             $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['cite-text'], $post_data['quote-author'], $post_data['user_id'], $post_data['category']));
         }
         //картинка
-        elseif ($category_chosen == 3) {
+        elseif ($category_chosen == 'photo') {
             $query = 'INSERT INTO post (p_title, p_img, user_id, category_id) VALUES (?, ?, ?, ?)';
             $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['file'], $post_data['user_id'], $post_data['category']));
         }
         //видео
-        elseif ($category_chosen == 4) {
+        elseif ($category_chosen == 'video') {
             $query = 'INSERT INTO post (p_title, p_video, user_id, category_id) VALUES (?, ?, ?, ?)';
             $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['video-url'], $post_data['user_id'], $post_data['category']));
         }
         //ссылка
-        elseif ($category_chosen == 5) {
+        elseif ($category_chosen == 'link') {
             $query = 'INSERT INTO post (p_title, p_content, p_link, user_id, category_id) VALUES (?, ?, ?, ?, ?)';
             $stmt = db_get_prepare_stmt($db_link, $query, $data = array($post_data['heading'], $post_data['post-link'], $post_data['post-link'], $post_data['user_id'], $post_data['category']));
         }
@@ -200,11 +200,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
 } else { 
     // Открытие таба по выбранному типу контента
-    $category_chosen = filter_input(INPUT_GET, 'category_chosen', FILTER_SANITIZE_NUMBER_INT);
-    $category_chosen = (int) $category_chosen; 
+    $category_chosen = filter_input(INPUT_GET, 'category_chosen', FILTER_SANITIZE_STRING);
     
-    if ($category_chosen == 0) {
-        $category_chosen = 1; // публикация с текстом по умолчанию
+    if ($category_chosen == '') {
+        $category_chosen = 'text'; // публикация с текстом по умолчанию
     }
 }
 
