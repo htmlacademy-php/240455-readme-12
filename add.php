@@ -143,18 +143,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // если нет ошибок, то запись данных и переход на страницу просмотра поста (post.php)
     if (!$errors) {
-        //Добавление тегов в базу
-        $tags = hash_tags2arr($post_data['tags']);
-        
-        if ($tags) {
-            $tagsAmount = count($tags); //количество тегов
-            
-            foreach ($tags as $tag) {
-                $query = 'INSERT INTO hashtag (h_name) VALUES (?)';
-                $stmt = db_get_prepare_stmt($db_link, $query, $data = [$tag]);
-                mysqli_stmt_execute($stmt);
-            }
-        }
         //пока укажите в качестве ID пользователя любое число
         $post_data['user_id'] = 3; 
         
@@ -177,16 +165,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // вывод поста
         $post_id = mysqli_insert_id($db_link);
         header("Location: /post.php?post_id=" . $post_id);
-
-        //запрос id тегов
-        $query = "SELECT id FROM hashtag ORDER BY id DESC LIMIT " . $tagsAmount;
-        $tags_id = get_result($db_link, $query, 4);
         
-        //добавление связей тегов и поста в post_hashtag_rel
-        foreach ($tags_id as $tag_id) {
-            $query = 'INSERT INTO post_hashtag_rel (post_id, hashtag_id) VALUES (?, ?)';
-            $stmt = db_get_prepare_stmt($db_link, $query, $data = [$post_id, $tag_id]);
-            mysqli_stmt_execute($stmt);
+        //Добавление тегов в базу
+        $tags = hash_tags2arr($post_data['tags']);
+        
+        if ($tags) {
+            $query =  'SELECT h_name FROM hashtag';
+            $all_tags = get_result($db_link, $query, 4);
+            foreach ($tags as $tag) {
+                if (!in_array($tag, $all_tags)) {
+                    $query = 'INSERT INTO hashtag (h_name) VALUES (?)';
+                    $stmt = db_get_prepare_stmt($db_link, $query, $data = [$tag]);
+                    mysqli_stmt_execute($stmt);
+                    $tag_id = mysqli_insert_id($db_link);            
+                } else {
+                    $query =  'SELECT id FROM hashtag WHERE h_name = "' . $tag .'"';
+                    $tag_id = get_result($db_link, $query, 1);
+                }
+                $query = 'INSERT INTO post_hashtag_rel (post_id, hashtag_id) VALUES (?, ?)';
+                $stmt = db_get_prepare_stmt($db_link, $query, $data = [$post_id, $tag_id]);
+                mysqli_stmt_execute($stmt);
+            }
         }
     }
     

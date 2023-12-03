@@ -49,7 +49,7 @@ $query = '
 
 
 $posts = get_result($db_link, $query);
-print_r($posts);
+
 // Генерация дат
 foreach ($posts as $key => $post) {  
     $posts[$key]['date_interval'] = get_interval ($post['dt_add'], 1);
