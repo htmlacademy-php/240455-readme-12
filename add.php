@@ -147,12 +147,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $post_data['user_id'] = 3; 
         
         $data = [
-            $post_data['heading'] ? : '',
-            $post_data['post-text'] ? : '',
-            $post_data['quote-author'] ? : '',
-            $post_data['file'] ? : '',
-            $post_data['video-url'] ? : '',
-            $post_data['p_link'] ? : '',
+            $post_data['heading'] ?: '',
+            $post_data['post-text'] ?: '',
+            $post_data['quote-author'] ?: '',
+            $post_data['file'] ?: '',
+            $post_data['video-url'] ?: '',
+            $post_data['p_link'] ?: '',
             $post_data['user_id'] ?? 3,
             $category_id ?? 0,
         ];
@@ -162,9 +162,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         mysqli_stmt_execute($stmt);
         
-        // вывод поста
+        // Извлечение id поста
         $post_id = mysqli_insert_id($db_link);
-        header("Location: /post.php?post_id=" . $post_id);
         
         //Добавление тегов в базу
         $tags = hash_tags2arr($post_data['tags']);
@@ -187,6 +186,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 mysqli_stmt_execute($stmt);
             }
         }
+        
+        // вывод поста
+        header("Location: /post.php?post_id=" . $post_id);
+        exit();
     }
     
 } else { 

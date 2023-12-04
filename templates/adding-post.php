@@ -80,6 +80,7 @@
 							<input type="hidden" name="category_id" value="3">
 						</form>
 					</section>
+					
 					<section class="adding-post__video tabs__content<?= $category_chosen === 'video' ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления видео</h2>
 						<form class="adding-post__form form" action="add.php?category_chosen=video" method="post"
@@ -118,6 +119,7 @@
 							<input type="hidden" name="category_id" value="4">
 						</form>
 					</section>
+					
 					<section class="adding-post__text tabs__content<?= $category_chosen === 'text' ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления текста</h2>
 						<form class="adding-post__form form" action="add.php?category_chosen=text" method="post">
@@ -155,6 +157,7 @@
 							</div>
 						</form>
 					</section>
+					
 					<section class="adding-post__quote tabs__content <?= $category_chosen === 'quote' ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления цитаты</h2>
 						<form class="adding-post__form form" action="add.php?category_chosen=quote" method="post">
@@ -206,6 +209,7 @@
 							<input type="hidden" name="category_id" value="2">
 						</form>
 					</section>
+					
 					<section class="adding-post__link tabs__content <?= $category_chosen === 'link' ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления ссылки</h2>
 						<form class="adding-post__form form" action="add.php?category_chosen=link" method="post">

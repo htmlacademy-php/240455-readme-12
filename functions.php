@@ -18,7 +18,7 @@ mb_internal_encoding("UTF-8");
  * @param string $text Текстовая строка
  * @param string $link Текстовая строка со ссылкой
  * @param int $max_len Максимальная длина текста 
- * @return string $text Ссылка на полный текст
+ * @return string
  */
 function cut_text ($text, $link, $max_len = 300) {
     
@@ -41,7 +41,7 @@ function cut_text ($text, $link, $max_len = 300) {
 /**
  * Функция-фильтр от XSS
  *
- * @param string $value Значение массива
+ * @param array $arr Фильтруемый массив
  * @return string
  */
 function filter_xss (&$arr) {
