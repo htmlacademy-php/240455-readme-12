@@ -220,6 +220,8 @@ function validateLength($name, $min, $max = 300) {
     if ($len < $min or $len > $max) {
         return "Значение должно быть от $min до $max символов";
     }
+    
+    exit;
 }
 
 /**

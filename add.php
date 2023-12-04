@@ -34,35 +34,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //Валидация полей формы публикации
     //Формируем правила для валидации
     $rules = [
-        'post-text' => function($value) {
-            return validateLength($value, 70);
-        },
-        'post-link' => function($value) {
-            if (!validateUrl($value)) {
-                return "Укажите корректную ссылку";
-            } elseif (!is_url_exist($value)) {
-                return "Страница не найдена";
-            }
-        },
-        'video-url' => function($value) {
-            if (!validateUrl($value)) {
-                return "Укажите корректную ссылку";
-            } else {
-                if (check_youtube_url($value) != 1) {
+        'url' => function($value, $category_chosen) {
+            if ($category_chosen === 'video') {
+                if (!validateUrl($value)) {
+                    return "Укажите корректную ссылку";
+                } elseif (check_youtube_url($value) != 1) {
                     return check_youtube_url($value);
+                }
+            } else {
+                if (!validateUrl($value)) {
+                    return "Укажите корректную ссылку";
+                } elseif (!is_url_exist($value)) {
+                    return "Страница не найдена";
                 }
             }
         },
     ];
-    
+
     //Формируем список полей, обязательных для заполнения
     $required = [
         'heading' => "Заголовок",
-        'post-text' => "Текст поста",
-        'cite-text' => "Текст цитаты",
-        'quote-author' => "Автор",
-        'post-link' => "Ссылка",
-        'video-url' => "Ссылка YouTube",
+        'p_text' => "Текст",
+        'author' => "Автор",
+        'url' => "Ссылка",
     ];
     
     foreach ($post_data as $key => $value) {
@@ -70,14 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!validateFilled($value)) {
                 $errors[$key]['head'] = $required[$key];
                 $errors[$key]['description'] = "Поле надо заполнить";
-            } else {
-                if (isset($rules[$key])) {
-                    $rule = $rules[$key];
-                    $error = $rule($value);
-                    if ($error) {
-                        $errors[$key]['head'] = $required[$key];
-                        $errors[$key]['description'] = $rule($value);
-                    }
+            } elseif (isset($rules[$key])) {
+                $rule = $rules[$key];
+                $error = $rule($value, $category_chosen);
+                if ($error) {
+                    $errors[$key]['head'] = $required[$key];
+                    $errors[$key]['description'] = $rule($value, $category_chosen);
                 }
             }
         }
@@ -100,17 +92,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $file_name =  strtolower(uniqid() . $_FILES['userpic-file-photo']['name']);
                 move_uploaded_file($tmp_name, $file_path . $file_name);
                 
-                $post_data['file'] =  'uploads/' . $file_name;
             } else {
                 $errors['file']['head'] = 'Файл фото недопустимого типа';
                 $errors['file']['description'] = 'Загрузите картинку в формате png, jpeg, jpg или gif';
             }
         // Если есть интернет-ссылка и нет ошибок проверки ссылки, скачиваем файл и сохраняем в папку UPLOAD_PATH_IMG
-        } elseif ($post_data['photo-url'] and !isset($errors['file'])) { 
-            if (validateUrl($post_data['photo-url'])) {
-                if (is_url_exist($post_data['photo-url'])) {
+        } elseif ($post_data['url_photo'] and !isset($errors['file'])) { 
+            if (validateUrl($post_data['url_photo'])) {
+                if (is_url_exist($post_data['url_photo'])) {
                     $file_info = new finfo(FILEINFO_MIME_TYPE);
-                    $image = file_get_contents($post_data['photo-url']);
+                    $image = file_get_contents($post_data['url_photo']);
                     
                     $mime_type = $file_info->buffer($image);
                     $mime_type_ext = str_replace("image/", "", $mime_type);
@@ -120,7 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $file_name =  uniqid() . '.' . $mime_type_ext;
                         file_put_contents($file_path . $file_name, $image);
                         
-                        $post_data['file'] =  'uploads/' . $file_name;
                     } else {
                         $errors['file']['head'] = 'Файл фото недопустимого типа';
                         $errors['file']['description'] = 'Загрузите картинку в формате png, jpeg, jpg или gif';
@@ -148,11 +138,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $data = [
             $post_data['heading'] ?: '',
-            $post_data['post-text'] ?: '',
-            $post_data['quote-author'] ?: '',
-            $post_data['file'] ?: '',
-            $post_data['video-url'] ?: '',
-            $post_data['p_link'] ?: '',
+            $post_data['p_text'] ?: '',
+            $post_data['author'] ?: '',
+            $file_name ?? '',
+            ($category_chosen === 'video') ? ($post_data['url'] ?: '') : '',
+            ($category_chosen !== 'video') ? ($post_data['url'] ?: '') : '',
             $post_data['user_id'] ?? 3,
             $category_id ?? 0,
         ];
@@ -166,9 +156,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $post_id = mysqli_insert_id($db_link);
         
         //Добавление тегов в базу
-        $tags = hash_tags2arr($post_data['tags']);
-        
-        if ($tags) {
+        if ($post_data['tags'] != '') {
+            $tags = hash_tags2arr($post_data['tags']);
             $query =  'SELECT h_name FROM hashtag';
             $all_tags = get_result($db_link, $query, 4);
             foreach ($tags as $tag) {
@@ -189,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // вывод поста
         header("Location: /post.php?post_id=" . $post_id);
-        exit();
+        exit;
     }
     
 } else { 
