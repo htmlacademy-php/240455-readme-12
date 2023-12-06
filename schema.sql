@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS likeit (
 	id INT  AUTO_INCREMENT PRIMARY KEY,
 	user_id INT NOT NULL COMMENT 'Автор лайка. Поле связи с user.id',
 	post_id INT NOT NULL COMMENT 'id поста с этим лайком. Поле связи с post.id',
-	UNIQUE INDEX (user_id, post_id),
+	UNIQUE INDEX (user_id, post_id), -- добавить индексы для user_id и post_id
 	FOREIGN KEY (user_id) REFERENCES user (id),
 	FOREIGN KEY (post_id) REFERENCES post (id)
 ) COMMENT 'Лайки к постам';
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS subscription (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	user_id INT NOT NULL COMMENT 'Автор подписки. Поле связи с user.id',
 	target_id INT NOT NULL COMMENT 'Пользователь, на которого подписались. Поле связи с user.id',
-	UNIQUE INDEX (user_id, target_id),
+	UNIQUE INDEX (user_id, target_id), -- добавить индексы для user_id и target_id
 	FOREIGN KEY (user_id) REFERENCES user (id),
 	FOREIGN KEY (target_id) REFERENCES user (id)
 ) COMMENT 'Подписка';
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS post_hashtag_rel (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	post_id INT NOT NULL COMMENT 'id поста с этим хештегом. Поле связи с post.id',
 	hashtag_id INT NOT NULL COMMENT 'Хештег. Поле связи с hashtag.id',
-	UNIQUE INDEX (post_id, hashtag_id),
+	UNIQUE INDEX (post_id, hashtag_id), -- добавить индексы для post_id и hashtag_id
 	FOREIGN KEY (post_id) REFERENCES post (id),
 	FOREIGN KEY (hashtag_id) REFERENCES hashtag (id)
 ) COMMENT 'Таблица связей между постами и хештегами';
