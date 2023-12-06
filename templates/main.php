@@ -42,7 +42,7 @@
         </div>
         <div class="popular__posts">
     		<?php foreach ($posts as $post): ?>         
-            <article class="popular__post post post-<?= $post['category']; ?>"> 
+            <article class="popular__post post post-<?= $post['category']; ?>">
                 <header class="post__header">
                     <h2><a href="/post.php?post_id=<?= $post['id'] ?>"><?= $post['p_title']; ?></a></h2>
                 </header>
