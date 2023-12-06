@@ -107,7 +107,9 @@
         </div>
     </div>
 </header>
-<?= $main_content; ?>
+    
+<?= $main_content; ?> 
+    
 <footer class="footer">
     <div class="footer__wrapper">
         <div class="footer__container container">
