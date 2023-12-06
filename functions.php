@@ -119,7 +119,6 @@ function get_interval ($date, $not_ago = 0) {
  * @param int $mode Тип ответа 
  * @return array
  */
-
 function get_result ($db_link, $query, $mode = 2) {
     
     $result = mysqli_query($db_link, $query);
