@@ -5,7 +5,7 @@ require_once 'functions.php';
 require_once 'dbconn.php';
 
 // Выполнение запросов
-$categories = getCategories($db_link);
+$categories = get_сategories($db_link);
 
 // Фильтрация по выбранному типу контента и сортировки
 $categ_chosen = filter_input(INPUT_GET, 'categ_chosen', FILTER_SANITIZE_NUMBER_INT);

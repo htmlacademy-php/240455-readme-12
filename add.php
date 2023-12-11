@@ -5,7 +5,7 @@ require_once 'functions.php';
 require_once 'dbconn.php';
 
 // Выполнение запросов
-$categories = getCategories($db_link);
+$categories = get_сategories($db_link);
 
 //объявление пустых массивов
 $post_data = []; // массив полученных данных
