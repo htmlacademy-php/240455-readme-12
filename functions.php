@@ -57,7 +57,7 @@ function filter_xss (&$arr) {
  * 7 дня <= n < 35 дней -> "n недель назад", 
  * 35 дней <= n -> "n месяцев назад"
  *
- * @param string $date Дата
+ * @param string $date Дата прошедшего события
  * @param bool $not_ago Признак слова "назад"
  * @return string $interval Возвращает интервал между экземплярами дат
  */
