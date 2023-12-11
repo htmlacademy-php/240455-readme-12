@@ -73,7 +73,8 @@ function get_interval ($date, $not_ago = 0) {
     $days_in_week = 7; // дней в неделе
     $days_in_5weeks = 35; // дней в 5 неделях
     $days_in_year = 365; // дней в году
-    if ($cur_date_string > $date_string) { // если текущая дата актуальнее принятой
+    
+    if ($cur_date_string > $date_string) { // прошедшая дата
         if ($days < 1) {
             $hours = $diff->h; 
             if (1 <= $hours and $hours < $hours_in_day) {
@@ -83,7 +84,7 @@ function get_interval ($date, $not_ago = 0) {
                 $minuts = $diff->i; 
                 $time_count = $minuts . " минут" . get_noun_plural_form($minuts, 'у', 'ы', '');
             }
-        } elseif ($days >= 1) {  // если разница больше одного дня
+        } elseif ($days >= 1) {  // если разница больше или равна одному дню
             if ($days < $days_in_week) {
                 $time_count = $days . " " . get_noun_plural_form($days, 'день', 'дня', 'дней');
             } elseif ($days_in_week <= $days and $days < $days_in_5weeks) {
@@ -117,7 +118,7 @@ function get_interval ($date, $not_ago = 0) {
  * @param mysqli $db_link Соединение
  * @param string $query Запрос
  * @param int $mode Тип ответа 
- * @return array
+ * @return array | int
  */
 function get_result ($db_link, $query, $mode = 2) {
     
@@ -159,7 +160,7 @@ function get_number ($db_link, $table, $condition) {
     
     $query = '
         SELECT COUNT(id)
-        FROM '. $table .'
+        FROM ' . $table . '
         WHERE '. $condition;
     
     $number = get_result($db_link, $query, 1);
