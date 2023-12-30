@@ -5,8 +5,6 @@ require_once 'functions.php';
 require_once 'dbconn.php';
 
 // Выполнение запросов
-$categories = get_сategories($db_link);
-
 //объявление пустых массивов
 $post_data = []; // массив полученных данных
 $errors = []; // массив ошибок
@@ -181,6 +179,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $category_chosen = 'text'; // публикация с текстом по умолчанию
     }
 }
+
+$categories = get_сategories($db_link);
 
 $is_auth = rand(0, 1);
 
