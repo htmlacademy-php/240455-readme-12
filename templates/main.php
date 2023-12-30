@@ -42,11 +42,11 @@
         </div>
         <div class="popular__posts">
     		<?php foreach ($posts as $post): 
-                        
-            ?>         
+    		      $href = '/post.php?post_id=' . $post['id'];
+    		?>         
             <article class="popular__post post post-<?= $post['category']; ?>">
                 <header class="post__header">
-                    <h2><a href="/post.php?post_id=<?= $post['id'] ?>"><?= $post['p_title']; ?></a></h2>
+                    <h2><a href="<?= $href; ?>"><?= $post['p_title']; ?></a></h2>
                 </header>
                 <div class="post__main">
                   
@@ -63,7 +63,7 @@
                       <div class="post-video__preview">
                           <?= embed_youtube_cover($post['p_video']); ?>
                       </div>
-                      <a href="/post.php?post_id=<?= $post['id'] ?>" class="post-video__play-big button">
+                      <a href="<?= $href; ?>" class="post-video__play-big button">
                           <svg class="post-video__play-big-icon" width="14" height="14">
                               <use xlink:href="#icon-video-play-big"></use>
                           </svg>
@@ -73,7 +73,7 @@
                 		<?php break;
                 		
                         case 'post-text': ?>
-                  	<p><?php echo cut_text($post['p_content'], '/post.php?post_id=' . $post['id']); ?></p>
+                  	<p><?php echo cut_text($post['p_content'], $href); ?></p>
                     	<?php break;
                     	
                           case 'post-quote': ?>
