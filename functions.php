@@ -6,7 +6,8 @@ define('SORTING', array(
     'date' => 'Дата',
 ));
 
-define("DATE_FORMAT", "d.m.Y H:i");
+define('DATE_FORMAT', "d.m.Y H:i");
+define('DATE_FORMAT_ORIGINAL', "Y.m.d H:i");
 
 date_default_timezone_set('Europe/Moscow');
 
@@ -61,12 +62,12 @@ function filter_xss (&$arr) {
  * @param bool $not_ago Признак слова "назад"
  * @return string $interval Возвращает интервал между экземплярами дат
  */
-function get_interval ($date, $not_ago = 0) {
+function get_interval ($date, $not_ago = FALSE, $date_format = DATE_FORMAT_ORIGINAL) {
     
     $cur_date = date_create("now"); // создаёт экземпляр текущей даты
     $date = date_create($date); // создаёт экземпляр даты
-    $date_string = $date->format('Y.m.d H:i'); // возвращает дату в указанном формате string
-    $cur_date_string = $cur_date->format('Y.m.d H:i'); // возвращает текущую дату в указанном формате string
+    $date_string = $date->format($date_format); // возвращает дату в указанном формате string
+    $cur_date_string = $cur_date->format($date_format); // возвращает текущую дату в указанном формате string
     $diff = date_diff($date, $cur_date); // возвращает разницу между датами
     $days = $diff->days; // возвращает разницу между датами в днях
     $hours_in_day = 24; // часов в сутках
@@ -99,7 +100,7 @@ function get_interval ($date, $not_ago = 0) {
             }
         }
         
-        if (!$not_ago) {
+        if ($not_ago === TRUE) {
             $time_count .= " назад";
         }
         

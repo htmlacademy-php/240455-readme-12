@@ -54,7 +54,7 @@ $posts_word = 'публикаци' . get_noun_plural_form($arr_num['posts_count'
 $view_word = 'просмотр' . get_noun_plural_form($post['view_count'], '', 'а', 'ов');
 
 // генерация дат
-$post['date_user_interval'] = get_interval ($post['dt_user_registration'], 1);
+$post['date_user_interval'] = get_interval ($post['dt_user_registration'], $not_ago = FALSE);
 $post['date_user_title'] = date(DATE_FORMAT, strtotime($post['dt_user_registration']));
 
 // получение хештегов
@@ -92,8 +92,8 @@ $i = 1;
 
 if ($comments) {
     foreach ($comments as $key => $comment) {
-        $comments[$key]['comment_interval'] = date(DATE_FORMAT, strtotime($comment['dt_add']));
-        $comments[$key]['comment_date_title'] = get_interval($comment['dt_add']);
+        $comments[$key]['comment_interval'] = get_interval(date(DATE_FORMAT, strtotime($comment['dt_add'])), $not_ago = TRUE);
+        $comments[$key]['comment_date_title'] = $comment['dt_add'];
         $comments[$key]['comment_number'] = $i++;
     }
 }
