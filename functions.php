@@ -6,6 +6,14 @@ define('SORTING', array(
     'date' => 'Дата',
 ));
 
+// разрешенные типы фото
+define('ALLOW_EXT', array(
+    'png',
+    'jpeg',
+    'jpg',
+    'gif',
+));
+
 define('DATE_FORMAT', "d.m.Y H:i");
 define('DATE_FORMAT_ORIGINAL', "Y.m.d H:i");
 

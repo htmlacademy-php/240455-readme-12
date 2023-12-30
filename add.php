@@ -11,16 +11,8 @@ $categories = get_сategories($db_link);
 $post_data = []; // массив полученных данных
 $errors = []; // массив ошибок
 
-// разрешенные типы фото
-define('ALLOW_EXT', array(
-    'png',
-    'jpeg',
-    'jpg',
-    'gif',
-));
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {    
-    //Записываем ключи массива $_POST
+    //Получаем ключи массива $_POST
     $arr_keys = array_keys($_POST);
     //Создаем фильтры для ключей
     $arr_options = array_fill_keys($arr_keys, FILTER_SANITIZE_STRING);
@@ -29,8 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //Выбранная категория формы
     $category_chosen = $post_data['category'];
     //id категории для таблицы post
-    $category_id = $post_data['category_id'];
-
+    $category_id = (int) $post_data['category_id'];
+    
     //Валидация полей формы публикации
     //Формируем правила для валидации
     $rules = [
