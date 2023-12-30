@@ -18,16 +18,13 @@ if ($categ_chosen) {
 
 $sort_chosen = filter_input(INPUT_GET, 'sort_by', FILTER_SANITIZE_STRING);
 
-if (!$sort_chosen) {
-    $sort_chosen = 'popularity'; // по популярности
-}
-
 if ($sort_chosen === 'likes') {
     $sort_by = 'likes_count DESC';
 } elseif ($sort_chosen === 'date') {
     $sort_by = 'dt_add DESC';
 } else {
-    $sort_by = 'view_count DESC';
+     $sort_by = 'view_count DESC';
+     $sort_chosen = 'popularity';
 }
 
 //Формирование запроса в зависимости от выбранного типа контента
