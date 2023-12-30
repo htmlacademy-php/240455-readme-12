@@ -22,7 +22,9 @@ CREATE TABLE IF NOT EXISTS category (
 	category VARCHAR(20) COMMENT 'Наименование типа контента',
 	category_name VARCHAR(20) COMMENT 'Имя класса',
 	category_w TINYINT COMMENT 'Ширина иконки',
-	category_h TINYINT COMMENT 'Высота иконки'
+	category_h TINYINT COMMENT 'Высота иконки',
+	category_w_main TINYINT COMMENT 'Ширина иконки на главной',
+	category_h_main TINYINT COMMENT 'Высота иконки на главной'
 ) COMMENT 'Тип контента';
 
 -- 5.1 Пост

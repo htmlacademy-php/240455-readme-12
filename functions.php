@@ -234,7 +234,7 @@ function validateLength($name, $min, $max = 300) {
  */
 
 function get_сategories($db_link) {
-    $query = 'SELECT * FROM category';
+    $query = 'SELECT * FROM category ORDER BY id';
     
     return get_result($db_link, $query);
 }
