@@ -102,7 +102,7 @@
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
-							<input type="hidden" name="category_id" value="4">
+							<input type="hidden" name="category_id" value="2">
 						</form>
 					</section>
 					
@@ -132,7 +132,7 @@
 								<?php require 'form-invalid-block.php';?>
 							</div>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
-							<input type="hidden" name="category_id" value="1">
+							<input type="hidden" name="category_id" value="3">
 							<div class="adding-post__buttons">
 								<button class="adding-post__submit button button--main"
 									type="submit">Опубликовать</button>
@@ -183,7 +183,7 @@
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
-							<input type="hidden" name="category_id" value="2">
+							<input type="hidden" name="category_id" value="4">
 						</form>
 					</section>
 					
