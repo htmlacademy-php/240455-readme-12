@@ -78,18 +78,16 @@ function get_interval ($date, $not_ago = FALSE, $date_format = DATE_FORMAT_ORIGI
     $cur_date_string = $cur_date->format($date_format); // возвращает текущую дату в указанном формате string
     $diff = date_diff($date, $cur_date); // возвращает разницу между датами
     $days = $diff->days; // возвращает разницу между датами в днях
-    $hours_in_day = 24; // часов в сутках
     $days_in_week = 7; // дней в неделе
     $days_in_5weeks = 35; // дней в 5 неделях
     $days_in_year = 365; // дней в году
     
     if ($cur_date_string > $date_string) { // прошедшая дата
         if ($days < 1) {
-            $hours = $diff->h; 
-            if (1 <= $hours and $hours < $hours_in_day) {
+            $hours = $diff->h; //max 23
+            if (1 <= $hours) {
                 $time_count = $hours . " час" . get_noun_plural_form($hours, '', 'а', 'ов');
-            }
-            elseif ($hours < 1) {
+            } else {
                 $minuts = $diff->i; 
                 $time_count = $minuts . " минут" . get_noun_plural_form($minuts, 'у', 'ы', '');
             }
