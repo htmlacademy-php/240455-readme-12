@@ -19,7 +19,7 @@
                         </svg> <span><?= $arr_num['likes_count']; ?></span> <span
 								class="visually-hidden">количество лайков</span>
 							</a> <a class="post__indicator post__indicator--comments button"
-								href="#" title="Комментарии"> <svg class="post__indicator-icon"
+								href="<?= $last_comment_href; ?>" title="Комментарии"> <svg class="post__indicator-icon"
 									width="19" height="17">
                           <use xlink:href="#icon-comment"></use>
                         </svg> <span><?= $arr_num['comments_count']; ?></span> <span
@@ -64,7 +64,7 @@
 					<div class="comments__list-wrapper">
 						<ul class="comments__list">
         					<?php foreach ($comments as $comment): ?>
-							<li class="comments__item user" id="<?= $comment['comment_number']; ?>">
+							<li class="comments__item user" id="<?= $comment['id']; ?>">
 								<div class="comments__avatar">
 									<a class="user__avatar-link" href="#"> <img
 										class="comments__picture" src="img/<?= $comment['avatar']; ?>"
@@ -82,8 +82,8 @@
 							</li>
 							<?php endforeach; ?>
 						</ul>
-						<?php if (!$show_comments && $arr_num['comments_count'] > 2) { ?>
-						<a class="comments__more-link" href="<?= 'post.php?post_id=' . $post['id'] . '&show_comments=1#' . $arr_num['comments_count']; ?>"> 
+						<?php if (!$show_all_comments && $arr_num['comments_count'] > 2) { ?>
+						<a class="comments__more-link" href="<?= 'post.php?post_id=' . $post['id'] . '&show_all_comments#' . $last_comment_id; ?>"> 
 						<span>Показать все комментарии</span> <sup class="comments__amount"><?= $arr_num['comments_count'] - 2; ?></sup>
 						</a>
 						<?php } ?>

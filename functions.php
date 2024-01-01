@@ -67,10 +67,10 @@ function filter_xss (&$arr) {
  * 35 дней <= n -> "n месяцев назад"
  *
  * @param string $date Дата прошедшего события
- * @param bool $not_ago Признак слова "назад"
+ * @param bool $ago Признак слова "назад"
  * @return string $interval Возвращает интервал между экземплярами дат
  */
-function get_interval ($date, $not_ago = FALSE, $date_format = DATE_FORMAT_ORIGINAL) {
+function get_interval ($date, $ago = FALSE, $date_format = DATE_FORMAT_ORIGINAL) {
     
     $cur_date = date_create("now"); // создаёт экземпляр текущей даты
     $date = date_create($date); // создаёт экземпляр даты
@@ -106,7 +106,7 @@ function get_interval ($date, $not_ago = FALSE, $date_format = DATE_FORMAT_ORIGI
             }
         }
         
-        if ($not_ago === TRUE) {
+        if ($ago === TRUE) {
             $time_count .= " назад";
         }
         

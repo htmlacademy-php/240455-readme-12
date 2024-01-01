@@ -11,8 +11,8 @@ if ($post_id === 0) {
     exit('Пост не существует');
 }
 
-// Проверка существования параметра show_comments и скрытых комментариев
-$show_comments = filter_input(INPUT_GET, 'show_comments', FILTER_SANITIZE_NUMBER_INT);
+// Проверка существования параметра show_all_comments и скрытых комментариев
+$show_all_comments = isset($_GET['show_all_comments']);
 
 $query = '
     SELECT      
@@ -54,7 +54,7 @@ $posts_word = 'публикаци' . get_noun_plural_form($arr_num['posts_count'
 $view_word = 'просмотр' . get_noun_plural_form($post['view_count'], '', 'а', 'ов');
 
 // генерация дат
-$post['date_user_interval'] = get_interval ($post['dt_user_registration'], $not_ago = FALSE);
+$post['date_user_interval'] = get_interval ($post['dt_user_registration'], $ago = FALSE);
 $post['date_user_title'] = date(DATE_FORMAT, strtotime($post['dt_user_registration']));
 
 // получение хештегов
@@ -68,8 +68,6 @@ $query = '
 $hashtags = get_result($db_link, $query, 4);
 
 // получение комментариев
-$comment_condition  = isset($_GET['show_comments']) ? '' : ' LIMIT 2'; //условие для ограничения количества выводимых комментариев
-
 $query = '
     SELECT 
         c.id, 
@@ -82,20 +80,23 @@ $query = '
     INNER JOIN user AS u
        ON u.id = c.user_id
     WHERE c.post_id = ' . $post_id . '
-    ORDER BY c.dt_add ASC' . 
-    $comment_condition;
+    ORDER BY c.dt_add ASC';
 
 $comments = get_result($db_link, $query);
 
-// генерация дат и номера комментария
-$i = 1;
-
+// генерация дат комментариев, запись id и ссылки последнего комментария
 if ($comments) {
     foreach ($comments as $key => $comment) {
-        $comments[$key]['comment_interval'] = get_interval(date(DATE_FORMAT, strtotime($comment['dt_add'])), $not_ago = TRUE);
+        $comments[$key]['comment_interval'] = get_interval(date(DATE_FORMAT, strtotime($comment['dt_add'])), $ago = TRUE);
         $comments[$key]['comment_date_title'] = $comment['dt_add'];
-        $comments[$key]['comment_number'] = $i++;
     }
+}
+
+$last_comment_id = $comments ? $comments[array_key_last($comments)]['id'] : 0;
+$last_comment_href = $comments ? 'post.php?post_id=' . $post['id'] . '&show_all_comments#' . $last_comment_id : '#';
+
+if (!$show_all_comments) {
+    $comments = array_slice($comments, 0, 2);
 }
 
 // выбор подшаблона поста
@@ -107,6 +108,8 @@ $user_name = 'Никитина Виктория';
 
 // Подготовка и вывод страницы
 $main_content = include_template('posting.php', [
+    'last_comment_id' => $last_comment_id,
+    'last_comment_href' => $last_comment_href,
     'post' => $post,
     'view_word' => $view_word,
     'hashtags' => $hashtags,
@@ -115,7 +118,7 @@ $main_content = include_template('posting.php', [
     'followers_word' => $followers_word,
     'posts_word' => $posts_word,
     'post_type' => $post_type,
-    'show_comments' => $show_comments,
+    'show_all_comments' => $show_all_comments,
 ]);
 
 $layout_content = include_template('layout.php', [
