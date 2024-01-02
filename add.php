@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
     //Валидация картинки
     if ($category_chosen === 'photo') {
-        $file_path = __DIR__ . '/uploads/';
+        $file_path = 'uploads/';
         // Если загружен файл и нет ошибок сохраняем его в папку UPLOAD_PATH_IMG
         if ($_FILES['userpic-file-photo']['error'] === UPLOAD_ERR_OK) { 
             
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors['file']['head'] = 'Файл фото недопустимого типа';
                 $errors['file']['description'] = 'Загрузите картинку в формате png, jpeg, jpg или gif';
             }
-        // Если есть интернет-ссылка и нет ошибок проверки ссылки, скачиваем файл и сохраняем в папку UPLOAD_PATH_IMG
+        // Если есть интернет-ссылка и нет ошибок проверки ссылки, скачиваем файл и сохраняем в папку uploads
         } elseif ($post_data['url_photo'] and !isset($errors['file'])) { 
             if (validateUrl($post_data['url_photo'])) {
                 if (is_url_exist($post_data['url_photo'])) {
@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         mysqli_stmt_execute($stmt);
         
-        // Извлечение id поста
+        //Получение id сохраненного поста
         $post_id = mysqli_insert_id($db_link);
         
         //Добавление тегов в базу
@@ -166,17 +166,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
-        // вывод поста
+        //Вывод поста
         header("Location: /post.php?post_id=" . $post_id);
         exit;
     }
     
 } else { 
-    // Открытие таба по выбранному типу контента
+    //Открытие таба по выбранному типу контента
     $category_chosen = filter_input(INPUT_GET, 'category_chosen', FILTER_SANITIZE_STRING);
     
     if ($category_chosen == '') {
-        $category_chosen = 'text'; // публикация с текстом по умолчанию
+        $category_chosen = 'photo'; // публикация с текстом по умолчанию
     }
 }
 
@@ -186,7 +186,7 @@ $is_auth = rand(0, 1);
 
 $user_name = 'Никитина Виктория';
 
-// Подготовка и вывод страницы
+//Подготовка и вывод страницы
 $main_content = include_template('adding-post.php', [
     'categories' => $categories,
     'category_chosen' => $category_chosen,

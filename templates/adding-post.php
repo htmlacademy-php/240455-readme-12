@@ -33,7 +33,7 @@
 											из интернета</label>
 										<div class="form__input-section<?= isset($errors['file']) ? ' form__input-section--error' : ''; ?>">
 											<input class="adding-post__input form__input"
-												type="text" name="url_photo" placeholder="Введите ссылку" value="<?= getPostVal('url_photo'); ?>">
+												type="text" name="url_photo" placeholder="Введите ссылку" value="">
 											<?php 
 											    $error_type = 'file';
 											    require 'form-error.php';
@@ -74,7 +74,7 @@
 								<a class="adding-post__close" href="#">Закрыть</a>
 							</div>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
-							<input type="hidden" name="category_id" value="3">
+							<input type="hidden" name="category_id" value="1">
 						</form>
 					</section>
 					
@@ -120,7 +120,7 @@
 										<div class="form__input-section<?= isset($errors['p_text']) ? ' form__input-section--error' : ''; ?>">
 											<textarea name="p_text"
 												class="adding-post__textarea form__textarea form__input"
-												placeholder="Введите текст публикации"><?= getPostVal('p_text'); ?></textarea>
+												placeholder="Введите текст публикации"></textarea>
 											<?php 
 											    $error_type = 'p_text';
 											    require 'form-error.php';
@@ -154,7 +154,7 @@
 										<div class="form__input-section<?= isset($errors['p_text']) ? ' form__input-section--error' : ''; ?>">
 											<textarea
 												class="adding-post__textarea adding-post__textarea--quote form__textarea form__input"
-												placeholder="Текст цитаты" name="p_text"><?= getPostVal('p_text'); ?></textarea>
+												placeholder="Текст цитаты" name="p_text"></textarea>
 											<?php 
 											    $error_type = 'p_text';
 											    require 'form-error.php';
@@ -166,7 +166,7 @@
 											for="author">Автор <span class="form__input-required">*</span></label>
 										<div class="form__input-section<?= isset($errors['author']) ? ' form__input-section--error' : ''; ?>">
 											<input class="adding-post__input form__input"
-												type="text" name="author" value="<?= getPostVal('author'); ?>">
+												type="text" name="author" value="">
 											<?php 
 											    $error_type = 'author';
 											    require 'form-error.php';

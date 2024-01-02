@@ -93,7 +93,7 @@ if ($comments) {
 }
 
 $last_comment_id = $comments ? $comments[array_key_last($comments)]['id'] : 0;
-$last_comment_href = $comments ? 'post.php?post_id=' . $post['id'] . '&show_all_comments#' . $last_comment_id : '#';
+$last_comment_href = $comments ? 'post.php?post_id=' . $post['id'] . '&show_all_comments#last_comment_id_' . $last_comment_id : '#';
 
 if (!$show_all_comments) {
     $comments = array_slice($comments, 0, 2);

@@ -176,18 +176,6 @@ function get_number ($db_link, $table, $condition) {
 }
 
 /**
- * Получаем значение переданной переменной
- *
- * @param string $value Значение переданной переменной
- * @return string Значение переданной переменной
- */
-
-function getPostVal($value) {
-    
-    return $_POST[$value] ?? "";
-}
-
-/**
  * Проверка на корректную ссылку
  *
  * @param string $value Значение поля
