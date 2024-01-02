@@ -110,7 +110,7 @@ function get_interval ($date, $ago = FALSE, $date_format = DATE_FORMAT_ORIGINAL)
             $time_count .= " назад";
         }
         
-    } elseif ($cur_date_string == $date_string) { // если текущая дата и принятая одинаковы
+    } elseif ($cur_date_string === $date_string) { // если текущая дата и принятая одинаковы
         $time_count = "только что";
     } else { // дата в будущем
         $time_count = $date_string . " - дата в будущем";
@@ -263,3 +263,28 @@ function is_url_exist($url) {
     
     return (bool) $res;
 }
+
+//Формируем правила для валидации
+$rules = [
+    'url' => function($value, $category_chosen) {
+        if ($category_chosen === 'video') {
+            if (!validateUrl($value)) {
+                return "Укажите корректную ссылку";
+            } else {
+                $youtube_check = check_youtube_url($value);
+                if ($youtube_check !== TRUE) {
+                    return $youtube_check;
+                } else {
+                    return;
+                }
+            }
+        } else {
+            if (!validateUrl($value)) {
+                return "Укажите корректную ссылку";
+            } elseif (!is_url_exist($value)) {
+                return "Страница не найдена";
+            }
+        }
+    },
+];
+

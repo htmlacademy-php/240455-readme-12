@@ -22,25 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category_id = (int) $post_data['category_id'];
     
     //Валидация полей формы публикации
-    //Формируем правила для валидации
-    $rules = [
-        'url' => function($value, $category_chosen) {
-            if ($category_chosen === 'video') {
-                if (!validateUrl($value)) {
-                    return "Укажите корректную ссылку";
-                } elseif (check_youtube_url($value) != 1) {
-                    return check_youtube_url($value);
-                }
-            } else {
-                if (!validateUrl($value)) {
-                    return "Укажите корректную ссылку";
-                } elseif (!is_url_exist($value)) {
-                    return "Страница не найдена";
-                }
-            }
-        },
-    ];
-
     //Формируем список полей, обязательных для заполнения
     $required = [
         'heading' => "Заголовок",
@@ -120,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $errors = array_filter($errors);
-
+	
     // если нет ошибок, то запись данных и переход на страницу просмотра поста (post.php)
     if (!$errors) {
         //пока укажите в качестве ID пользователя любое число
@@ -180,6 +161,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$form_tags = '<div class="adding-post__input-wrapper form__input-wrapper">
+                <label class="adding-post__label form__label" for="tags">Теги</label>
+                <div class="form__input-section">
+                    <input class="adding-post__input form__input" id="tags" type="text" name="tags" placeholder="Введите теги" value="">
+                </div>
+              </div>';
+
+$form_invalid_block = '';
+$form_invalid_block_items = '';
+
+if ($errors) {
+    foreach ($errors as $error) {
+        $form_invalid_block_items .= '<li class="form__invalid-item">' . $error['head'] . '. ' . $error['description'] . '</li>';
+    }
+    
+    $form_invalid_block = '<div class="form__invalid-block">
+                               <b class="form__invalid-slogan">Пожалуйста, исправьте следующие ошибки:</b>
+                               <ul class="form__invalid-list">' . $form_invalid_block_items .
+                               '</ul>
+                           </div>';
+}
+
+$form_buttons = '<div class="adding-post__buttons">
+                    <button class="adding-post__submit button button--main" type="submit">Опубликовать</button>
+                    <a class="adding-post__close" href="#">Закрыть</a>
+                 </div>';
+
 $categories = get_сategories($db_link);
 
 $is_auth = rand(0, 1);
@@ -188,6 +196,9 @@ $user_name = 'Никитина Виктория';
 
 //Подготовка и вывод страницы
 $main_content = include_template('adding-post.php', [
+    'form_buttons' => $form_buttons,
+    'form_tags' => $form_tags,
+    'form_invalid_block' => $form_invalid_block,
     'categories' => $categories,
     'category_chosen' => $category_chosen,
     'errors' => $errors,

@@ -10,21 +10,20 @@
                     	<?php foreach ($categories as $category): ?>    
                         <li class="adding-post__tabs-item filters__item">
                          	<a class="adding-post__tabs-link tabs__item filters__button  filters__button--<?= $category['category']; ?> 
-                         		button<?= $category['category'] == $category_chosen ? ' filters__button--active tabs__item--active' : ''; ?>" href="?category_chosen=<?= $category['category']; ?>">
+                         		button<?= $category['category'] === $category_chosen ? ' filters__button--active tabs__item--active' : ''; ?>" href="?category_chosen=<?= $category['category']; ?>">
                          		<svg class="filters__icon" width=<?= $category['category_w'] . ' height=' . $category['category_h']; ?>>
                                     <use xlink:href="#icon-filter-<?= $category['category']; ?>"></use>
-                                </svg> <span><?= $category['category_name']; ?></span>
+                                </svg> 
+                                <span><?= $category['category_name']; ?></span>
                          	</a>
                          </li>
                          <?php endforeach; ?>
 					</ul>
 				</div>
 				<div class="adding-post__tab-content">  
-					<section
-						class="adding-post__photo tabs__content<?= $category_chosen === 'photo' ? ' tabs__content--active' : ''; ?>">
+					<section class="adding-post__photo tabs__content<?= $category_chosen === 'photo' ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления фото</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=photo" method="post"
-							enctype="multipart/form-data">
+						<form class="adding-post__form form" action="add.php?category_chosen=photo" method="post" enctype="multipart/form-data">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
@@ -40,39 +39,25 @@
 										    ?>
 										</div>
 									</div>
-									<?php require 'form-tags.php';?>
+									<?= $form_tags; ?>
 								</div>
-								<?php require 'form-invalid-block.php';?>
+								<?= $form_invalid_block; ?>
 							</div>		
-							<div
-								class="adding-post__input-file-container form__input-container form__input-container--file">
-								<div
-									class="adding-post__input-file-wrapper form__input-file-wrapper">
-									<div
-										class="adding-post__file-zone adding-post__file-zone--photo form__file-zone dropzone">
-										<input class="adding-post__input-file form__input-file"
-											type="file" name="userpic-file-photo">
+							<div class="adding-post__input-file-container form__input-container form__input-container--file">
+								<div class="adding-post__input-file-wrapper form__input-file-wrapper">
+									<div class="adding-post__file-zone adding-post__file-zone--photo form__file-zone dropzone">
+										<input class="adding-post__input-file form__input-file" type="file" name="userpic-file-photo">
 									</div>
-									<button
-										class="adding-post__input-file-button form__input-file-button form__input-file-button--photo button"
-										type="button">
+									<button class="adding-post__input-file-button form__input-file-button form__input-file-button--photo button" type="button">
 										<span>Выбрать фото</span>
-										<svg class="adding-post__attach-icon form__attach-icon"
-											width="10" height="20">
+										<svg class="adding-post__attach-icon form__attach-icon" width="10" height="20">
                                           <use xlink:href="#icon-attach"></use>
                                         </svg>
 									</button>
 								</div>
-								<div
-									class="adding-post__file adding-post__file--photo form__file dropzone-previews">
-
-								</div>
+								<div class="adding-post__file adding-post__file--photo form__file dropzone-previews"></div>
 							</div>
-							<div class="adding-post__buttons">
-								<button class="adding-post__submit button button--main"
-									type="submit">Опубликовать</button>
-								<a class="adding-post__close" href="#">Закрыть</a>
-							</div>
+							<?= $form_buttons; ?>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
 							<input type="hidden" name="category_id" value="1">
 						</form>
@@ -80,27 +65,19 @@
 					
 					<section class="adding-post__video tabs__content<?= $category_chosen === 'video' ? ' tabs__content--active' : ''; ?>">
 						<h2 class="visually-hidden">Форма добавления видео</h2>
-						<form class="adding-post__form form" action="add.php?category_chosen=video" method="post"
-							enctype="multipart/form-data">
+						<form class="adding-post__form form" action="add.php?category_chosen=video" method="post" enctype="multipart/form-data">
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
 									<div class="adding-post__input-wrapper form__input-wrapper">
-										<label class="adding-post__label form__label" for="url">Ссылка
-											youtube <span class="form__input-required">*</span>
-										</label>
+										<label class="adding-post__label form__label" for="url">Ссылка youtube <span class="form__input-required">*</span></label>
 										<?php require 'form-url.php';?>
 									</div>
-									<?php require 'form-tags.php';?>
+									<?= $form_tags; ?>
 								</div>
-								<?php require 'form-invalid-block.php';?>
+								<?= $form_invalid_block; ?>
 							</div>
-
-							<div class="adding-post__buttons">
-								<button class="adding-post__submit button button--main"
-									type="submit">Опубликовать</button>
-								<a class="adding-post__close" href="#">Закрыть</a>
-							</div>
+							<?= $form_buttons; ?>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
 							<input type="hidden" name="category_id" value="2">
 						</form>
@@ -112,32 +89,23 @@
 							<div class="form__text-inputs-wrapper">
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
-									<div
-										class="adding-post__textarea-wrapper form__textarea-wrapper">
-										<label class="adding-post__label form__label" for="p_text">Текст
-											поста <span class="form__input-required">*</span>
-										</label>
+									<div class="adding-post__textarea-wrapper form__textarea-wrapper">
+										<label class="adding-post__label form__label" for="p_text">Текст поста <span class="form__input-required">*</span></label>
 										<div class="form__input-section<?= isset($errors['p_text']) ? ' form__input-section--error' : ''; ?>">
-											<textarea name="p_text"
-												class="adding-post__textarea form__textarea form__input"
-												placeholder="Введите текст публикации"></textarea>
+											<textarea name="p_text" class="adding-post__textarea form__textarea form__input" placeholder="Введите текст публикации"></textarea>
 											<?php 
 											    $error_type = 'p_text';
 											    require 'form-error.php';
 											?>
 										</div>
 									</div>
-									<?php require 'form-tags.php';?>
+									<?= $form_tags; ?>
 								</div>
-								<?php require 'form-invalid-block.php';?>
+								<?= $form_invalid_block; ?>
 							</div>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
 							<input type="hidden" name="category_id" value="3">
-							<div class="adding-post__buttons">
-								<button class="adding-post__submit button button--main"
-									type="submit">Опубликовать</button>
-								<a class="adding-post__close" href="#">Закрыть</a>
-							</div>
+							<?= $form_buttons; ?>
 						</form>
 					</section>
 					
@@ -148,13 +116,9 @@
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
 									<div class="adding-post__input-wrapper form__textarea-wrapper">
-										<label class="adding-post__label form__label" for="p_text">Текст
-											цитаты <span class="form__input-required">*</span>
-										</label>
+										<label class="adding-post__label form__label" for="p_text">Текст цитаты <span class="form__input-required">*</span></label>
 										<div class="form__input-section<?= isset($errors['p_text']) ? ' form__input-section--error' : ''; ?>">
-											<textarea
-												class="adding-post__textarea adding-post__textarea--quote form__textarea form__input"
-												placeholder="Текст цитаты" name="p_text"></textarea>
+											<textarea class="adding-post__textarea adding-post__textarea--quote form__textarea form__input" placeholder="Текст цитаты" name="p_text"></textarea>
 											<?php 
 											    $error_type = 'p_text';
 											    require 'form-error.php';
@@ -162,26 +126,20 @@
 										</div>
 									</div>
 									<div class="adding-post__textarea-wrapper form__input-wrapper">
-										<label class="adding-post__label form__label"
-											for="author">Автор <span class="form__input-required">*</span></label>
+										<label class="adding-post__label form__label" for="author">Автор <span class="form__input-required">*</span></label>
 										<div class="form__input-section<?= isset($errors['author']) ? ' form__input-section--error' : ''; ?>">
-											<input class="adding-post__input form__input"
-												type="text" name="author" value="">
+											<input class="adding-post__input form__input" type="text" name="author" value="">
 											<?php 
 											    $error_type = 'author';
 											    require 'form-error.php';
 											?>
 										</div>
 									</div>
-									<?php require 'form-tags.php'; ?>
+									<?= $form_tags; ?>
 								</div>
-								<?php require 'form-invalid-block.php'; ?>
+								<?= $form_invalid_block; ?>
 							</div>
-							<div class="adding-post__buttons">
-								<button class="adding-post__submit button button--main"
-									type="submit">Опубликовать</button>
-								<a class="adding-post__close" href="#">Закрыть</a>
-							</div>
+							<?= $form_buttons; ?>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
 							<input type="hidden" name="category_id" value="4">
 						</form>
@@ -194,20 +152,14 @@
 								<div class="form__text-inputs">
 									<?php require 'form-title.php';?>
 									<div class="adding-post__textarea-wrapper form__input-wrapper">
-										<label class="adding-post__label form__label" for="url">Ссылка
-											<span class="form__input-required">*</span>
-										</label>
+										<label class="adding-post__label form__label" for="url">Ссылка <span class="form__input-required">*</span></label>
 										<?php require 'form-url.php';?>
 									</div>
-									<?php require 'form-tags.php';?>
+									<?= $form_tags; ?>
 								</div>
-								<?php require 'form-invalid-block.php';?>
+								<?= $form_invalid_block; ?>
 							</div>
-							<div class="adding-post__buttons">
-								<button class="adding-post__submit button button--main"
-									type="submit">Опубликовать</button>
-								<a class="adding-post__close" href="#">Закрыть</a>
-							</div>
+							<?= $form_buttons; ?>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
 							<input type="hidden" name="category_id" value="5">
 						</form>
