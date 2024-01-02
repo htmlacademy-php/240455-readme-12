@@ -143,7 +143,7 @@ function get_result ($db_link, $query, $mode = 2) {
             $array = mysqli_fetch_assoc($result);
         } elseif ($mode === 4) { // одно поле из нескольких записей (колонка) 
             $array = mysqli_fetch_all($result);
-            $array = array_column($array,0); 
+            $array = array_column($array, 0); 
         } else {
             exit('Неверный mode');
         }
@@ -182,41 +182,30 @@ function get_number ($db_link, $table, $condition) {
  * @return bool true при корректной ссылке, иначе false 
  */
 
-function validateUrl($value) {
+function validate_url($value) {
     
     return filter_var($value, FILTER_VALIDATE_URL);
-}
-
-/**
- * Проверка на заполненость поля
- *
- * @param string $value Значение поля
- * @return bool true при заполненном поле, иначе false
- */
-
-function validateFilled($value) {
-    
-    return !empty($value);
 }
 
 /**
  * Проверка длины
  *
  * @param string $name Значение поля
+ * @param string $explain Текст пояснения
  * @param int $min Минимальное значение
  * @param int $max Максимальное значение
  * @return string Текст
  */
 
-function validateLength($name, $min, $max = 300) {
+function validate_length($name, &$explain, $min, $max = 300) {
     
     $len = mb_strlen($name);
     
-    if ($len < $min or $len > $max) {
-        return "Значение должно быть от $min до $max символов";
+    if ($res = $len < $min or $len > $max) {
+        $explain = "Значение должно быть от $min до $max символов";
     }
     
-    exit;
+    return $res;
 }
 
 /**
@@ -264,27 +253,31 @@ function is_url_exist($url) {
     return (bool) $res;
 }
 
-//Формируем правила для валидации
-$rules = [
-    'url' => function($value, $category_chosen) {
+/**
+ * Валидация ссылки
+ *
+ * @param string $value Значение поля
+ * @param string $category_chosen Категория публикации
+ * @param array $errors Массив ошибок по ссылке
+ * @return array Массив ошибок
+ */
+function url_check($value, $category_chosen, &$errors) {
+    if (!validate_url($value)) {
+        $errors['url']['head'] = "Ссылка";
+        $errors['url']['description'] = "Укажите корректную ссылку";
+    } else {
         if ($category_chosen === 'video') {
-            if (!validateUrl($value)) {
-                return "Укажите корректную ссылку";
-            } else {
-                $youtube_check = check_youtube_url($value);
-                if ($youtube_check !== TRUE) {
-                    return $youtube_check;
-                } else {
-                    return;
-                }
+            $youtube_check = check_youtube_url($value);
+            if ($youtube_check !== TRUE) {
+                $errors['url']['head'] = "Youtube ссылка";
+                $errors['url']['description'] = $youtube_check;
             }
         } else {
-            if (!validateUrl($value)) {
-                return "Укажите корректную ссылку";
-            } elseif (!is_url_exist($value)) {
-                return "Страница не найдена";
+            if (!is_url_exist($value)) {
+                $errors['url']['head'] = "Ссылка";
+                $errors['url']['description'] = "Страница не найдена";
             }
         }
-    },
-];
-
+    }
+    return $errors;
+}
