@@ -129,3 +129,4 @@ $layout_content = include_template('layout.php', [
 ]);
 
 print($layout_content);
+
