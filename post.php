@@ -54,7 +54,7 @@ $posts_word = 'публикаци' . get_noun_plural_form($arr_num['posts_count'
 $view_word = 'просмотр' . get_noun_plural_form($post['view_count'], '', 'а', 'ов');
 
 // генерация дат
-$post['date_user_interval'] = get_interval ($post['dt_user_registration'], $ago = FALSE);
+$post['date_user_interval'] = get_interval ($post['dt_user_registration'], false);
 $post['date_user_title'] = date(DATE_FORMAT, strtotime($post['dt_user_registration']));
 
 // получение хештегов
@@ -87,7 +87,7 @@ $comments = get_result($db_link, $query);
 // генерация дат комментариев, запись id и ссылки последнего комментария
 if ($comments) {
     foreach ($comments as $key => $comment) {
-        $comments[$key]['comment_interval'] = get_interval(date(DATE_FORMAT, strtotime($comment['dt_add'])), $ago = TRUE);
+        $comments[$key]['comment_interval'] = get_interval(date(DATE_FORMAT, strtotime($comment['dt_add'])), true);
         $comments[$key]['comment_date_title'] = $comment['dt_add'];
     }
 }
@@ -108,17 +108,17 @@ $user_name = 'Никитина Виктория';
 
 // Подготовка и вывод страницы
 $main_content = include_template('posting.php', [
-    'last_comment_id' => $last_comment_id,
-    'last_comment_href' => $last_comment_href,
     'post' => $post,
+    'post_type' => $post_type,
+    'arr_num' => $arr_num,
+    'last_comment_href' => $last_comment_href,
     'view_word' => $view_word,
     'hashtags' => $hashtags,
     'comments' => $comments,
-    'arr_num' => $arr_num,
+    'last_comment_id' => $last_comment_id,
+    'show_all_comments' => $show_all_comments,
     'followers_word' => $followers_word,
     'posts_word' => $posts_word,
-    'post_type' => $post_type,
-    'show_all_comments' => $show_all_comments,
 ]);
 
 $layout_content = include_template('layout.php', [

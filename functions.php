@@ -51,7 +51,7 @@ function cut_text ($text, $link, $max_len = 300) {
  * Функция-фильтр от XSS
  *
  * @param array $arr Фильтруемый массив
- * @return string
+ * @return
  */
 function filter_xss (&$arr) {
     
@@ -70,7 +70,7 @@ function filter_xss (&$arr) {
  * @param bool $ago Признак слова "назад"
  * @return string $interval Возвращает интервал между экземплярами дат
  */
-function get_interval ($date, $ago = FALSE, $date_format = DATE_FORMAT_ORIGINAL) {
+function get_interval ($date, $ago = false, $date_format = DATE_FORMAT_ORIGINAL) {
     
     $cur_date = date_create("now"); // создаёт экземпляр текущей даты
     $date = date_create($date); // создаёт экземпляр даты
@@ -106,7 +106,7 @@ function get_interval ($date, $ago = FALSE, $date_format = DATE_FORMAT_ORIGINAL)
             }
         }
         
-        if ($ago === TRUE) {
+        if ($ago === true) {
             $time_count .= " назад";
         }
         
@@ -268,7 +268,7 @@ function url_check($value, $category_chosen, &$errors) {
     } else {
         if ($category_chosen === 'video') {
             $youtube_check = check_youtube_url($value);
-            if ($youtube_check !== TRUE) {
+            if ($youtube_check !== true) {
                 $errors['url']['head'] = "Youtube ссылка";
                 $errors['url']['description'] = $youtube_check;
             }

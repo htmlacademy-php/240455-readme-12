@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category_chosen = filter_input(INPUT_GET, 'category_chosen', FILTER_SANITIZE_STRING);
     
     if ($category_chosen == '') {
-        $category_chosen = 'photo'; // публикация с текстом по умолчанию
+        $category_chosen = 'text'; // публикация с текстом по умолчанию
     }
 }
 
@@ -194,12 +194,12 @@ $user_name = 'Никитина Виктория';
 
 //Подготовка и вывод страницы
 $main_content = include_template('adding-post.php', [
-    'form_buttons' => $form_buttons,
-    'form_tags' => $form_tags,
-    'form_invalid_block' => $form_invalid_block,
     'categories' => $categories,
     'category_chosen' => $category_chosen,
     'errors' => $errors,
+    'form_buttons' => $form_buttons,
+    'form_invalid_block' => $form_invalid_block,
+    'form_tags' => $form_tags,  
 ]);
 
 $layout_content = include_template('layout.php', [

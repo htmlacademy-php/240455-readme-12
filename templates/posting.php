@@ -24,7 +24,7 @@
 								<span class="visually-hidden">количество репостов</span>
 							</a>
 						</div>
-						<span class="post__view"><?php echo $post['view_count'] . " " .  $view_word ?></span>
+						<span class="post__view"><?php echo $post['view_count'] . ' ' .  $view_word ?></span>
 					</div>
 					<?php if ($hashtags): ?>
 					<ul class="post__tags">
