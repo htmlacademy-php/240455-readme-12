@@ -66,7 +66,9 @@ $query = '
     WHERE post_hashtag_rel.post_id = ' . $post_id;
 
 $hashtags = get_result($db_link, $query, 4);
-$hashtags = explode(' ', $hashtags[0]);
+if ($hashtags) {
+    $hashtags = explode(' ', $hashtags[0]);
+}
 // получение комментариев
 $query = '
     SELECT 

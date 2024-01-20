@@ -2,6 +2,7 @@
     <div class="container">
         <h1 class="page__title page__title--popular">Популярное</h1>
     </div>
+    
     <div class="popular container">
         <div class="popular__filters-wrapper">
             <div class="popular__sorting sorting">
@@ -29,7 +30,7 @@
                     </li>
                     <?php foreach ($categories as $categ): ?>    
                     <li class="popular__filters-item filters__item">
-                     	<a class="filters__button filters__button--<?= $categ['category'] === 'link' ? 'link' : $categ['category']; ?> button <?= $categ['id'] === $categ_chosen ? ' filters__button--active' : ''; ?>" href="/?categ_chosen=<?= $categ['id'] . '&sort_by=' . $sort_chosen ?>">
+                     	<a class="filters__button filters__button--<?= $categ['category']; ?> button <?= $categ['id'] == $categ_chosen ? ' filters__button--active' : ''; ?>" href="/?categ_chosen=<?= $categ['id'] . '&sort_by=' . $sort_chosen ?>">
                      		<span class="visually-hidden"><?= $categ['category_name']; ?></span>
                      		<svg class="filters__icon" width=<?= $categ['category_w_main'] . ' height=' . $categ['category_h_main']; ?>>
                                 <use xlink:href="#icon-filter-<?= $categ['category'] === 'link' ? 'link' : $categ['category']; ?>"></use>
