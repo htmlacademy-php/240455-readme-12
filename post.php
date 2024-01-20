@@ -70,6 +70,13 @@ if ($hashtags) {
     $hashtags = explode(' ', $hashtags[0]);
 }
 // получение комментариев
+
+if (!$show_all_comments) {
+    $comments_count = ' LIMIT 2';
+} else {
+    $comments_count = '';
+}
+
 $query = '
     SELECT 
         c.id, 
@@ -82,7 +89,7 @@ $query = '
     INNER JOIN user AS u
        ON u.id = c.user_id
     WHERE c.post_id = ' . $post_id . '
-    ORDER BY c.dt_add ASC';
+    ORDER BY c.dt_add ASC' . $comments_count;
 
 $comments = get_result($db_link, $query);
 
@@ -96,10 +103,6 @@ if ($comments) {
 
 $last_comment_id = $comments ? $comments[array_key_last($comments)]['id'] : 0;
 $last_comment_href = $comments ? 'post.php?post_id=' . $post['id'] . '&show_all_comments#last_comment_id_' . $last_comment_id : '#';
-
-if (!$show_all_comments) {
-    $comments = array_slice($comments, 0, 2);
-}
 
 // выбор подшаблона поста
 $post_type = 'templates/post-' . $post['category'] . '.php';
