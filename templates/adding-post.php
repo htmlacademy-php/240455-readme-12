@@ -59,7 +59,6 @@
 							</div>
 							<?= $form_buttons; ?>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
-							<input type="hidden" name="category_id" value="1">
 						</form>
 					</section>
 					
@@ -79,7 +78,6 @@
 							</div>
 							<?= $form_buttons; ?>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
-							<input type="hidden" name="category_id" value="2">
 						</form>
 					</section>
 					
@@ -104,7 +102,6 @@
 								<?= $form_invalid_block; ?>
 							</div>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
-							<input type="hidden" name="category_id" value="3">
 							<?= $form_buttons; ?>
 						</form>
 					</section>
@@ -141,7 +138,6 @@
 							</div>
 							<?= $form_buttons; ?>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
-							<input type="hidden" name="category_id" value="4">
 						</form>
 					</section>
 					
@@ -161,7 +157,6 @@
 							</div>
 							<?= $form_buttons; ?>
 							<input type="hidden" name="category" value="<?= $category_chosen; ?>">
-							<input type="hidden" name="category_id" value="5">
 						</form>
 					</section>
 				</div>

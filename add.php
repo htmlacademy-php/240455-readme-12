@@ -19,8 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //Выбранная категория формы
     $category_chosen = $post_data['category'];
     //id категории для таблицы post
-    $category_id = (int) $post_data['category_id'];
-    
+    $query =  'SELECT id FROM category WHERE category = "' . $category_chosen . '"';
+    $category_id = get_result($db_link, $query, 1); 
+
     //Проверка на обязательность заполнения определённых полей формы
     $required = [ //Формируем список полей, обязательных для заполнения
         'heading' => "Заголовок",
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'author' => "Автор",
         'url' => "Ссылка",
     ];
-    
+   
     foreach ($post_data as $key => $value) {
         if (array_key_exists($key, $required) && empty($value)) { //проверка обязательного поля на заполненность
             $errors[$key]['head'] = $required[$key];
@@ -199,7 +200,7 @@ $main_content = include_template('adding-post.php', [
     'errors' => $errors,
     'form_buttons' => $form_buttons,
     'form_invalid_block' => $form_invalid_block,
-    'form_tags' => $form_tags,  
+    'form_tags' => $form_tags,
 ]);
 
 $layout_content = include_template('layout.php', [
