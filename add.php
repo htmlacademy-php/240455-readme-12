@@ -159,36 +159,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$tags = '';
+
+if (isset($post_data['tags'])) {
+    $tags = $post_data['tags'];
+} 
+
 $form_tags = include_template('form-tags.php', [
-    'tags' => $post_data['tags']
+    'tags' => $tags,
 ]);
 
 $form_invalid_block = '';
-$form_invalid_block_items = '';
 
 if ($errors) {
-    foreach ($errors as $error) {
-        $form_invalid_block_items .= '<li class="form__invalid-item">' . $error['head'] . '. ' . $error['description'] . '</li>';
-    }
-    
-    $form_invalid_block = '<div class="form__invalid-block">
-                               <b class="form__invalid-slogan">Пожалуйста, исправьте следующие ошибки:</b>
-                               <ul class="form__invalid-list">' . $form_invalid_block_items .
-                               '</ul>
-                           </div>';
+    $form_invalid_block = include_template('form_invalid_block.php', [
+        'errors' => $errors
+    ]);
 }
 
-$form_buttons = '<div class="adding-post__buttons">
-                    <button class="adding-post__submit button button--main" type="submit">Опубликовать</button>
-                    <a class="adding-post__close" href="#">Закрыть</a>
-                 </div>';
+$form_buttons = include_template('form_buttons.php', []);
 
 $categories = get_сategories($db_link);
 
 $is_auth = rand(0, 1);
 
 $user_name = 'Никитина Виктория';
-
 
 //Подготовка и вывод страницы
 $main_content = include_template('adding-post.php', [
