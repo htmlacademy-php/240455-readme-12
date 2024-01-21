@@ -32,7 +32,7 @@
 											из интернета</label>
 										<div class="form__input-section<?= isset($errors['file']) ? ' form__input-section--error' : ''; ?>">
 											<input class="adding-post__input form__input"
-												type="text" name="url_photo" placeholder="Введите ссылку" value="">
+												type="text" name="url_photo" placeholder="Введите ссылку" value="<?= isset($post_data['url_photo']) ? $post_data['url_photo'] : ''; ?>">
 											<?php 
 											    $error_type = 'file';
 											    require 'form-error.php';
@@ -90,7 +90,7 @@
 									<div class="adding-post__textarea-wrapper form__textarea-wrapper">
 										<label class="adding-post__label form__label" for="p_text">Текст поста <span class="form__input-required">*</span></label>
 										<div class="form__input-section<?= isset($errors['p_text']) ? ' form__input-section--error' : ''; ?>">
-											<textarea name="p_text" class="adding-post__textarea form__textarea form__input" placeholder="Введите текст публикации"></textarea>
+											<textarea name="p_text" class="adding-post__textarea form__textarea form__input" placeholder="Введите текст публикации"><?= isset($post_data['p_text']) ? $post_data['p_text'] : ''; ?></textarea>
 											<?php 
 											    $error_type = 'p_text';
 											    require 'form-error.php';
@@ -115,7 +115,7 @@
 									<div class="adding-post__input-wrapper form__textarea-wrapper">
 										<label class="adding-post__label form__label" for="p_text">Текст цитаты <span class="form__input-required">*</span></label>
 										<div class="form__input-section<?= isset($errors['p_text']) ? ' form__input-section--error' : ''; ?>">
-											<textarea class="adding-post__textarea adding-post__textarea--quote form__textarea form__input" placeholder="Текст цитаты" name="p_text"></textarea>
+											<textarea class="adding-post__textarea adding-post__textarea--quote form__textarea form__input" placeholder="Текст цитаты" name="p_text"><?= isset($post_data['p_text']) ? $post_data['p_text'] : ''; ?></textarea>
 											<?php 
 											    $error_type = 'p_text';
 											    require 'form-error.php';
@@ -125,7 +125,7 @@
 									<div class="adding-post__textarea-wrapper form__input-wrapper">
 										<label class="adding-post__label form__label" for="author">Автор <span class="form__input-required">*</span></label>
 										<div class="form__input-section<?= isset($errors['author']) ? ' form__input-section--error' : ''; ?>">
-											<input class="adding-post__input form__input" type="text" name="author" value="">
+											<input class="adding-post__input form__input" type="text" name="author" value="<?= isset($post_data['author']) ? $post_data['author'] : ''; ?>">
 											<?php 
 											    $error_type = 'author';
 											    require 'form-error.php';

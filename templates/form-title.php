@@ -3,7 +3,7 @@
 		for="heading">Заголовок <span
 		class="form__input-required">*</span></label>
 	<div class="form__input-section<?= isset($errors['heading']) ? ' form__input-section--error' : ''; ?>">
-		<input class="adding-post__input form__input" id="heading" type="text" name="heading" placeholder="Введите заголовок" value="">
+		<input class="adding-post__input form__input" id="heading" type="text" name="heading" placeholder="Введите заголовок" value="<?= isset($post_data['heading']) ? $post_data['heading'] : ''; ?>">
 		<?php 
 		    $error_type = 'heading';
 		    require 'form-error.php';
