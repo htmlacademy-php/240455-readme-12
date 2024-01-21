@@ -106,7 +106,7 @@ function get_interval ($date, $ago = false) {
             }
         }
         
-        if ($ago === true) {
+        if ($ago) {
             $time_count .= " назад";
         }
         
@@ -212,8 +212,6 @@ function validate_length($name, &$explain, $min, $max = 300) {
  * Получение массива категорий
  *
  * @param mysqli $db_link Соединение
- * @param string $query Запрос
- * @param int $mode Тип ответа 
  * @return array
  */
 

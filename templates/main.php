@@ -33,7 +33,7 @@
                      	<a class="filters__button filters__button--<?= $categ['category']; ?> button <?= $categ['id'] == $categ_chosen ? ' filters__button--active' : ''; ?>" href="/?categ_chosen=<?= $categ['id'] . '&sort_by=' . $sort_chosen ?>">
                      		<span class="visually-hidden"><?= $categ['category_name']; ?></span>
                      		<svg class="filters__icon" width="22" height="18">
-                                <use xlink:href="#icon-filter-<?= $categ['category'] === 'link' ? 'link' : $categ['category']; ?>"></use>
+                                <use xlink:href="#icon-filter-<?= $categ['category']; ?>"></use>
                             </svg>
                      	</a>
                      </li>
