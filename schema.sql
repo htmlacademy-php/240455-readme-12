@@ -39,11 +39,12 @@ CREATE TABLE IF NOT EXISTS post (
 	user_id INT NOT NULL COMMENT 'Автор поста. Поле связи с user.id',
 	category_id INT NOT NULL COMMENT 'Контент/категория поста. Поле связи с category.id',
 	view_count INT UNSIGNED DEFAULT 0,
-	INDEX (user_id),
-	INDEX (category_id),
 	FOREIGN KEY (user_id) REFERENCES user (id),
 	FOREIGN KEY (category_id) REFERENCES category (id)
 ) COMMENT 'Посты';
+
+CREATE INDEX user_index ON post (user_id); -- поисковой индекс, как ускоритель поиска
+CREATE INDEX category_index ON post (category_id); -- поисковой индекс, как ускоритель поиска
 
 -- 5.2 Комментарий
 
@@ -53,11 +54,12 @@ CREATE TABLE IF NOT EXISTS comment (
 	c_content TEXT NOT NULL,
 	user_id INT NOT NULL COMMENT 'Автор комментария. Поле связи с user.id',
 	post_id INT NOT NULL COMMENT 'id поста с этим комментарием. Поле связи с post.id',
-	INDEX (user_id),
-	INDEX (post_id),
 	FOREIGN KEY (user_id) REFERENCES user (id),
 	FOREIGN KEY (post_id) REFERENCES post (id)
 ) COMMENT 'Комментарии к постам';
+
+CREATE INDEX user_index ON comment (user_id); -- поисковой индекс, как ускоритель поиска
+CREATE INDEX post_index ON comment (post_id); -- поисковой индекс, как ускоритель поиска
 
 -- 5.3 Лайки
 
@@ -100,6 +102,9 @@ CREATE TABLE IF NOT EXISTS message (
 	FOREIGN KEY (recipient_id) REFERENCES user (id),
 	FOREIGN KEY (sender_id) REFERENCES user (id)
 ) COMMENT 'Сообщения из внутренней переписки пользователей';
+
+CREATE INDEX recipient_index ON message (recipient_id); -- поисковой индекс, как ускоритель поиска
+CREATE INDEX sender_index ON message (sender_id); -- поисковой индекс, как ускоритель поиска
 
 -- 5.6 Хештег
 
