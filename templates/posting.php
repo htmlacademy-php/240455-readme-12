@@ -67,7 +67,7 @@
     							</li>
     							<?php endforeach; ?>
     						</ul>
-    						<?php if (!$show_all_comments && $arr_num['comments_count'] > 2) { ?>
+    						<?php if (!$show_all_comments && $arr_num['comments_count'] > VISIBLE_COMMENTS) { ?>
     						<a class="comments__more-link" href="<?= $last_comment_href; ?>"> 
     							<span>Показать все комментарии</span> <sup class="comments__amount"><?= $arr_num['comments_count']; ?></sup>
     						</a>

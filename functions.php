@@ -17,6 +17,8 @@ define('ALLOW_EXT', array(
 define('DATE_FORMAT', "d.m.Y H:i");
 define('DATE_FORMAT_ORIGINAL', "Y.m.d H:i");
 
+define('VISIBLE_COMMENTS', 2);
+
 date_default_timezone_set('Europe/Moscow');
 
 mb_internal_encoding("UTF-8");
@@ -67,10 +69,10 @@ function filter_xss (&$arr) {
  * 35 дней <= n -> "n месяцев назад"
  *
  * @param string $date Дата прошедшего события
- * @param bool $ago Признак слова "назад"
+ * @param bool $is_ago Признак слова "назад"
  * @return string $interval Возвращает интервал между экземплярами дат
  */
-function get_interval ($date, $ago = false) {
+function get_interval ($date, $is_ago = false) {
     
     $cur_date = date_create("now"); // создаёт экземпляр текущей даты
     $date = date_create($date); // создаёт экземпляр даты
@@ -106,7 +108,7 @@ function get_interval ($date, $ago = false) {
             }
         }
         
-        if ($ago) {
+        if ($is_ago) {
             $time_count .= " назад";
         }
         

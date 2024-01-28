@@ -10,17 +10,18 @@ $post_data = []; // массив полученных данных
 $errors = []; // массив ошибок
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {    
-    //Получаем ключи массива $_POST
-    $arr_keys = array_keys($_POST);
-    //Создаем фильтры для ключей
-    $arr_options = array_fill_keys($arr_keys, FILTER_SANITIZE_STRING);
-    //Отфильтрованные данные из POST
-    $post_data = filter_input_array(INPUT_POST, $arr_options); 
-    //Выбранная категория формы
-    $category_chosen = $post_data['category'];
+    
+    $arr_keys = array_keys($_POST); //Получаем ключи массива $_POST
+    
+    $arr_options = array_fill_keys($arr_keys, FILTER_SANITIZE_STRING); //Создаем фильтры для ключей
+    
+    $post_data = filter_input_array(INPUT_POST, $arr_options); //Отфильтрованные данные из POST
+    
+    $category_chosen = $post_data['category']; //Выбранная категория формы
+    
     //id категории для таблицы post
     $query =  'SELECT id FROM category WHERE category = "' . $category_chosen . '"';
-    $category_id = get_result($db_link, $query, 1); 
+    $category_id = (int)get_result($db_link, $query, 1); 
 
     //Проверка на обязательность заполнения определённых полей формы
     $required = [ //Формируем список полей, обязательных для заполнения
@@ -177,7 +178,7 @@ if ($errors) {
     ]);
 }
 
-$form_buttons = include_template('form_buttons.php', []);
+$form_buttons = include_template('form_buttons.php');
 
 $categories = get_сategories($db_link);
 

@@ -54,7 +54,7 @@ $posts_word = 'публикаци' . get_noun_plural_form($arr_num['posts_count'
 $view_word = 'просмотр' . get_noun_plural_form($post['view_count'], '', 'а', 'ов');
 
 // генерация дат
-$post['date_user_interval'] = get_interval ($post['dt_user_registration'], false);
+$post['date_user_interval'] = get_interval ($post['dt_user_registration']);
 $post['date_user_title'] = date(DATE_FORMAT, strtotime($post['dt_user_registration']));
 
 // получение хештегов
@@ -71,25 +71,23 @@ if ($hashtags) {
 }
 // получение комментариев
 
-if (!$show_all_comments) {
-    $comments_count = ' LIMIT 2';
-} else {
-    $comments_count = '';
-}
-
 $query = '
-    SELECT 
-        c.id, 
-        c.dt_add, 
-        c_content, 
-        post_id, 
-        u.login, 
+    SELECT
+        c.id,
+        c.dt_add,
+        c_content,
+        post_id,
+        u.login,
         u.avatar
     FROM comment AS c
     INNER JOIN user AS u
        ON u.id = c.user_id
     WHERE c.post_id = ' . $post_id . '
-    ORDER BY c.dt_add ASC' . $comments_count;
+    ORDER BY c.dt_add DESC';
+
+if (!$show_all_comments) {
+    $query .= ' LIMIT 2'; //количество видимых комментариев
+}
 
 $comments = get_result($db_link, $query);
 
@@ -99,10 +97,14 @@ if ($comments) {
         $comments[$key]['comment_interval'] = get_interval(date(DATE_FORMAT, strtotime($comment['dt_add'])), true);
         $comments[$key]['comment_date_title'] = $comment['dt_add'];
     }
+    
+    $last_comment_id = $comments[array_key_first($comments)]['id'];
+    $last_comment_href = 'post.php?post_id=' . $post['id'] . '&show_all_comments#last_comment_id_' . $last_comment_id;
 }
-
-$last_comment_id = $comments ? $comments[array_key_last($comments)]['id'] : 0;
-$last_comment_href = $comments ? 'post.php?post_id=' . $post['id'] . '&show_all_comments#last_comment_id_' . $last_comment_id : '#';
+else {
+    $last_comment_id = 0;
+    $last_comment_href = '#';
+}
 
 // выбор подшаблона поста
 $post_type = 'templates/post-' . $post['category'] . '.php';
