@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS user (
 
 CREATE TABLE IF NOT EXISTS category (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-	category VARCHAR(20) COMMENT 'Наименование типа контента',
+	category VARCHAR(20) comment 'Наименование типа контента',
 	category_name VARCHAR(20) COMMENT 'Имя класса',
 	category_w TINYINT COMMENT 'Ширина иконки',
 	category_h TINYINT COMMENT 'Высота иконки'
@@ -39,11 +39,12 @@ CREATE TABLE IF NOT EXISTS post (
 	user_id INT NOT NULL COMMENT 'Автор поста. Поле связи с user.id',
 	category_id INT NOT NULL COMMENT 'Контент/категория поста. Поле связи с category.id',
 	view_count INT UNSIGNED DEFAULT 0,
-	INDEX (user_id),
-	INDEX (category_id),
 	FOREIGN KEY (user_id) REFERENCES user (id),
 	FOREIGN KEY (category_id) REFERENCES category (id)
 ) COMMENT 'Посты';
+
+CREATE INDEX user_index ON post (user_id); -- поисковой индекс, как ускоритель поиска
+CREATE INDEX category_index ON post (category_id); -- поисковой индекс, как ускоритель поиска
 
 -- 5.2 Комментарий
 
@@ -53,11 +54,12 @@ CREATE TABLE IF NOT EXISTS comment (
 	c_content TEXT NOT NULL,
 	user_id INT NOT NULL COMMENT 'Автор комментария. Поле связи с user.id',
 	post_id INT NOT NULL COMMENT 'id поста с этим комментарием. Поле связи с post.id',
-	INDEX (user_id),
-	INDEX (post_id),
 	FOREIGN KEY (user_id) REFERENCES user (id),
 	FOREIGN KEY (post_id) REFERENCES post (id)
 ) COMMENT 'Комментарии к постам';
+
+CREATE INDEX user_index ON comment (user_id); -- поисковой индекс, как ускоритель поиска
+CREATE INDEX post_index ON comment (post_id); -- поисковой индекс, как ускоритель поиска
 
 -- 5.3 Лайки
 
@@ -65,10 +67,13 @@ CREATE TABLE IF NOT EXISTS likeit (
 	id INT  AUTO_INCREMENT PRIMARY KEY,
 	user_id INT NOT NULL COMMENT 'Автор лайка. Поле связи с user.id',
 	post_id INT NOT NULL COMMENT 'id поста с этим лайком. Поле связи с post.id',
-	UNIQUE INDEX (user_id, post_id),
+	UNIQUE INDEX (user_id, post_id), -- индексы как связки с другими таблицами. guarantees that the index key contains no duplicate values
 	FOREIGN KEY (user_id) REFERENCES user (id),
 	FOREIGN KEY (post_id) REFERENCES post (id)
-) COMMENT 'Лайки к постам';
+) comment 'Лайки к постам';
+
+CREATE INDEX user_index ON likeit (user_id); -- поисковой индекс, как ускоритель поиска
+CREATE INDEX post_index ON likeit (post_id); -- поисковой индекс, как ускоритель поиска
 
 -- 5.4 Подписка
 
@@ -76,11 +81,14 @@ CREATE TABLE IF NOT EXISTS subscription (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	user_id INT NOT NULL COMMENT 'Автор подписки. Поле связи с user.id',
 	target_id INT NOT NULL COMMENT 'Пользователь, на которого подписались. Поле связи с user.id',
-	UNIQUE INDEX (user_id, target_id),
+	UNIQUE INDEX (user_id, target_id), -- индексы как связки с другими таблицами. guarantees that the index key contains no duplicate values
 	FOREIGN KEY (user_id) REFERENCES user (id),
 	FOREIGN KEY (target_id) REFERENCES user (id)
-) COMMENT 'Подписка';
+) comment 'Подписка';
 
+CREATE INDEX user_index ON subscription (user_id); -- поисковой индекс, как ускоритель поиска
+CREATE INDEX target_index ON subscription (target_id); -- поисковой индекс, как ускоритель поиска
+	
 -- 5.5 Сообщение
 
 CREATE TABLE IF NOT EXISTS message (
@@ -95,6 +103,9 @@ CREATE TABLE IF NOT EXISTS message (
 	FOREIGN KEY (sender_id) REFERENCES user (id)
 ) COMMENT 'Сообщения из внутренней переписки пользователей';
 
+CREATE INDEX recipient_index ON message (recipient_id); -- поисковой индекс, как ускоритель поиска
+CREATE INDEX sender_index ON message (sender_id); -- поисковой индекс, как ускоритель поиска
+
 -- 5.6 Хештег
 
 CREATE TABLE IF NOT EXISTS hashtag (
@@ -106,7 +117,10 @@ CREATE TABLE IF NOT EXISTS post_hashtag_rel (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	post_id INT NOT NULL COMMENT 'id поста с этим хештегом. Поле связи с post.id',
 	hashtag_id INT NOT NULL COMMENT 'Хештег. Поле связи с hashtag.id',
-	UNIQUE INDEX (post_id, hashtag_id),
+	UNIQUE INDEX (post_id, hashtag_id), -- индексы как связки с другими таблицами. guarantees that the index key contains no duplicate values
 	FOREIGN KEY (post_id) REFERENCES post (id),
 	FOREIGN KEY (hashtag_id) REFERENCES hashtag (id)
-) COMMENT 'Таблица связей между постами и хештегами';
+) comment 'Таблица связей между постами и хештегами';
+
+CREATE INDEX post_index ON post_hashtag_rel (post_id); -- поисковой индекс, как ускоритель поиска
+CREATE INDEX hashtag_index ON post_hashtag_rel (hashtag_id); -- поисковой индекс, как ускоритель поиска

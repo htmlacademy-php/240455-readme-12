@@ -11,8 +11,8 @@ if ($post_id === 0) {
     exit('Пост не существует');
 }
 
-// Проверка существования параметра show_comments и скрытых комментариев
-$show_comments = filter_input(INPUT_GET, 'show_comments', FILTER_SANITIZE_NUMBER_INT);
+// Проверка существования параметра show_all_comments и скрытых комментариев
+$show_all_comments = isset($_GET['show_all_comments']);
 
 $query = '
     SELECT      
@@ -31,7 +31,7 @@ $query = '
 
 $post = get_result($db_link, $query, 3);
 
-if(!$post) {
+if (!$post) {
     exit('Пост не существует');
 }
 
@@ -44,17 +44,17 @@ $arr_num['comments_count'] = get_number($db_link, 'comment', 'post_id =' . $post
 // число подписчиков автора поста
 $arr_num['followers_count'] = get_number($db_link, 'subscription', 'target_id =' . $post['user_id']);
 
-$followers_word = get_noun_plural_form($arr_num['followers_count'], 'подписчик', 'подписчика', 'подписчиков');
+$followers_word = 'подписчик' . get_noun_plural_form($arr_num['followers_count'], '', 'а', 'ов');
 
 // число постов автора поста
 $arr_num['posts_count'] = get_number($db_link, 'post', 'user_id =' . $post['user_id']);
 
-$posts_word = get_noun_plural_form($arr_num['posts_count'], 'публикация', 'публикации', 'публикаций');
+$posts_word = 'публикаци' . get_noun_plural_form($arr_num['posts_count'], 'я', 'и', 'й');
 
-$view_word = get_noun_plural_form($post['view_count'], 'просмотр', 'просмотра', 'просмотров');
+$view_word = 'просмотр' . get_noun_plural_form($post['view_count'], '', 'а', 'ов');
 
 // генерация дат
-$post['date_user_interval'] = get_interval ($post['dt_user_registration'], 1);
+$post['date_user_interval'] = get_interval ($post['dt_user_registration']);
 $post['date_user_title'] = date(DATE_FORMAT, strtotime($post['dt_user_registration']));
 
 // получение хештегов
@@ -66,37 +66,44 @@ $query = '
     WHERE post_hashtag_rel.post_id = ' . $post_id;
 
 $hashtags = get_result($db_link, $query, 4);
-
-// получение комментариев
-$comment_condition = ' LIMIT 2';  //условие для ограничения количества выводимых комментариев
-
-if (isset($_GET['show_comments'])) {
-    $comment_condition = '';
+if ($hashtags) {
+    $hashtags = explode(' ', $hashtags[0]);
 }
+// получение комментариев
 
 $query = '
-    SELECT c.id, c.dt_add, c_content, post_id, u.login, u.avatar
+    SELECT
+        c.id,
+        c.dt_add,
+        c_content,
+        post_id,
+        u.login,
+        u.avatar
     FROM comment AS c
     INNER JOIN user AS u
        ON u.id = c.user_id
     WHERE c.post_id = ' . $post_id . '
-    ORDER BY c.dt_add ASC' . 
-    $comment_condition;
+    ORDER BY c.dt_add DESC';
+
+if (!$show_all_comments) {
+    $query .= ' LIMIT 2'; //количество видимых комментариев
+}
 
 $comments = get_result($db_link, $query);
 
-// генерация дат и номера комментария
-$i = 1;
-
+// генерация дат комментариев, запись id и ссылки последнего комментария
 if ($comments) {
     foreach ($comments as $key => $comment) {
-
-        $comments[$key]['comment_interval'] = date(DATE_FORMAT, strtotime($comment['dt_add']));
-
-        $comments[$key]['comment_date_title'] = get_interval($comment['dt_add']);
-
-        $comments[$key]['comment_number'] = $i++;
+        $comments[$key]['comment_interval'] = get_interval(date(DATE_FORMAT, strtotime($comment['dt_add'])), true);
+        $comments[$key]['comment_date_title'] = $comment['dt_add'];
     }
+    
+    $last_comment_id = $comments[array_key_first($comments)]['id'];
+    $last_comment_href = 'post.php?post_id=' . $post['id'] . '&show_all_comments#last_comment_id_' . $last_comment_id;
+}
+else {
+    $last_comment_id = 0;
+    $last_comment_href = '#';
 }
 
 // выбор подшаблона поста
@@ -109,14 +116,16 @@ $user_name = 'Никитина Виктория';
 // Подготовка и вывод страницы
 $main_content = include_template('posting.php', [
     'post' => $post,
+    'post_type' => $post_type,
+    'arr_num' => $arr_num,
+    'last_comment_href' => $last_comment_href,
     'view_word' => $view_word,
     'hashtags' => $hashtags,
     'comments' => $comments,
-    'arr_num' => $arr_num,
+    'last_comment_id' => $last_comment_id,
+    'show_all_comments' => $show_all_comments,
     'followers_word' => $followers_word,
     'posts_word' => $posts_word,
-    'post_type' => $post_type,
-    'show_comments' => $show_comments,
 ]);
 
 $layout_content = include_template('layout.php', [
@@ -127,3 +136,4 @@ $layout_content = include_template('layout.php', [
 ]);
 
 print($layout_content);
+
